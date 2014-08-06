@@ -1,0 +1,25 @@
+{
+  "name": "prest",
+  "version": "0.0.0",
+  "description": "pREST js",
+  "main": "index.js",
+  "scripts": {
+    "test": "test"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://localhost/prestjs"
+  },
+  "keywords": [
+    "pREST",
+    "javascript"
+  ],
+  "author": "Peter Rybar, pr.rybar@gmail.com",
+  "license": "GPL3",
+  "devDependencies": {
+    "grunt": "^0.4.5",
+    "grunt-contrib-uglify": "^0.5.1",
+    "grunt-markdown": "^0.6.1",
+    "typescript": "^1.0.1"
+  }
+}
