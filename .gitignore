@@ -3,8 +3,17 @@
 _*
 *_
 
-build/
-node_modules/
+dist/
 tmp/
 
+node_modules/
+bower_components
+
 *.iml
+.idea
+
+src/**/*.js
+src/**/*.js.map
+
+test/**/*.js
+test/**/*.js.map

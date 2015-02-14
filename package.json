@@ -17,9 +17,13 @@
   "author": "Peter Rybar, pr.rybar@gmail.com",
   "license": "GPL3",
   "devDependencies": {
+    "bower": "^1.3.8",
     "grunt": "^0.4.5",
+    "grunt-bower": "^0.13.4",
     "grunt-contrib-uglify": "^0.5.1",
     "grunt-markdown": "^0.6.1",
+    "grunt-ts": "^1.11.6",
+    "grunt-typescript": "^0.3.8",
     "typescript": "^1.0.1"
   }
 }

@@ -1,0 +1,20 @@
+{
+  "name": "prestjs",
+  "version": "0.0.0",
+  "authors": [
+    "Peter Rybar <pr.rybar@gmail.com>"
+  ],
+  "license": "GPL3",
+  "homepage": "http://prest-tech.appengine.com/",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "transparency": "~0.9.14"
+  }
+}

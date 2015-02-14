@@ -1,15 +1,15 @@
-///<reference path="../prest/prest.ts" />
+///<reference path="../src/prest/prest.ts" />
 
-import Signal = prest.signal.Signal;
-import Hash = prest.hash.Hash;
+import Signal = prest.Signal;
+import Hash = prest.Hash;
 
 
 //-----------------------------------------------------------------------------
 // test signals
 
-var s:Signal<string> = new Signal<string>();
+var s: Signal<string> = new Signal<string>();
 
-var id:number = s.connect((data) => {
+var id: number = s.connect((data) => {
 	console.log("data: " + data);
 });
 // ES5
@@ -64,7 +64,7 @@ a.signal_num.connect(slot, a);
 a.signal_num.connect(slot, b);
 a.signal_num.emit(5);
 
-console.log("");
+console.log("-------------------------------------");
 
 a.signal_str.connect(a.slot, a);
 //a.signal_str.slot = slot; // ES5
@@ -86,16 +86,16 @@ function main() {
 	var output = document.getElementById("output");
 	output.innerHTML = "test";
 
-	var hash:Hash<any> = new Hash<any>();
-	hash.signal_change.connect((data) => {
+	var hash: Hash<any> = new Hash<any>();
+	hash.signalChange.connect((data) => {
 		console.log('hash: ' + JSON.stringify(data));
 		output.innerHTML += '<br/>' + 'hash: ' + JSON.stringify(data);
 	});
-	hash.emit_changes();
-	hash.put_hash({aaa: 'aaa'});
+	hash.emitChanges();
+	hash.putHash({aaa: 'aaa'});
 
 	var h = document.getElementById("hash");
 	h.onclick = (e:MouseEvent) => {
-		hash.put_hash({aaa: new Date().getTime()});
+		hash.putHash({aaa: new Date().getTime()});
 	};
 }
