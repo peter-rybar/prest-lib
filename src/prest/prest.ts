@@ -15,12 +15,12 @@ module prest {
 	 */
 	export class Signal<T> {
 
-		private slots: Slot<T>[];
-		private slotId;
+		private _slots: Slot<T>[];
+		private _slotId;
 
 		constructor() {
-			this.slots = [];
-			this.slotId = 0;
+			this._slots = [];
+			this._slotId = 0;
 		}
 
 		// ES5
@@ -33,16 +33,16 @@ module prest {
 		public connect(callback: (data?: T) => void, object?: Object): number;
 
 		public connect(callback: (data?: any) => void, object?: Object): number {
-			var slotId = this.slotId++;
+			var slotId = this._slotId++;
 
 			if (object) {
-				this.slots.push({
+				this._slots.push({
 					id: slotId,
 					callback: callback,
 					object: object
 				});
 			} else {
-				this.slots.push({
+				this._slots.push({
 					id: slotId,
 					callback: callback
 				});
@@ -56,7 +56,7 @@ module prest {
 		 */
 //		public disconnect(): void;
 		public disconnect(slotId?: number): void {
-			var slots: Slot<T>[] = this.slots;
+			var slots: Slot<T>[] = this._slots;
 			var slotsNew: Slot<T>[] = [];
 			for (var i = 0; i < slots.length; i++) {
 				var slot: Slot<T> = slots[i];
@@ -64,7 +64,7 @@ module prest {
 					slotsNew.push(slot);
 				}
 			}
-			this.slots = slotsNew;
+			this._slots = slotsNew;
 		}
 
 		/**
@@ -77,7 +77,7 @@ module prest {
 		public emit(data?: T): void;
 
 		public emit(data?: any): void {
-			var slots: Slot<T>[] = this.slots;
+			var slots: Slot<T>[] = this._slots;
 			for (var i = 0; i < slots.length; i++) {
 				var slot: Slot<T> = slots[i];
 				var object: Object = slot.object;
@@ -132,18 +132,18 @@ module prest {
 		 */
 		public getHash(): T {
 			var str = window.location.hash.slice(1);
-			return this.deserialize(str);
+			return this._deserialize(str);
 		}
 
 		/**
 		 * Encode data and sets window.location.hash fragment
 		 */
 		public putHash(hashData: T) {
-			var str = this.serialize(hashData);
+			var str = this._serialize(hashData);
 			window.location.hash = '#' + str;
 		}
 
-		private serialize(data: T, prefix = ''): string {
+		private _serialize(data: T, prefix = ''): string {
 			var str;
 			if (typeof data != 'object') {
 				str = data;
@@ -174,7 +174,7 @@ module prest {
 			return str;
 		}
 
-		private deserialize(str: string): T {
+		private _deserialize(str: string): T {
 			var data: T = <T>{};
 			if (str) {
 				var params = str.split('&');
