@@ -1,7 +1,9 @@
 ///<reference path="../src/prest/prest.ts" />
+/// <reference path="../src/prest/prest-hash.ts" />
+/// <reference path="../src/prest/prest-dom.ts" />
 
 import Signal = prest.Signal;
-import Hash = prest.Hash;
+import Hash = prest.hash.Hash;
 
 
 //-----------------------------------------------------------------------------
@@ -77,8 +79,8 @@ a.signal_str.emit("str");
 
 console.log("DOM");
 
-//prest.dom.signal_window_load.connect(main);
-window.onload = main;
+//window.onload = main;
+prest.dom.signalWindowLoad.connect(main);
 
 function main() {
 	console.log("main()");
