@@ -1,33 +1,49 @@
 module.exports = function (grunt) {
 
+	grunt.initConfig({
+	});
 	// Project configuration.
 	grunt.initConfig({
 
 		pkg: grunt.file.readJSON('package.json'),
 
-		typescript: {
-			base: {
-				src: ['src/**/*.ts'],
-				dest: 'dist/js',
+		//typescript: {
+		//	base: {
+		//		src: ['src/**/*.ts'],
+		//		dest: 'dist/js',
+		//		options: {
+		//			module: 'amd', // amd or commonjs
+		//			target: 'es3', // es3 or es5
+		//			basePath: 'src',
+		//			sourceMap: true,
+		//			declaration: true
+		//			//watch: {
+		//			//	path: 'src',
+		//			//	before: ['beforetasks'],   // Set before tasks. eg: clean task
+		//			//	after: ['aftertasks']      // Set after tasks.  eg: minify task
+		//			//	atBegin: true              // Run tasks when watcher starts. default false
+		//			//}
+		//			//references: [
+		//			//	"core",       //lib.core.d.ts
+		//			//	"dom",        //lib.dom.d.ts
+		//			//	"scriptHost", //lib.scriptHost.d.ts
+		//			//	"webworker",  //lib.webworker.d.ts
+		//			//	"path/to/reference/files/**/*.d.ts"
+		//			//]
+		//		}
+		//	}
+		//},
+
+		ts: {
+			default: {
+				html: ["src/**/*.html"],
+				src: ["src/**/*.ts"],
+				out: "dist/<%= pkg.name %>.js",
+				//target: "es3",
+				verbose: true,
+				//watch: "src",
 				options: {
-					module: 'amd', // amd or commonjs
-					target: 'es3', // es3 or es5
-					basePath: 'src',
-					sourceMap: true,
 					declaration: true
-					//watch: {
-					//	path: 'src',
-					//	before: ['beforetasks'],   // Set before tasks. eg: clean task
-					//	after: ['aftertasks']      // Set after tasks.  eg: minify task
-					//	atBegin: true              // Run tasks when watcher starts. default false
-					//}
-					//references: [
-					//	"core",       //lib.core.d.ts
-					//	"dom",        //lib.dom.d.ts
-					//	"scriptHost", //lib.scriptHost.d.ts
-					//	"webworker",  //lib.webworker.d.ts
-					//	"path/to/reference/files/**/*.d.ts"
-					//]
 				}
 			}
 		},
@@ -39,7 +55,8 @@ module.exports = function (grunt) {
 			dist: {
 				//expand: false,
 				//cwd: 'src',
-				src: 'src/**/*.js',
+				//src: 'src/**/*.js',
+				src: 'dist/<%= pkg.name %>.js',
 				dest: 'dist/<%= pkg.name %>.min.js'
 			}
 		},
@@ -76,7 +93,8 @@ module.exports = function (grunt) {
 		}
 	});
 
-	grunt.loadNpmTasks('grunt-typescript');
+	//grunt.loadNpmTasks('grunt-typescript');
+	grunt.loadNpmTasks("grunt-ts");
 
 	// Load the plugin that provides the "uglify" task.
 	grunt.loadNpmTasks('grunt-contrib-uglify');
@@ -87,6 +105,7 @@ module.exports = function (grunt) {
 
 	// Default task(s).
 	grunt.registerTask('default', [
+		'ts',
 		//'typescript',
 		//'bower',
 		'uglify',

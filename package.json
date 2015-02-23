@@ -12,7 +12,8 @@
 	},
 	"keywords": [
 		"pREST",
-		"javascript"
+		"javascript",
+		"signal-slot"
 	],
 	"author": "Peter Rybar, pr.rybar@gmail.com",
 	"license": "GPL3",

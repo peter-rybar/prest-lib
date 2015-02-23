@@ -1,6 +1,0 @@
-prest.ts
-prest_test.ts
---target ES5
---removeComments
--out prest_test.js
-
