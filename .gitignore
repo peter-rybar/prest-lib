@@ -12,6 +12,8 @@ bower_components
 *.iml
 .idea
 
+.tscache
+
 src/**/*.js
 src/**/*.js.map
 

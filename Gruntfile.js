@@ -1,9 +1,6 @@
 module.exports = function (grunt) {
 
 	grunt.initConfig({
-	});
-	// Project configuration.
-	grunt.initConfig({
 
 		pkg: grunt.file.readJSON('package.json'),
 
@@ -45,6 +42,13 @@ module.exports = function (grunt) {
 				options: {
 					declaration: true
 				}
+			},
+			dev: {
+				html: ["src/**/*.html"],
+				src: ["src/**/*.ts"],
+				//target: "es3",
+				verbose: true,
+				watch: "./"
 			}
 		},
 
@@ -90,7 +94,18 @@ module.exports = function (grunt) {
 					}
 				]
 			}
-		}
+		},
+
+		clean: [
+			"src/**/*.js",
+			"src/**/*.js.map",
+			"test/**/*.js",
+			"test/**/*.js.map",
+			"dist/**/*",
+			"docs/html"
+			//"node_modules"
+		]
+
 	});
 
 	//grunt.loadNpmTasks('grunt-typescript');
@@ -103,9 +118,11 @@ module.exports = function (grunt) {
 
 	grunt.loadNpmTasks('grunt-markdown');
 
+	grunt.loadNpmTasks('grunt-contrib-clean');
+
 	// Default task(s).
 	grunt.registerTask('default', [
-		'ts',
+		'ts:default',
 		//'typescript',
 		//'bower',
 		'uglify',
