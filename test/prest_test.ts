@@ -31,8 +31,8 @@ console.log("-------------------------------------");
 class A {
 	private a = "A.a";
 
-	public signal_num = new Signal<number>();
-	public signal_str = new Signal<string>();
+	public signalNum = new Signal<number>();
+	public signalStr = new Signal<string>();
 
 	public slot(data) {
 		console.log("A.slot() data: '" + this.a + "' " + " " + data);
@@ -55,23 +55,23 @@ var a = new A();
 
 var b = new B();
 
-a.signal_num.connect(a.slot);
-a.signal_num.connect(a.slot, a);
-a.signal_num.connect(a.slot, b);
-a.signal_num.connect(b.slot);
-a.signal_num.connect(b.slot, b);
-a.signal_num.connect(b.slot, a);
-a.signal_num.connect(slot);
-a.signal_num.connect(slot, a);
-a.signal_num.connect(slot, b);
-a.signal_num.emit(5);
+a.signalNum.connect(a.slot);
+a.signalNum.connect(a.slot, a);
+a.signalNum.connect(a.slot, b);
+a.signalNum.connect(b.slot);
+a.signalNum.connect(b.slot, b);
+a.signalNum.connect(b.slot, a);
+a.signalNum.connect(slot);
+a.signalNum.connect(slot, a);
+a.signalNum.connect(slot, b);
+a.signalNum.emit(5);
 
 console.log("-------------------------------------");
 
-a.signal_str.connect(a.slot, a);
-//a.signal_str.slot = slot; // ES5
+a.signalStr.connect(a.slot, a);
+//a.signalStr.slot = slot; // ES5
 
-a.signal_str.emit("str");
+a.signalStr.emit("str");
 
 
 //-----------------------------------------------------------------------------
