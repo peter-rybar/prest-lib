@@ -96,14 +96,27 @@ module.exports = function (grunt) {
 			}
 		},
 
+		markdownpdf: {
+			options: {
+				//concat: true
+			},
+			files: {
+				src: "docs/markdown/*.md",
+				dest: "docs/pdf"
+			}
+		},
+
 		clean: [
 			"src/**/*.js",
 			"src/**/*.js.map",
 			"test/**/*.js",
 			"test/**/*.js.map",
 			"dist/**/*",
-			"docs/html"
-			//"node_modules"
+			"docs/html",
+			"docs/pdf",
+			"node_modules",
+			"bower_components",
+			".tscache/"
 		]
 
 	});
@@ -117,6 +130,7 @@ module.exports = function (grunt) {
 	//grunt.loadNpmTasks('grunt-bower');
 
 	grunt.loadNpmTasks('grunt-markdown');
+	grunt.loadNpmTasks('grunt-markdown-pdf');
 
 	grunt.loadNpmTasks('grunt-contrib-clean');
 
@@ -126,7 +140,8 @@ module.exports = function (grunt) {
 		//'typescript',
 		//'bower',
 		'uglify',
-		'markdown'
+		'markdown',
+		'markdownpdf'
 	]);
 
 };
