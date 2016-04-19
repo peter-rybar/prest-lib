@@ -1,4 +1,107 @@
-/// <reference path="prest.ts" />
+module prest.http {
+
+	export class HttpRequest {
+
+		private _url:string;
+		private _method:string;
+
+		private _onError = (err) => {
+		};
+
+		private _onResponse = (data) => {
+		};
+
+		private _async:boolean = true;
+
+		constructor(url:string) {
+			if (url == undefined || url == '') {
+				throw new Error('URL undefined!');
+			}
+			this._url = url;
+		}
+
+		getUrl():string {
+			return this._url;
+		}
+
+		setUrl(url:string) {
+			this._url = url;
+			return this;
+		}
+
+		getMethod():string {
+			return this._method;
+		}
+
+		setMethod(method:string) {
+			this._method = method;
+			return this;
+		}
+
+		setOnError(onError:(err) => void) {
+			this._onError = onError;
+			return this;
+		}
+
+		setOnResponse(onResponse:(data) => void) {
+			this._onResponse = onResponse;
+			return this;
+		}
+
+		setAsync(async:boolean) {
+			this._async = async;
+			return this;
+		}
+
+		getAsync() {
+			return this._async;
+		}
+
+		send(data?:any):void {
+			this.sendWithCallbacks(this._onResponse, this._onError, data);
+		}
+
+		sendWithCallbacks(onResponse:(data:any) => void,
+		                  onError:(err) => void,
+		                  data?:any):void {
+
+			var httpRequest = new XMLHttpRequest();
+
+			httpRequest.open(this._method, this._url, this._async);
+
+			if (this._async) {
+				httpRequest.onreadystatechange = (e:Event) => {
+					if (httpRequest.readyState == 4) {
+						if (httpRequest.status == 200) {
+							var data = JSON.parse(httpRequest.responseText);
+							onResponse(data);
+						} else {
+							onError(e);
+						}
+					}
+				};
+				if (data) {
+					httpRequest.send(JSON.stringify(data));
+				} else {
+					httpRequest.send();
+				}
+			} else {
+				httpRequest.onerror = (e:ErrorEvent) => {
+					onError(e);
+				};
+
+				if (data) {
+					httpRequest.send(JSON.stringify(data));
+				} else {
+					httpRequest.send();
+				}
+				return JSON.parse(httpRequest.responseText);
+			}
+		}
+
+	}
+
+}
 
 /*
  export class HttpRequest {
@@ -23,11 +126,11 @@
 
  private _verbose = false;
 
- public signal_open = new prest.signal.Signal<any>();
- public signal_progress = new prest.signal.Signal<any>();
- public signal_load = new prest.signal.Signal<any>();
- public signal_error = new prest.signal.Signal<any>();
- public signal_abort = new prest.signal.Signal<any>();
+ signal_open = new prest.signal.Signal<any>();
+ signal_progress = new prest.signal.Signal<any>();
+ signal_load = new prest.signal.Signal<any>();
+ signal_error = new prest.signal.Signal<any>();
+ signal_abort = new prest.signal.Signal<any>();
 
  constructor(url) {
  this._url = url || "";

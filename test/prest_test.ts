@@ -1,8 +1,8 @@
-///<reference path="../src/prest/prest.ts" />
+///<reference path="../src/prest/prest-signal.ts" />
 /// <reference path="../src/prest/prest-hash.ts" />
 /// <reference path="../src/prest/prest-dom.ts" />
 
-import Signal = prest.Signal;
+import Signal = prest.signal.Signal;
 import Hash = prest.hash.Hash;
 
 
@@ -31,10 +31,10 @@ console.log("-------------------------------------");
 class A {
 	private a = "A.a";
 
-	public signalNum = new Signal<number>();
-	public signalStr = new Signal<string>();
+	signalNum = new Signal<number>();
+	signalStr = new Signal<string>();
 
-	public slot(data) {
+	slot(data) {
 		console.log("A.slot() data: '" + this.a + "' " + " " + data);
 	}
 }
@@ -42,7 +42,7 @@ class A {
 class B {
 	private a = "B.a";
 
-	public slot = (data) => {
+	slot = (data) => {
 		console.log("B.slot() data: '" + this.a + "' " + " " + data);
 	}
 }

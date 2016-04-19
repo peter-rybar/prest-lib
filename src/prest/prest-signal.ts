@@ -1,4 +1,4 @@
-module prest {
+module prest.signal {
 
 	/**
 	 * pREST Signal-Slot pattern module
@@ -6,7 +6,7 @@ module prest {
 
 	interface Slot<T> {
 		id: number;
-		callback: (data?: T) => void;
+		callback: (data?:T) => void;
 		object?: any;
 	}
 
@@ -15,7 +15,7 @@ module prest {
 	 */
 	export class Signal<T> {
 
-		private _slots: Slot<T>[];
+		private _slots:Slot<T>[];
 		private _slotId;
 
 		constructor() {
@@ -28,11 +28,11 @@ module prest {
 //			this.connect(slot);
 //		}
 
-		public connect(callback: (data?: T) => void): number;
+		connect(callback:(data?:T) => void):number;
 
-		public connect(callback: (data?: T) => void, object?: Object): number;
+		connect(callback:(data?:T) => void, object?:Object):number;
 
-		public connect(callback: (data?: any) => void, object?: Object): number {
+		connect(callback:(data?:any) => void, object?:Object):number {
 			var slotId = this._slotId++;
 
 			if (object) {
@@ -54,12 +54,12 @@ module prest {
 		/**
 		 * Disconnects signal
 		 */
-//		public disconnect(): void;
-		public disconnect(slotId?: number): void {
-			var slots: Slot<T>[] = this._slots;
-			var slotsNew: Slot<T>[] = [];
+//		disconnect(): void;
+		disconnect(slotId?:number):void {
+			var slots:Slot<T>[] = this._slots;
+			var slotsNew:Slot<T>[] = [];
 			for (var i = 0; i < slots.length; i++) {
-				var slot: Slot<T> = slots[i];
+				var slot:Slot<T> = slots[i];
 				if (slotId && slot.id !== slotId) {
 					slotsNew.push(slot);
 				}
@@ -72,17 +72,17 @@ module prest {
 		 * signal.emit({any number of parameters}),
 		 * emit returns accumulator.value().
 		 */
-		public emit(): void;
+		emit():void;
 
-		public emit(data?: T): void;
+		emit(data?:T):void;
 
-		public emit(data?: any): void {
-			var slots: Slot<T>[] = this._slots;
+		emit(data?:any):void {
+			var slots:Slot<T>[] = this._slots;
 			for (var i = 0; i < slots.length; i++) {
-				var slot: Slot<T> = slots[i];
-				var object: Object = slot.object;
+				var slot:Slot<T> = slots[i];
+				var object:Object = slot.object;
 				if (object) {
-					var cb: Function = slot.callback;
+					var cb:Function = slot.callback;
 					cb.call(object, data);
 //					cb.apply(object, data);
 //					slot.callback(data);

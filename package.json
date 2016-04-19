@@ -13,7 +13,7 @@
   "keywords": [
     "pREST",
     "javascript",
-    "signal-slot"
+    "pREST, signal-slot, DOM, Hash, HTTP"
   ],
   "author": "Peter Rybar, pr.rybar@gmail.com",
   "license": "GPL3",

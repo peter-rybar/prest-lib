@@ -1,6 +1,8 @@
-/// <reference path="prest.ts" />
+/// <reference path="prest-signal.ts" />
 
 module prest.hash {
+
+	import Signal = prest.signal.Signal;
 
 	export class Hash<T> {
 
@@ -8,7 +10,7 @@ module prest.hash {
 		 * Signal is emitted whenever window.location.hash is changed,
 		 * you can connect on signal with slot in form of: slot(hashData).
 		 */
-		public signalChange: Signal<T>;
+		signalChange:Signal<T>;
 
 		constructor() {
 			this.signalChange = new Signal<T>();
@@ -17,7 +19,7 @@ module prest.hash {
 		/**
 		 * Listen on URL hash fragment changes and emit signalChange
 		 */
-		public emitChanges() {
+		emitChanges() {
 			if ('onhashchange' in window) {
 				window.onhashchange = () => {
 					this.signalChange.emit(this.getHash());
@@ -37,7 +39,7 @@ module prest.hash {
 		/**
 		 * Returns decoded window.location.hash data
 		 */
-		public getHash(): T {
+		getHash():T {
 			var str = window.location.hash.slice(1);
 			return this._deserialize(str);
 		}
@@ -45,12 +47,12 @@ module prest.hash {
 		/**
 		 * Encode data and sets window.location.hash fragment
 		 */
-		public putHash(hashData: T) {
+		putHash(hashData:T) {
 			var str = this._serialize(hashData);
 			window.location.hash = '#' + str;
 		}
 
-		private _serialize(data: T, prefix = ''): string {
+		private _serialize(data:T, prefix = ''):string {
 			var str;
 			if (typeof data != 'object') {
 				str = data;
@@ -81,8 +83,8 @@ module prest.hash {
 			return str;
 		}
 
-		private _deserialize(str: string): T {
-			var data: T = <T>{};
+		private _deserialize(str:string):T {
+			var data:T = <T>{};
 			if (str) {
 				var params = str.split('&');
 				var paramsLength = params.length;
