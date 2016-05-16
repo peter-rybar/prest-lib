@@ -93,11 +93,11 @@ function main() {
         console.log('hash: ' + JSON.stringify(data));
         output.innerHTML += '<br/>' + 'hash: ' + JSON.stringify(data);
     });
-    hash.emitChanges();
-    hash.putHash({aaa: 'aaa'});
+    hash.listenChanges();
+    hash.write({aaa: 'aaa'});
 
     var h = document.getElementById("hash");
     h.onclick = (e:MouseEvent) => {
-        hash.putHash({aaa: new Date().getTime()});
+        hash.write({aaa: new Date().getTime()});
     };
 }

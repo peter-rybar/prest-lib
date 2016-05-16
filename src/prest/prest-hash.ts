@@ -19,10 +19,10 @@ module prest.hash {
         /**
          * Listen on URL hash fragment changes and emit signalChange
          */
-        emitChanges() {
+        listenChanges() {
             if ('onhashchange' in window) {
                 window.onhashchange = () => {
-                    this.signalChange.emit(this.getHash());
+                    this.signalChange.emit(this.read());
                 };
             } else {
                 //prest.log.warning('browser "window.onhashchange" not implemented, running emulation');
@@ -30,7 +30,7 @@ module prest.hash {
                 window.setInterval(() => {
                     if (window.location.hash != prevHash) {
                         prevHash = window.location.hash;
-                        this.signalChange.emit(this.getHash());
+                        this.signalChange.emit(this.read());
                     }
                 }, 500);
             }
@@ -39,7 +39,7 @@ module prest.hash {
         /**
          * Returns decoded window.location.hash data
          */
-        getHash():T {
+        read():T {
             var str = window.location.hash.slice(1);
             return this._deserialize(str);
         }
@@ -47,7 +47,7 @@ module prest.hash {
         /**
          * Encode data and sets window.location.hash fragment
          */
-        putHash(hashData:T) {
+        write(hashData:T) {
             var str = this._serialize(hashData);
             window.location.hash = '#' + str;
         }
