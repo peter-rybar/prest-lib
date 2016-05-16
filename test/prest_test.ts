@@ -12,7 +12,7 @@ import Hash = prest.hash.Hash;
 var s: Signal<string> = new Signal<string>();
 
 var id: number = s.connect((data) => {
-	console.log("data: " + data);
+    console.log("data: " + data);
 });
 // ES5
 //s.slot = (data) => {
@@ -29,26 +29,26 @@ console.log("-------------------------------------");
 
 
 class A {
-	private a = "A.a";
+    private a = "A.a";
 
-	signalNum = new Signal<number>();
-	signalStr = new Signal<string>();
+    signalNum = new Signal<number>();
+    signalStr = new Signal<string>();
 
-	slot(data) {
-		console.log("A.slot() data: '" + this.a + "' " + " " + data);
-	}
+    slot(data) {
+        console.log("A.slot() data: '" + this.a + "' " + " " + data);
+    }
 }
 
 class B {
-	private a = "B.a";
+    private a = "B.a";
 
-	slot = (data) => {
-		console.log("B.slot() data: '" + this.a + "' " + " " + data);
-	}
+    slot = (data) => {
+        console.log("B.slot() data: '" + this.a + "' " + " " + data);
+    }
 }
 
 function slot(data) {
-	console.log("slot() data: '" + this.a + "' " + " " + data);
+    console.log("slot() data: '" + this.a + "' " + " " + data);
 }
 
 var a = new A();
@@ -83,21 +83,21 @@ console.log("DOM");
 prest.dom.signalWindowLoad.connect(main);
 
 function main() {
-	console.log("main()");
+    console.log("main()");
 
-	var output = document.getElementById("output");
-	output.innerHTML = "test";
+    var output = document.getElementById("output");
+    output.innerHTML = "test";
 
-	var hash: Hash<any> = new Hash<any>();
-	hash.signalChange.connect((data) => {
-		console.log('hash: ' + JSON.stringify(data));
-		output.innerHTML += '<br/>' + 'hash: ' + JSON.stringify(data);
-	});
-	hash.emitChanges();
-	hash.putHash({aaa: 'aaa'});
+    var hash: Hash<any> = new Hash<any>();
+    hash.signalChange.connect((data) => {
+        console.log('hash: ' + JSON.stringify(data));
+        output.innerHTML += '<br/>' + 'hash: ' + JSON.stringify(data);
+    });
+    hash.emitChanges();
+    hash.putHash({aaa: 'aaa'});
 
-	var h = document.getElementById("hash");
-	h.onclick = (e:MouseEvent) => {
-		hash.putHash({aaa: new Date().getTime()});
-	};
+    var h = document.getElementById("hash");
+    h.onclick = (e:MouseEvent) => {
+        hash.putHash({aaa: new Date().getTime()});
+    };
 }
