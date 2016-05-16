@@ -24,7 +24,7 @@ module prest.signal {
         }
 
         // ES5
-        //set slot(slot: (data?: T) => void) {
+        //set slot(slot:(data?:T) => void) {
         //    this.connect(slot);
         //}
 
@@ -50,7 +50,7 @@ module prest.signal {
         }
 
         /**
-         * Disconnects signal
+         * Disconnects slot
          */
         //disconnect(): void;
         disconnect(slotId?:number):void {
@@ -66,14 +66,19 @@ module prest.signal {
         }
 
         /**
+         * Disconnects all slots
+         */
+        disconnectAll():void {
+            this._slots = [];
+        }
+
+        /**
          * Emits signal, you can start it in the way:
          * signal.emit({any number of parameters}),
          * emit returns accumulator.value().
          */
         emit():void;
-
         emit(data?:T):void;
-
         emit(data?:any):void {
             var slots:Slot<T>[] = this._slots;
             for (var i = 0; i < slots.length; i++) {
