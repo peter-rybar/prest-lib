@@ -1,6 +1,7 @@
 ///<reference path="../src/prest/prest-signal.ts" />
 /// <reference path="../src/prest/prest-hash.ts" />
 /// <reference path="../src/prest/prest-dom.ts" />
+/// <reference path="../src/prest/prest-http.ts" />
 
 import Signal = prest.signal.Signal;
 import Hash = prest.hash.Hash;
@@ -9,9 +10,9 @@ import Hash = prest.hash.Hash;
 //-----------------------------------------------------------------------------
 // test signals
 
-var s: Signal<string> = new Signal<string>();
+var s:Signal<string> = new Signal<string>();
 
-var id: number = s.connect((data) => {
+var id:number = s.connect((data) => {
     console.log("data: " + data);
 });
 // ES5
@@ -88,16 +89,27 @@ function main() {
     var output = document.getElementById("output");
     output.innerHTML = "test";
 
-    var hash: Hash<any> = new Hash<any>();
-    hash.signalChange.connect((data) => {
+    var hash:Hash<any> = new Hash<any>();
+    hash.onChange((data) => {
         console.log('hash: ' + JSON.stringify(data));
         output.innerHTML += '<br/>' + 'hash: ' + JSON.stringify(data);
     });
-    hash.listenChanges();
     hash.write({aaa: 'aaa'});
 
-    var h = document.getElementById("hash");
+    var h:HTMLElement = document.getElementById("hash");
     h.onclick = (e:MouseEvent) => {
         hash.write({aaa: new Date().getTime()});
     };
+
+    new prest.http.HttpRequest()
+        .url('https://maps.googleapis.com/maps/api/geocode/json',
+             {sensor: false, address: 'Bratislava', xxx: ['yyy', 'zzz']})
+        .method('GET')
+        .onResponse((response:prest.http.HttpResponse) => {
+            console.log("response: " + response.getContentType(), response.getJson());
+        })
+        .onError((error) => {
+            console.log("response error: ", error);
+        })
+        .send();
 }

@@ -1,36 +1,27 @@
-/// <reference path="prest-signal.ts" />
-
 module prest.hash {
-
-    import Signal = prest.signal.Signal;
 
     export class Hash<T> {
 
-        /**
-         * Signal is emitted whenever window.location.hash is changed,
-         * you can connect on signal with slot in form of: slot(hashData).
-         */
-        signalChange:Signal<T>;
-
-        constructor() {
-            this.signalChange = new Signal<T>();
-        }
+        private _listenIntervalId:any;
 
         /**
-         * Listen on URL hash fragment changes and emit signalChange
+         * Listen on URL hash fragment changes
          */
-        listenChanges() {
+        onChange(callback:(hashData:T) => void) {
             if ('onhashchange' in window) {
                 window.onhashchange = () => {
-                    this.signalChange.emit(this.read());
+                    callback(this.read());
                 };
             } else {
                 //prest.log.warning('browser "window.onhashchange" not implemented, running emulation');
                 var prevHash = window.location.hash;
-                window.setInterval(() => {
+                if (this._listenIntervalId) {
+                    window.clearInterval(this._listenIntervalId);
+                }
+                this._listenIntervalId = window.setInterval(() => {
                     if (window.location.hash != prevHash) {
                         prevHash = window.location.hash;
-                        this.signalChange.emit(this.read());
+                        callback(this.read());
                     }
                 }, 500);
             }
