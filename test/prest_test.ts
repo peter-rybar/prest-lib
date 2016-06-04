@@ -1,6 +1,7 @@
 ///<reference path="../src/prest/prest-signal.ts" />
 /// <reference path="../src/prest/prest-hash.ts" />
 /// <reference path="../src/prest/prest-http.ts" />
+/// <reference path="../src/prest/prest-encode.ts" />
 
 import Signal = prest.signal.Signal;
 import Hash = prest.hash.Hash;
@@ -92,6 +93,16 @@ function main() {
         console.log('hash: ' + JSON.stringify(data));
         output.innerHTML += '<br/>' + 'hash: ' + JSON.stringify(data);
     });
+    hash.setEncoder((data) => {
+        return prest.encode.UrlEncodedData.encode(data);
+        //return prest.encode.Base64.encode(
+        //    prest.encode.UrlEncodedData.encode(data));
+    });
+    hash.setDecoder((str) => {
+        return prest.encode.UrlEncodedData.decode(str);
+        //return prest.encode.UrlEncodedData.decode(
+        //    prest.encode.Base64.decode(str));
+    });
     hash.write({aaa: 'aaa'});
 
     var h:HTMLElement = document.getElementById("hash");
@@ -121,4 +132,19 @@ function main() {
                 console.log("response: " + res.getContentType(), res.getJson());
             }
         });
+
+    // UrlEncodedData
+    var data = {text: 'Hello World!', num: 5, a:[1, 2, '33']};
+    var encodedData = prest.encode.UrlEncodedData.encode(data);
+    console.log('UrlEncodedData: ' + encodedData, encodedData == "text=Hello%20World!&num=5&a=1&a=2&a=33");
+    var decodedData = prest.encode.UrlEncodedData.decode(encodedData);
+    console.log('UrlEncodedData: ' + JSON.stringify(decodedData), JSON.stringify(decodedData) == '{"text":"Hello World!","num":"5","a":["1","2","33"]}');
+
+    // Base64
+    var string = 'Hello World!';
+    var encodedString = prest.encode.Base64.encode(string);
+    console.log('Base64: ' + encodedString, encodedString == "SGVsbG8gV29ybGQh");
+    var decodedString = prest.encode.Base64.decode(encodedString);
+    console.log('Base64: ' + decodedString, decodedString == "Hello World!");
+
 }

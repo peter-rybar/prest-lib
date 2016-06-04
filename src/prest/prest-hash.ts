@@ -4,6 +4,9 @@ module prest.hash {
 
         private _listenIntervalId:any;
 
+        private _encoder = (data:T) => { return JSON.stringify(data); };
+        private _decoder = (string:string) => { return JSON.parse(string); };
+
         /**
          * Listen on URL hash fragment changes
          */
@@ -27,91 +30,28 @@ module prest.hash {
             }
         }
 
+        setEncoder(encoder:(data:T) => string) {
+            this._encoder = encoder;
+        }
+
+        setDecoder(decoder:(string:string) => T) {
+            this._decoder = decoder;
+        }
+
         /**
          * Returns decoded window.location.hash data
          */
         read():T {
             var str = window.location.hash.slice(1);
-            return this._deserialize(str);
+            return this._decoder(str);
         }
 
         /**
          * Encode data and sets window.location.hash fragment
          */
         write(hashData:T) {
-            var str = this._serialize(hashData);
+            var str = this._encoder(hashData);
             window.location.hash = '#' + str;
-        }
-
-        private _serialize(data:T, prefix=''):string {
-            var str;
-            if (typeof data != 'object') {
-                str = data;
-            } else {
-                var params = [];
-                var size = 0;
-                for (var key in data) {
-                    var value = data[key];
-                    if (!(value instanceof Array)) {
-                        value = [value];
-                    }
-                    var valueLength = value.length;
-                    for (var i = 0; i < valueLength; i++) {
-                        var val = value[i];
-                        if ((typeof val == 'object') && (val != null)) {
-                            params[size++] = arguments.callee(val, prefix + key + '.');
-                        } else { // list
-                            params[size] = encodeURIComponent(prefix + key);
-                            if (val != null) {
-                                params[size] += '=' + encodeURIComponent(val);
-                            }
-                            size++;
-                        }
-                    }
-                }
-                str = params.join('&');
-            }
-            return str;
-        }
-
-        private _deserialize(str:string):T {
-            var data:T = <T>{};
-            if (str) {
-                var params = str.split('&');
-                var paramsLength = params.length;
-                for (var j = 0; j < paramsLength; j++) {
-                    var parameter = params[j].split('=');
-                    var key = decodeURIComponent(parameter[0]);
-                    if (parameter.length > 1) {
-                        var value = decodeURIComponent(parameter[1]);
-                        var obj = data;
-                        var path = key.split('.');
-                        var size = path.length;
-                        for (var i = 0; i < size; i++) {
-                            var property = path[i];
-                            var o = obj[property];
-                            if (i == (size - 1)) { // list
-                                if (!o) {
-                                    obj[property] = value;
-                                } else if (o instanceof Array) {
-                                    obj[property].push(value);
-                                } else { // create array
-                                    obj[property] = [o];
-                                    obj[property][1] = value;
-                                }
-                            } else {
-                                if (!o) {
-                                    obj[property] = {};
-                                }
-                                obj = obj[property];
-                            }
-                        }
-                    } else {
-                        data[key] = null;
-                    }
-                }
-            }
-            return data;
         }
 
     }
