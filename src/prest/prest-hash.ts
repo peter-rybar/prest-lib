@@ -43,7 +43,7 @@ module prest.hash {
             window.location.hash = '#' + str;
         }
 
-        private _serialize(data:T, prefix = ''):string {
+        private _serialize(data:T, prefix=''):string {
             var str;
             if (typeof data != 'object') {
                 str = data;

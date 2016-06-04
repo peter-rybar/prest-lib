@@ -1,147 +1,120 @@
 module.exports = function (grunt) {
 
-	grunt.initConfig({
+    grunt.initConfig({
 
-		pkg: grunt.file.readJSON('package.json'),
+        pkg: grunt.file.readJSON('package.json'),
 
-		//typescript: {
-		//	base: {
-		//		src: ['src/**/*.ts'],
-		//		dest: 'dist/js',
-		//		options: {
-		//			module: 'amd', // amd or commonjs
-		//			target: 'es3', // es3 or es5
-		//			basePath: 'src',
-		//			sourceMap: true,
-		//			declaration: true
-		//			//watch: {
-		//			//	path: 'src',
-		//			//	before: ['beforetasks'],   // Set before tasks. eg: clean task
-		//			//	after: ['aftertasks']      // Set after tasks.  eg: minify task
-		//			//	atBegin: true              // Run tasks when watcher starts. default false
-		//			//}
-		//			//references: [
-		//			//	"core",       //lib.core.d.ts
-		//			//	"dom",        //lib.dom.d.ts
-		//			//	"scriptHost", //lib.scriptHost.d.ts
-		//			//	"webworker",  //lib.webworker.d.ts
-		//			//	"path/to/reference/files/**/*.d.ts"
-		//			//]
-		//		}
-		//	}
-		//},
+        ts: {
+            default: {
+                //html: ["src/**/*.html"],
+                src: ["src/**/*.ts"],
+                out: "dist/<%= pkg.name %>-<%= pkg.version %>/<%= pkg.name %>.js",
+                //target: "es3",
+                verbose: true,
+                //watch: "src",
+                options: {
+                    declaration: true
+                }
+            },
+            test: {
+                src: ["test/**/*.ts"]
+            },
+            dev: {
+                html: ["src/**/*.html"],
+                src:  ["src/**/*.ts", "test/**/*.ts"],
+                //target: "es3",
+                verbose: true
+                //watch: "./"
+            }
+        },
 
-		ts: {
-			default: {
-				html: ["src/**/*.html"],
-				src: ["src/**/*.ts"],
-				out: "dist/<%= pkg.name %>.js",
-				//target: "es3",
-				verbose: true,
-				//watch: "src",
-				options: {
-					declaration: true
-				}
-			},
-			dev: {
-				html: ["src/**/*.html"],
-				src: ["src/**/*.ts"],
-				//target: "es3",
-				verbose: true,
-				watch: "./"
-			}
-		},
+        uglify: {
+            options: {
+                banner: '/*! <%= pkg.name %>-<%= pkg.version %> - <%= grunt.template.today("yyyy-mm-dd HH:MM") %> - <%= pkg.author %> */\n'
+            },
+            dist: {
+                //expand: false,
+                //cwd: 'src',
+                //src: 'src/**/*.js',
+                src:  'dist/<%= pkg.name %>-<%= pkg.version %>/<%= pkg.name %>.js',
+                dest: 'dist/<%= pkg.name %>-<%= pkg.version %>/<%= pkg.name %>.min.js'
+            }
+        },
 
-		uglify: {
-			options: {
-				banner: '/*! <%= pkg.name %> <%= grunt.template.today("yyyy-mm-dd") %> */\n'
-			},
-			dist: {
-				//expand: false,
-				//cwd: 'src',
-				//src: 'src/**/*.js',
-				src: 'dist/<%= pkg.name %>.js',
-				dest: 'dist/<%= pkg.name %>.min.js'
-			}
-		},
+        markdown: {
+            all: {
+                files: [
+                    {
+                        expand: true,
+                        cwd: 'docs/markdown',
+                        src: '*.md',
+                        dest: 'docs/html/',
+                        ext: '.html'
+                    }
+                ]
+            }
+        },
 
-		//bower: {
-		//	dev: {
-		//		dest: 'dist/',
-		//		js_dest: 'dist/js/',
-		//		css_dest: 'dist/css',
-		//		options: {
-		//			expand: true,
-		//			packageSpecific: {
-		//				bootstrap: {
-		//					dest: 'dist/fonts',
-		//					css_dest: 'dist/css/bootstrap'
-		//				}
-		//			}
-		//		}
-		//	}
-		//},
+        markdownpdf: {
+            options: {
+                //concat: true
+            },
+            files: {
+                src:  "docs/markdown/*.md",
+                dest: "docs/pdf"
+            }
+        },
 
-		markdown: {
-			all: {
-				files: [
-					{
-						expand: true,
-						cwd: 'docs/markdown',
-						src: '*.md',
-						dest: 'docs/html/',
-						ext: '.html'
-					}
-				]
-			}
-		},
+        clean: [
+            "src/**/*.js",
+            "src/**/*.js.map",
+            "test/**/*.js",
+            "test/**/*.js.map",
+            "dist/*",
+            "docs/html",
+            "docs/pdf",
+            "node_modules",
+            "typings/**",
+            ".tscache/"
+        ],
 
-		markdownpdf: {
-			options: {
-				//concat: true
-			},
-			files: {
-				src: "docs/markdown/*.md",
-				dest: "docs/pdf"
-			}
-		},
+        'string-replace': {
+            version: {
+                files: {
+                    'dist/<%= pkg.name %>-<%= pkg.version %>/<%= pkg.name %>.js':
+                        "dist/<%= pkg.name %>-<%= pkg.version %>/<%= pkg.name %>.js"
+                },
+                options: {
+                    replacements: [{
+                        pattern: /PKG_VERSION/g,
+                        replacement: '<%= pkg.version %>'
+                    }]
+                }
+            }
+        }
+    });
 
-		clean: [
-			"src/**/*.js",
-			"src/**/*.js.map",
-			"test/**/*.js",
-			"test/**/*.js.map",
-			"dist/**/*",
-			"docs/html",
-			"docs/pdf",
-			"node_modules",
-			"bower_components",
-			".tscache/"
-		]
+    grunt.loadNpmTasks("grunt-ts");
 
-	});
+    // Load the plugin that provides the "uglify" task.
+    grunt.loadNpmTasks('grunt-contrib-uglify');
 
-	//grunt.loadNpmTasks('grunt-typescript');
-	grunt.loadNpmTasks("grunt-ts");
+    grunt.loadNpmTasks('grunt-markdown');
+    grunt.loadNpmTasks('grunt-markdown-pdf');
 
-	// Load the plugin that provides the "uglify" task.
-	grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-contrib-clean');
 
-	//grunt.loadNpmTasks('grunt-bower');
+    grunt.loadNpmTasks('grunt-string-replace');
 
-	grunt.loadNpmTasks('grunt-markdown');
-	grunt.loadNpmTasks('grunt-markdown-pdf');
-
-	grunt.loadNpmTasks('grunt-contrib-clean');
-
-	// Default task(s).
-	grunt.registerTask('default', [
-		'ts:default',
-		//'typescript',
-		//'bower',
-		'uglify',
-		'markdown',
-		'markdownpdf'
-	]);
+    // Default task(s).
+    grunt.registerTask('default', [
+        'ts:default',
+        'ts:dev',
+        'ts:test',
+        'string-replace:version',
+        'uglify',
+        'markdown',
+        'markdownpdf'
+    ]);
 
 };

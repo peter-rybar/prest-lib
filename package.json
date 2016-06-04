@@ -1,32 +1,32 @@
 {
-  "name": "prest",
-  "version": "0.0.0",
-  "description": "pREST js",
-  "main": "index.js",
-  "scripts": {
-    "test": "test"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git://localhost/prestjs"
-  },
-  "keywords": [
-    "pREST",
-    "javascript",
-    "pREST, signal-slot, DOM, Hash, HTTP"
-  ],
-  "author": "Peter Rybar, pr.rybar@gmail.com",
-  "license": "GPL3",
-  "devDependencies": {
-    "bower": "^1.3.8",
-    "grunt": "^0.4.5",
-    "grunt-bower": "^0.13.4",
-    "grunt-contrib-clean": "^0.6.0",
-    "grunt-contrib-uglify": "^0.5.1",
-    "grunt-markdown": "^0.6.1",
-    "grunt-markdown-pdf": "^2.1.1",
-    "grunt-ts": "^1.11.6",
-    "grunt-typescript": "^0.3.8",
-    "typescript": "^1.0.1"
-  }
+    "name": "prest",
+    "version": "0.0.0",
+    "description": "pREST js",
+    "main": "index.js",
+    "scripts": {
+        "test": "test"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git://localhost/prestjs"
+    },
+    "keywords": [
+        "pREST",
+        "javascript",
+        "pREST, signal-slot, DOM, Hash, HTTP"
+    ],
+    "author": "Peter Rybar, pr.rybar@gmail.com",
+    "license": "GPL3",
+    "devDependencies": {
+        "grunt": "^0.4.5",
+        "grunt-cli": "^0.1.13",
+        "grunt-contrib-clean": "^0.6.0",
+        "grunt-contrib-uglify": "^0.5.1",
+        "grunt-markdown": "^0.7.0",
+        "grunt-markdown-pdf": "^2.1.1",
+        "grunt-ts": "^1.11.6",
+        "grunt-string-replace": "^1.2.1",
+        "grunt-tsd": "^0.2.0-beta.1",
+        "typescript": "^1.0.1"
+    }
 }

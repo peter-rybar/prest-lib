@@ -1,6 +1,5 @@
 ///<reference path="../src/prest/prest-signal.ts" />
 /// <reference path="../src/prest/prest-hash.ts" />
-/// <reference path="../src/prest/prest-dom.ts" />
 /// <reference path="../src/prest/prest-http.ts" />
 
 import Signal = prest.signal.Signal;
@@ -17,7 +16,7 @@ var id:number = s.connect((data) => {
 });
 // ES5
 //s.slot = (data) => {
-//	console.log("slot data: " + data);
+//    console.log("slot data: " + data);
 //};
 
 s.emit("emittt");
@@ -80,8 +79,7 @@ a.signalStr.emit("str");
 
 console.log("DOM");
 
-//window.onload = main;
-prest.dom.signalWindowLoad.connect(main);
+window.onload = main;
 
 function main() {
     console.log("main()");
