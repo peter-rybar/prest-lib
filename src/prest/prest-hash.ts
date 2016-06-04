@@ -10,7 +10,7 @@ module prest.hash {
         /**
          * Listen on URL hash fragment changes
          */
-        onChange(callback:(hashData:T) => void) {
+        onChange(callback:(hashData:T) => void):Hash<T> {
             if ('onhashchange' in window) {
                 window.onhashchange = () => {
                     callback(this.read());
@@ -28,14 +28,17 @@ module prest.hash {
                     }
                 }, 500);
             }
+            return this;
         }
 
-        setEncoder(encoder:(data:T) => string) {
+        setEncoder(encoder:(data:T) => string):Hash<T> {
             this._encoder = encoder;
+            return this;
         }
 
-        setDecoder(decoder:(string:string) => T) {
+        setDecoder(decoder:(string:string) => T):Hash<T> {
             this._decoder = decoder;
+            return this;
         }
 
         /**

@@ -89,10 +89,6 @@ function main() {
     output.innerHTML = "test";
 
     var hash:Hash<any> = new Hash<any>();
-    hash.onChange((data) => {
-        console.log('hash: ' + JSON.stringify(data));
-        output.innerHTML += '<br/>' + 'hash: ' + JSON.stringify(data);
-    });
     hash.setEncoder((data) => {
         return prest.encode.UrlEncodedData.encode(data);
         //return prest.encode.Base64.encode(
@@ -102,6 +98,10 @@ function main() {
         return prest.encode.UrlEncodedData.decode(str);
         //return prest.encode.UrlEncodedData.decode(
         //    prest.encode.Base64.decode(str));
+    });
+    hash.onChange((data) => {
+        console.log('hash: ' + JSON.stringify(data));
+        output.innerHTML += '<br/>' + 'hash: ' + JSON.stringify(data);
     });
     hash.write({aaa: 'aaa'});
 
