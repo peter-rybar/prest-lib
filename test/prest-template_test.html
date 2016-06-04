@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=utf-8"/>
+    <meta http-equiv="content-language" content="en" />
+
+    <title>prest test</title>
+</head>
+<body>
+
+<h1>pREST template test</h1>
+
+<script type="text/html" id="item-tmpl">
+    <div id="[%= id %]" class="[%= (i % 2 == 1 ? ' even' : '') %]">
+        <div class="grid_1 alpha right">
+            <img class="righted" height="100" src="[%= profile_image_url %]"/>
+        </div>
+        <div class="grid_6 omega contents">
+            <p>
+                <strong>
+                    <a href="/[%= from_user %]">[%= from_user %]</a>:
+                </strong>
+                [%= text %]
+            </p>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="user-tmpl">
+    [% for (var i = 0; i < users.length; i++) { %]
+    <li><a href="[%= users[i].url %]">[%= users[i].name %]</a></li>
+    [% } %]
+</script>
+
+<script type="text/javascript" src="../src/prest/prest-template.js"></script>
+
+<div id="results" style="border: 1px solid red"></div>
+
+<script type="text/javascript">
+    var tmpl = prest.template.tmpl;
+
+    var results = document.getElementById("results");
+
+    var data = {};
+    data.from_user = "from_user";
+    data.profile_image_url = "http://www.gettyimages.ca/gi-resources/images/Homepage/Hero/UK/CMS_Creative_164657191_Kingfisher.jpg";
+    data.id = "id";
+    data.text = "text";
+
+    results.innerHTML = tmpl("item-tmpl", data);
+
+    results.innerHTML += "<hr />";
+
+    var xusers = [
+        {'url': 'url', 'name': 'name'},
+        {'url': 'url1', 'name': 'name1'},
+        {'url': 'url2', 'name': 'name2'}
+    ];
+
+    var show_user = tmpl("user-tmpl");
+    var html = "";
+    for ( var i = 0; i < xusers.length; i++ ) {
+        html += show_user({'users': [xusers[i]]});
+    }
+    results.innerHTML += html;
+
+    results.innerHTML += "<hr />";
+
+    results.innerHTML += tmpl("user-tmpl", {'users': xusers});
+</script>
+
+</body>
+</html>
