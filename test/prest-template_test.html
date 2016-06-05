@@ -30,13 +30,18 @@
     <li><a href="[%= users[i].url %]">[%= users[i].name %]</a></li>
     [% } %]
 </script>
+<script type="text/html" id="hello-tmpl">
+    Hello ${name}, greeting from template!
+</script>
 
 <script type="text/javascript" src="../src/prest/prest-template.js"></script>
 
 <div id="results" style="border: 1px solid red"></div>
 
+<div id="container"></div>
+
 <script type="text/javascript">
-    var tmpl = prest.template.tmpl;
+    var tempate = prest.template.template;
 
     var results = document.getElementById("results");
 
@@ -46,7 +51,7 @@
     data.id = "id";
     data.text = "text";
 
-    results.innerHTML = tmpl("item-tmpl", data);
+    results.innerHTML = tempate("item-tmpl", data);
 
     results.innerHTML += "<hr />";
 
@@ -56,16 +61,29 @@
         {'url': 'url2', 'name': 'name2'}
     ];
 
-    var show_user = tmpl("user-tmpl");
+    var usersTemplate = tempate("user-tmpl");
     var html = "";
-    for ( var i = 0; i < xusers.length; i++ ) {
-        html += show_user({'users': [xusers[i]]});
+    for (var i = 0; i < xusers.length; i++) {
+        html += usersTemplate({'users': [xusers[i]]});
     }
     results.innerHTML += html;
 
     results.innerHTML += "<hr />";
 
-    results.innerHTML += tmpl("user-tmpl", {'users': xusers});
+    results.innerHTML += tempate("user-tmpl", {'users': xusers});
+
+    // simple template
+    var tmpl = prest.template.tmpl;
+
+    document.getElementById('container').innerHTML += tmpl('test1 ${1 + 2} test2 ${3 + 4}', {});
+    document.getElementById('container').innerHTML += '<br/>';
+    document.getElementById('container').innerHTML += tmpl('Hello ${name}!', {name: 'Andrea'});
+    document.getElementById('container').innerHTML += '<br/>';
+
+    var helloTmpl = tmpl('hello-tmpl');
+    document.getElementById('container').innerHTML += helloTmpl({name: 'Andrea'});
+    document.getElementById('container').innerHTML += '<br/>';
+    document.getElementById('container').innerHTML += helloTmpl({name: 'Peter'});
 </script>
 
 </body>
