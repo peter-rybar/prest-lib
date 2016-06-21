@@ -6,37 +6,47 @@
 </head>
 <body>
 
+<h1>pREST form test</h1>
+
 <form id="form" action="">
-    <label>
-        First name:
-        <input id="firstname" type="text" name="firstname" value="">
-        <span id="firstname-err"></span>
-    </label>
-    <br>
-    <label>
-        Last name:
-        <input id="lastname" type="text" name="lastname" value="">
-        <span id="lastname-err"></span>
-    </label>
-    <br>
-    <label>
-        Sex:
-        <select id="sex" name="sex">
-            <option value=""></option>
-            <option value="M">Male</option>
-            <option value="F">Female</option>
-        </select>
-        <span id="sex-err"></span>
-    </label>
-    <br>
-    <input type="submit" value="Submit">
+    <p>
+        <label>
+            First name:
+            <input id="firstname" type="text" name="firstname" value="">
+            <span id="firstname-err"></span>
+        </label>
+    </p>
+    <p>
+        <label>
+            Last name:
+            <input id="lastname" type="text" name="lastname" value="">
+            <span id="lastname-err"></span>
+        </label>
+    </p>
+    <p>
+        <label>
+            Sex:
+            <select id="sex" name="sex">
+                <option value=""></option>
+                <option value="M">Male</option>
+                <option value="F">Female</option>
+            </select>
+            <span id="sex-err"></span>
+        </label>
+    </p>
+    <p>
+        <input type="submit" value="Submit">
+    </p>
 </form>
 
-change:
-<span id="change"></span>
-<br>
-values:
-<span id="values"></span>
+<p>
+    change:
+    <span id="change"></span>
+</p>
+<p>
+    values:
+    <span id="values"></span>
+</p>
 
 <script src="../src/prest/prest-form.js"></script>
 <script src="prest-form_test.js"></script>
