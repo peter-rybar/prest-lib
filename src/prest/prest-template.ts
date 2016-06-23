@@ -108,11 +108,11 @@ module prest.template {
                     // Convert the template into pure JavaScript
                 templateOrId
                     .replace(/[\r\t\n]/g, " ")
-                    .split("[%").join("\t")
-                    .replace(/((^|%])[^\t]*)'/g, "$1\r")
-                    .replace(/\t=(.*?)%]/g, "',$1,'")
+                    .split("<%").join("\t")
+                    .replace(/((^|%>)[^\t]*)'/g, "$1\r")
+                    .replace(/\t=(.*?)%\>/g, "',$1,'")
                     .split("\t").join("');")
-                    .split("%]").join("p.push('")
+                    .split("%>").join("\np.push('")
                     .split("\r").join("\\'")
                 + "');}return p.join('');");
         // Provide some basic currying to the user
