@@ -25,6 +25,14 @@ window.onload = () => {
             .setValue('M')
             .setValidator(emptyValueValidator)
             .onChange(showChange))
+        .addEntry(new prest.form.CheckboxEntry('agree')
+            .setValue(true.toString())
+            .setValidator(emptyValueValidator)
+            .onChange(showChange))
+        .addEntry(new prest.form.RadioEntry(['yes-no-y', 'yes-no-n'])
+            .setValue('n')
+            .setValidator(emptyValueValidator)
+            .onChange(showChange))
         .onSubmit(() => {
             var errors = f.validate('sk');
             for (var error in errors) {

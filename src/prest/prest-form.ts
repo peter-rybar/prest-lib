@@ -63,6 +63,59 @@ module prest.form {
     }
 
 
+    export class CheckboxEntry implements Entry {
+
+        private _container:HTMLInputElement;
+        private _validator:(value:string, locale:string)=>string;
+        private _onChange:(value:boolean)=>void;
+
+        constructor(container:HTMLInputElement|string) {
+            if (typeof container === "string") {
+                this._container = <HTMLInputElement>document.getElementById(container);
+            } else {
+                this._container = container;
+            }
+            var self = this;
+            this._container.addEventListener("change", (e) => {
+                if (self._onChange) {
+                    self._onChange(self._container.checked);
+                }
+            });
+        }
+
+        getName():string {
+            return this._container.name;
+        }
+
+        getValue():string {
+            return this._container.checked.toString();
+        }
+
+        setValue(value:string):Entry {
+            this._container.checked = (value && value != 'false') ? true : false;
+            return this;
+        }
+
+        validate(locale?:string):Object {
+            if (this._validator) {
+                return this._validator(this.getValue(), locale);
+            }
+            return '';
+        }
+
+        setValidator(validator:(value:string, locale?:string)=>string):Entry {
+            this._validator = validator;
+            return this;
+        }
+
+        onChange(callback:(value)=>void):Entry {
+            this._onChange = callback;
+            return this;
+        }
+
+    }
+
+
     export class SelectEntry implements Entry {
 
         private _container:HTMLSelectElement;
@@ -94,6 +147,73 @@ module prest.form {
 
         setValue(value:string):Entry {
             this._container.value = value;
+            return this;
+        }
+
+        validate(locale?:string):Object {
+            if (this._validator) {
+                return this._validator(this.getValue(), locale);
+            }
+            return '';
+        }
+
+        setValidator(validator:(value:string, locale?:string)=>string):Entry {
+            this._validator = validator;
+            return this;
+        }
+
+        onChange(callback:(value)=>void):Entry {
+            this._onChange = callback;
+            return this;
+        }
+
+    }
+
+
+    export class RadioEntry implements Entry {
+
+        private _containers:HTMLInputElement[] = [];
+        private _validator:(value:string, locale:string)=>string;
+        private _onChange:(value:string)=>void;
+
+        constructor(containers:HTMLInputElement[]|string[]) {
+            var self = this;
+            (<any>containers).forEach((c) => {
+                if (typeof c === "string") {
+                    this._containers.push(
+                        <HTMLInputElement>document.getElementById(c));
+                } else {
+                    this._containers.push(c);
+                }
+            });
+            this._containers.forEach((c) => {
+                c.addEventListener("change", (e) => {
+                    if (self._onChange && c.checked) {
+                        self._onChange(c.value);
+                    }
+                });
+            });
+        }
+
+        getName():string {
+            return this._containers[0].name;
+        }
+
+        getValue():string {
+            for (var c of this._containers) {
+                if (c.checked) {
+                    return c.value;
+                }
+            }
+            return null;
+        }
+
+        setValue(value:string):Entry {
+            for (var c of this._containers) {
+                if (c.value == value) {
+                    c.checked = true;
+                }
+            }
             return this;
         }
 
