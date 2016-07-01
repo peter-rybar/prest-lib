@@ -272,6 +272,15 @@ module prest.form {
             return this._formEntries;
         }
 
+        getEntry(name:string):Entry {
+            for (var entry of this._formEntries) {
+                if (entry.getName() == name) {
+                    return entry;
+                }
+            }
+            return null;
+        }
+
         validate(locale?:string):Object {
             var errors = {};
             for (var entry of this._formEntries) {
