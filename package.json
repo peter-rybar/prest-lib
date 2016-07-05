@@ -4,6 +4,7 @@
     "description": "pREST js",
     "main": "index.js",
     "scripts": {
+        "start": "grunt",
         "test": "test"
     },
     "repository": {

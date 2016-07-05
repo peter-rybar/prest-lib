@@ -16,11 +16,13 @@ module prest.signal {
     export class Signal<T> {
 
         private _slots:Slot<T>[];
-        private _slotId;
+        private _slotId:number;
+        private _emit:boolean;
 
         constructor() {
             this._slots = [];
             this._slotId = 0;
+            this._emit = true;
         }
 
         // ES5
@@ -72,6 +74,14 @@ module prest.signal {
             this._slots = [];
         }
 
+        freeze():void {
+            this._emit = false;
+        }
+
+        unfreeze():void {
+            this._emit = true;
+        }
+
         /**
          * Emits signal, you can start it in the way:
          * signal.emit({any number of parameters}),
@@ -80,17 +90,19 @@ module prest.signal {
         emit():void;
         emit(data?:T):void;
         emit(data?:any):void {
-            var slots:Slot<T>[] = this._slots;
-            for (var i = 0; i < slots.length; i++) {
-                var slot:Slot<T> = slots[i];
-                var object:Object = slot.object;
-                if (object) {
-                    var cb:Function = slot.callback;
-                    cb.call(object, data);
-                    //cb.apply(object, data);
-                    //slot.callback(data);
-                } else {
-                    slot.callback(data);
+            if (this._emit) {
+                var slots:Slot<T>[] = this._slots;
+                for (var i = 0; i < slots.length; i++) {
+                    var slot:Slot<T> = slots[i];
+                    var object:Object = slot.object;
+                    if (object) {
+                        var cb:Function = slot.callback;
+                        cb.call(object, data);
+                        //cb.apply(object, data);
+                        //slot.callback(data);
+                    } else {
+                        slot.callback(data);
+                    }
                 }
             }
         }

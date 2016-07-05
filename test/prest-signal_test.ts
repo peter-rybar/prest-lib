@@ -66,3 +66,9 @@ a.signalStr.connect(a.slot, a);
 //a.signalStr.slot = slot; // ES5
 
 a.signalStr.emit("str");
+console.log("freeze");
+a.signalStr.freeze();
+a.signalStr.emit("str");
+console.log("unfreeze");
+a.signalStr.unfreeze();
+a.signalStr.emit("str");
