@@ -10,46 +10,29 @@
 
 <form id="form" action="">
     <p>
-        <label>
-            First name:
-            <input id="firstname" type="text" name="firstname" value="">
-            <span id="firstname-err"></span>
-        </label>
+        <label for="name">Name:</label>
+        <input id="name" type="text" name="name" value="">
+        <span id="name-err"></span>
     </p>
     <p>
-        <label>
-            Last name:
-            <input id="lastname" type="text" name="lastname" value="">
-            <span id="lastname-err"></span>
-        </label>
+        <label for="sex">Sex:</label>
+        <select id="sex" name="sex">
+            <option value=""></option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+        </select>
+        <span id="sex-err"></span>
     </p>
     <p>
-        <label>
-            Sex:
-            <select id="sex" name="sex">
-                <option value=""></option>
-                <option value="M">Male</option>
-                <option value="F">Female</option>
-            </select>
-            <span id="sex-err"></span>
-        </label>
+        <label for="agree">Agreement:</label>
+        <input id="agree" type="checkbox" name="agree">
+        <span id="agree-err"></span>
     </p>
     <p>
-        <label>
-            Agreement:
-            <input id="agree" type="checkbox" name="agree">
-            <span id="agree-err"></span>
-        </label>
-    </p>
-    <p>
-        <label>
-            yes
-            <input id="yes-no-y" type="radio" name="yes-no" value="y">
-        </label>
-        <label>
-            no
-            <input id="yes-no-n" type="radio" name="yes-no" value="n">
-        </label>
+        <label for="yes-no-y">yes</label>
+        <input id="yes-no-y" type="radio" name="yes-no" value="y">
+        <label for="yes-no-n">no</label>
+        <input id="yes-no-n" type="radio" name="yes-no" value="n">
         <span id="yes-no-err"></span>
     </p>
     <p>

@@ -14,11 +14,8 @@ window.onload = () => {
     };
 
     var f = new prest.form.Form('form')
-        .addEntry(new prest.form.InputEntry('firstname')
+        .addEntry(new prest.form.InputEntry('name')
             .setValue('Peter')
-            .setValidator(emptyValueValidator)
-            .onChange(showChange))
-        .addEntry(new prest.form.InputEntry('lastname')
             .setValidator(emptyValueValidator)
             .onChange(showChange))
         .addEntry(new prest.form.SelectEntry('sex')
