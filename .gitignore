@@ -18,3 +18,5 @@ src/**/*.jsx
 test/**/*.js
 test/**/*.map
 test/**/*.jsx
+
+typings/*

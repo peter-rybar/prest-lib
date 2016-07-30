@@ -6,7 +6,7 @@
   "license": "GPLv3",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
+    "test": "./node_modules/karma-cli/bin/karma start ./karma.conf.js --single-run",
     "start": ""
   },
   "repository": {
@@ -21,13 +21,21 @@
   "devDependencies": {
     "del": "^2.2.1",
     "gulp": "^3.9.1",
+    "gulp-all": "^1.1.0",
     "gulp-cli": "^1.2.1",
     "gulp-concat": "^2.6.0",
     "gulp-nativejsx": "^1.0.0",
     "gulp-sourcemaps": "^1.6.0",
     "gulp-typescript": "^2.13.6",
     "gulp-uglify": "^1.5.4",
+    "gulp-using": "^0.1.1",
     "gulp-util": "^3.0.7",
+    "jasmine-core": "^2.4.1",
+    "karma": "^1.1.1",
+    "karma-chrome-launcher": "^1.0.1",
+    "karma-cli": "^1.0.1",
+    "karma-jasmine": "^1.0.2",
+    "karma-typescript-preprocessor": "^0.2.1",
     "through2": "^2.0.1",
     "typescript": "^1.0.1"
   },

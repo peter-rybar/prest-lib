@@ -1,92 +1,130 @@
 var gulp = require('gulp');
-var util = require('gulp-util');
+var all = require('gulp-all');
+var using = require('gulp-using');
 var del = require('del');
 var typescript = require('gulp-typescript');
 var jsx = require('gulp-nativejsx');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
 var concat = require('gulp-concat');
+var KarmaServer = require('karma').Server;
 
+var src_ts = 'src/**/*.ts';
+var src_tsx = 'src/**/*.tsx';
+var src_js = 'src/**/*.js';
+var src_map = 'src/**/*.map';
+var src_jsx = 'src/**/*.jsx';
 
-gulp.task('default', ['dist:test', 'dist:src', 'dist:all']);
+var test_ts = 'test/**/*.ts';
+var test_tsx = 'test/**/*.tsx';
+var test_js = 'test/**/*.js';
+var test_map = 'test/**/*.map';
+var test_jsx = 'test/**/*.jsx';
 
-gulp.task('dist:test', function () {
-    gulp.src('src/**/*.ts')
-        .pipe(sourcemaps.init())
-        .pipe(typescript(typescript.createProject('tsconfig.json')))
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('src/'));
-    gulp.src('src/**/*.tsx')
-        .pipe(sourcemaps.init())
-        .pipe(typescript(typescript.createProject('tsconfig.json')))
-        .pipe(jsx())
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('src/'));
-    gulp.src('test/**/*.ts')
-        .pipe(sourcemaps.init())
-        .pipe(typescript(typescript.createProject('tsconfig.json')))
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('test/'));
-    gulp.src('test/**/*.tsx')
-        .pipe(sourcemaps.init())
-        .pipe(typescript(typescript.createProject('tsconfig.json')))
-        .pipe(jsx())
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('test/'));
+// gulp.task('default', ['build', 'dist:many', 'dist:one', 'test']);
+gulp.task('default', ['build', 'dist']);
+
+gulp.task('build', function () {
+    return all(
+        gulp.src(src_ts)
+            .pipe(using({prefix:'build -> ' + src_ts}))
+            .pipe(sourcemaps.init())
+            .pipe(typescript(typescript.createProject('tsconfig.json')))
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest('src/')),
+        gulp.src(src_tsx)
+            .pipe(using({prefix:'build -> ' + src_tsx}))
+            .pipe(sourcemaps.init())
+            .pipe(typescript(typescript.createProject('tsconfig.json')))
+            .pipe(jsx())
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest('src/')),
+        gulp.src(test_ts)
+            .pipe(using({prefix:'build -> ' + test_ts}))
+            .pipe(sourcemaps.init())
+            .pipe(typescript(typescript.createProject('tsconfig.json')))
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest('test/')),
+        gulp.src(test_tsx)
+            .pipe(using({prefix:'build -> ' + test_tsx}))
+            .pipe(sourcemaps.init())
+            .pipe(typescript(typescript.createProject('tsconfig.json')))
+            .pipe(jsx())
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest('test/'))
+    );
 });
 
-gulp.task('dist:src', function () {
-    gulp.src('src/**/*.ts')
-        .pipe(sourcemaps.init())
-        .pipe(typescript(typescript.createProject('tsconfig.json')))
-        .pipe(uglify())
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('dist/'));
-    gulp.src('src/**/*.tsx')
-        .pipe(sourcemaps.init())
-        .pipe(typescript(typescript.createProject('tsconfig.json')))
-        .pipe(jsx())
-        .pipe(uglify())
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('dist/'));
-    gulp.src(['src/**/*.ts', 'src/**/*.tsx'])
-        .pipe(typescript(typescript.createProject('tsconfig.json')))
-        .dts
-        .pipe(gulp.dest('dist/'));
+gulp.task('dist', ['dist:many', 'dist:one']);
+
+gulp.task('dist:many', ['build'], function () {
+    return all(
+        gulp.src(src_ts)
+            .pipe(using({prefix:'dist:many -> ' + src_ts}))
+            .pipe(sourcemaps.init())
+            .pipe(typescript(typescript.createProject('tsconfig.json')))
+            .pipe(uglify())
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest('dist/')),
+        gulp.src(src_tsx)
+            .pipe(using({prefix:'dist:many -> ' + src_tsx}))
+            .pipe(sourcemaps.init())
+            .pipe(typescript(typescript.createProject('tsconfig.json')))
+            .pipe(jsx())
+            .pipe(uglify())
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest('dist/')),
+        gulp.src([src_ts, src_tsx])
+            .pipe(using({prefix:'dist:many -> ' + src_ts + ', ' + src_tsx}))
+            .pipe(typescript(typescript.createProject('tsconfig.json')))
+            .dts
+            .pipe(gulp.dest('dist/'))
+    );
 });
 
-gulp.task('dist:all', function () {
-    gulp.src(['src/**/*.js'])
-        .pipe(sourcemaps.init())
-        .pipe(concat('prest.js'))
-        // .pipe(gulp.dest('dist/'))
-        // .pipe(gp_rename('prest.min.js'))
-        .pipe(uglify())
-        .pipe(sourcemaps.write('./'))
-        .pipe(gulp.dest('dist/'));
-    gulp.src(['src/**/*.ts', 'src/**/*.tsx'])
-        .pipe(typescript(typescript.createProject('tsconfig.json')))
-        .dts
-        .pipe(concat('prest.d.ts'))
-        .pipe(gulp.dest('dist/'));
+gulp.task('dist:one', ['build'], function () {
+    return all(
+        gulp.src([src_js])
+            .pipe(using({prefix:'dist:one -> ' + src_js}))
+            .pipe(sourcemaps.init())
+            .pipe(concat('prest.js'))
+            // .pipe(gulp.dest('dist/'))
+            // .pipe(gp_rename('prest.min.js'))
+            .pipe(uglify())
+            .pipe(sourcemaps.write('./'))
+            .pipe(gulp.dest('dist/')),
+        gulp.src([src_ts, src_tsx])
+            .pipe(using({prefix:'dist:one -> ' + src_ts + ', ' + src_tsx}))
+            .pipe(typescript(typescript.createProject('tsconfig.json')))
+            .dts
+            .pipe(concat('prest.d.ts'))
+            .pipe(gulp.dest('dist/'))
+    );
 });
 
 gulp.task('watch', function () {
     gulp.watch([
-        'src/**/*.ts', 'src/**/*.tsx',
-        'test/**/*.ts', 'test/**/*.tsx'],
-        ['dist:test']);
+            src_ts, src_tsx,
+            test_ts, test_tsx],
+        ['build']);
+});
+
+gulp.task('test', function (done) {
+    new KarmaServer({
+        configFile: __dirname + '/karma.conf.js',
+        singleRun: true
+    }, done).start();
 });
 
 gulp.task('clean', function () {
-    del([
+    return del([
         'node_modules',
-        'src/**/*.js',
-        'src/**/*.map',
-        'src/**/*.jsx',
-        'test/**/*.js',
-        'test/**/*.map',
-        'test/**/*.jsx',
+        src_js,
+        src_map,
+        src_jsx,
+        test_js,
+        test_map,
+        test_jsx,
         'dist/*'
     ]);
 });
