@@ -5,7 +5,7 @@ import Component = prest.components.Component;
 window.onload = () => {
 
     class Item {
-        constructor(public text, public count) {
+        constructor(public text:string, public count:number) {
         }
     }
 
@@ -26,7 +26,12 @@ window.onload = () => {
             var self = this;
             return <ol>
                 { self._items.map((item) => {
-                    return <li onclick={ (e) => { e.stopPropagation(); self._onSelect(item); } }>
+                    return <li onclick={
+                            (e) => {
+                                e.stopPropagation();
+                                self._onSelect(item);
+                            }
+                        }>
                         <span class="label">{ item.text }</span>{ ' ' }
                         <small class="count">[{ item.count }]</small>
                     </li>;
