@@ -1,3 +1,4 @@
+var pkg = require('./package.json');
 var gulp = require('gulp');
 var all = require('gulp-all');
 var using = require('gulp-using');
@@ -87,9 +88,9 @@ gulp.task('dist:one', ['build'], function () {
         gulp.src([src_js])
             .pipe(using({prefix:'dist:one -> ' + src_js}))
             .pipe(sourcemaps.init())
-            .pipe(concat('prest.js'))
+            .pipe(concat(pkg.name + '.js'))
             // .pipe(gulp.dest('dist/'))
-            // .pipe(gp_rename('prest.min.js'))
+            // .pipe(gp_rename(pkg.name + '.min.js'))
             .pipe(uglify())
             .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest('dist/')),
@@ -97,7 +98,7 @@ gulp.task('dist:one', ['build'], function () {
             .pipe(using({prefix:'dist:one -> ' + src_ts + ', ' + src_tsx}))
             .pipe(typescript(typescript.createProject('tsconfig.json')))
             .dts
-            .pipe(concat('prest.d.ts'))
+            .pipe(concat(pkg.name + '.d.ts'))
             .pipe(gulp.dest('dist/'))
     );
 });
