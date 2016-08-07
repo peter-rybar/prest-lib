@@ -19,9 +19,14 @@
     "pREST, signal-slot, DOM, encode, Hash, HTTP, component"
   ],
   "devDependencies": {
+    "babel": "^6.5.2",
+    "babel-cli": "^6.11.4",
+    "babel-plugin-incremental-dom": "^3.4.0",
+    "babel-preset-es2015": "^6.13.2",
     "del": "^2.2.1",
     "gulp": "^3.9.1",
     "gulp-all": "^1.1.0",
+    "gulp-babel": "^6.1.2",
     "gulp-cli": "^1.2.1",
     "gulp-concat": "^2.6.0",
     "gulp-nativejsx": "^1.0.0",
@@ -40,6 +45,7 @@
     "typescript": "^1.0.1"
   },
   "dependencies": {
+    "incremental-dom": "^0.4.1",
     "nativejsx": "^3.2.0"
   }
 }

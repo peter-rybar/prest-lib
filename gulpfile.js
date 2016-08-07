@@ -4,6 +4,7 @@ var all = require('gulp-all');
 var using = require('gulp-using');
 var del = require('del');
 var typescript = require('gulp-typescript');
+// var babel = require('gulp-babel');
 var jsx = require('gulp-nativejsx');
 var sourcemaps = require('gulp-sourcemaps');
 var uglify = require('gulp-uglify');
@@ -38,6 +39,7 @@ gulp.task('build', function () {
             .pipe(sourcemaps.init())
             .pipe(typescript(typescript.createProject('tsconfig.json')))
             .pipe(jsx())
+            // .pipe(babel())
             .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest('src/')),
         gulp.src(test_ts)
@@ -51,6 +53,7 @@ gulp.task('build', function () {
             .pipe(sourcemaps.init())
             .pipe(typescript(typescript.createProject('tsconfig.json')))
             .pipe(jsx())
+            // .pipe(babel())
             .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest('test/'))
     );
@@ -72,6 +75,7 @@ gulp.task('dist:many', ['build'], function () {
             .pipe(sourcemaps.init())
             .pipe(typescript(typescript.createProject('tsconfig.json')))
             .pipe(jsx())
+            // .pipe(babel())
             .pipe(uglify())
             .pipe(sourcemaps.write('./'))
             .pipe(gulp.dest('dist/')),

@@ -1,7 +1,5 @@
 /// <reference path="../src/prest/prest-component.ts" />
 
-import Component = prest.components.Component;
-
 window.onload = () => {
 
     class Item {
@@ -9,7 +7,7 @@ window.onload = () => {
         }
     }
 
-    class MyComponent implements Component {
+    class MyComponent implements prest.components.Component {
 
         private _items:Item[] = [];
         private _onSelect:(item)=>void;
@@ -23,13 +21,13 @@ window.onload = () => {
         }
 
         render():HTMLElement {
-            var self = this;
+            var _this = this;
             return <ol>
-                { self._items.map((item) => {
+                { _this._items.map((item) => {
                     return <li onclick={
                             (e) => {
                                 e.stopPropagation();
-                                self._onSelect(item);
+                                _this._onSelect(item);
                             }
                         }>
                         <span class="label">{ item.text }</span>{ ' ' }

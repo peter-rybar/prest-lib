@@ -1,0 +1,12 @@
+{
+    "presets": ["es2015"],
+    "plugins": [
+        [
+            "incremental-dom",
+            {
+                "inlineExpressions": true,
+                "prefix": "IncrementalDOM"
+            }
+        ]
+    ]
+}
