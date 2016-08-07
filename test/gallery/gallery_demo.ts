@@ -3,7 +3,7 @@
 
 window.onload = () => {
 
-    var items:components.Item [] = [];
+    var items:components.Item[] = [];
     for (var i = 2; i < 7; i++) {
         items.push({
             title: 'Image ' + i,
