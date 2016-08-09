@@ -53,12 +53,11 @@ module components {
                 e = e || window.event;
                 var target = e.target || e.srcElement;
                 if (target.nodeName == 'IMG') {
-                    var anchor = target.parentNode;
-                    var imageEl = div.getElementsByClassName('gallery-image')[0];
-                    this._renderImage({
-                        title: anchor.title,
-                        url: anchor.href,
-                        thumb: ''});
+                    var a = target.parentNode as HTMLAnchorElement;
+                    var i = div.getElementsByClassName('gallery-image')[0]
+                        .getElementsByTagName('img')[0] as HTMLImageElement;
+                    i.alt = a.title;
+                    i.src = a.href;
                 }
                 return false;
             };
@@ -73,29 +72,14 @@ module components {
 
         private _render():void {
             if (this._items.length > 0) {
-                this._renderImage(this._items[0]);
+                var item = this._items[0];
+                var e = this._element.getElementsByClassName('gallery-image')[0];
+                e.innerHTML = `<img src="${item.url}" alt="${item.title}">`;
             }
-            this._renderThumbs(this._items);
-        }
-
-        private _renderImage(item:Item):void {
-            var e = this._element.getElementsByClassName('gallery-image')[0];
-            e.innerHTML = `
-                <img src="${item.url}"
-                     alt="${item.title}">
-                `;
-        }
-
-        private _renderThumbs(items:Item[]):void {
-            var thumbs = this._items.map((item) => {
-                return `
-                    <a href="${item.url}"
-                       title="${item.title}"><img
-                       src="${item.thumb}"></a>
-                    `;
-            });
-            var e = this._element.getElementsByClassName('gallery-thumbs')[0];
-            e.innerHTML = thumbs.join('');
+            var t = this._element.getElementsByClassName('gallery-thumbs')[0];
+            t.innerHTML = this._items.map((item) => {
+                return `<a href="${item.url}" title="${item.title}"><img src="${item.thumb}"></a>`;
+            }).join(' ');
         }
 
     }
