@@ -4,24 +4,26 @@ module prest.signal {
      * pREST Signal-Slot pattern module
      */
 
+    /**
+     * Slot interface
+     */
     interface Slot<T> {
-        id: number;
         callback: (data?:T) => void;
         object?: any;
     }
 
     /**
      * Signal slot pattern class with optional accumulator object.
+     *
+     * <T> signal data type
      */
     export class Signal<T> {
 
         private _slots:Slot<T>[];
-        private _slotId:number;
         private _emit:boolean;
 
         constructor() {
             this._slots = [];
-            this._slotId = 0;
             this._emit = true;
         }
 
@@ -30,41 +32,27 @@ module prest.signal {
         //    this.connect(slot);
         //}
 
-        connect(callback:(data?:T) => void):number;
-        connect(callback:(data?:T) => void, object?:Object):number;
-        connect(callback:(data?:any) => void, object?:Object):number {
-            var slotId = this._slotId++;
-
+        /**
+         * Connects slot
+         */
+        connect(callback:(data?:T) => void):void;
+        connect(callback:(data?:T) => void, object?:Object):void;
+        connect(callback:(data?:any) => void, object?:Object):void {
             if (object) {
-                this._slots.push({
-                    id: slotId,
-                    callback: callback,
-                    object: object
-                });
+                this._slots.push({callback: callback, object: object});
             } else {
-                this._slots.push({
-                    id: slotId,
-                    callback: callback
-                });
+                this._slots.push({callback: callback});
             }
-
-            return slotId;
         }
 
         /**
          * Disconnects slot
          */
-        //disconnect(): void;
-        disconnect(slotId?:number):void {
+        disconnect(callback:(data?:T) => void, object?:Object):void {
             var slots:Slot<T>[] = this._slots;
-            var slotsNew:Slot<T>[] = [];
-            for (var i = 0; i < slots.length; i++) {
-                var slot:Slot<T> = slots[i];
-                if (slotId && slot.id !== slotId) {
-                    slotsNew.push(slot);
-                }
-            }
-            this._slots = slotsNew;
+            this._slots = slots.filter((slot) => {
+                return (slot.callback != callback) && (slot.object != object);
+            });
         }
 
         /**

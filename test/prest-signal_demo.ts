@@ -5,19 +5,39 @@ import Signal = prest.signal.Signal;
 
 var s:Signal<string> = new Signal<string>();
 
-var id:number = s.connect((data) => {
-    console.log("data: " + data);
-});
-// ES5
-//s.slot = (data) => {
-//    console.log("slot data: " + data);
-//};
+console.log("-------------------------------------");
 
-s.emit("emittt");
+var slotFunction = (data) => {
+    console.log("function data: " + data);
+};
 
-s.disconnect(id);
+s.connect(slotFunction);
 
-s.emit("emittt");
+s.emit("emit");
+
+console.log("disconnect");
+s.disconnect(slotFunction);
+
+s.emit("emit");
+
+console.log("-------------------------------------");
+
+class X {
+    slotMethod(data:string):void {
+        console.log("method data: " + data, this);
+    }
+}
+
+var x = new X();
+
+s.connect(x.slotMethod, x);
+
+s.emit("emit");
+
+console.log("disconnect");
+s.disconnect(x.slotMethod, x);
+
+s.emit("emit");
 
 console.log("-------------------------------------");
 
@@ -25,10 +45,10 @@ console.log("-------------------------------------");
 class A {
     private a = "A.a";
 
-    signalNum = new Signal<number>();
-    signalStr = new Signal<string>();
+    sigNum = new Signal<number>();
+    sigStr = new Signal<string>();
 
-    slot(data) {
+    slot(data/*:number*/) {
         console.log("A.slot() data: '" + this.a + "' " + " " + data);
     }
 }
@@ -36,12 +56,12 @@ class A {
 class B {
     private a = "B.a";
 
-    slot = (data) => {
+    slot = (data:number) => {
         console.log("B.slot() data: '" + this.a + "' " + " " + data);
     }
 }
 
-function slot(data) {
+function slot(data:number) {
     console.log("slot() data: '" + this.a + "' " + " " + data);
 }
 
@@ -49,26 +69,28 @@ var a = new A();
 
 var b = new B();
 
-a.signalNum.connect(a.slot);
-a.signalNum.connect(a.slot, a);
-a.signalNum.connect(a.slot, b);
-a.signalNum.connect(b.slot);
-a.signalNum.connect(b.slot, b);
-a.signalNum.connect(b.slot, a);
-a.signalNum.connect(slot);
-a.signalNum.connect(slot, a);
-a.signalNum.connect(slot, b);
-a.signalNum.emit(5);
+a.sigNum.connect(a.slot);
+a.sigNum.connect(a.slot, a);
+a.sigNum.connect(a.slot, b);
+a.sigNum.connect(b.slot);
+a.sigNum.connect(b.slot, b);
+a.sigNum.connect(b.slot, a);
+a.sigNum.connect(slot);
+a.sigNum.connect(slot, a);
+a.sigNum.connect(slot, b);
+a.sigNum.emit(5);
 
 console.log("-------------------------------------");
 
-a.signalStr.connect(a.slot, a);
-//a.signalStr.slot = slot; // ES5
+a.sigStr.connect(a.slot, a);
+//a.sigStr.slot = slot; // ES5
 
-a.signalStr.emit("str");
+a.sigStr.emit("str");
+
 console.log("freeze");
-a.signalStr.freeze();
-a.signalStr.emit("str");
+a.sigStr.freeze();
+a.sigStr.emit("str");
+
 console.log("unfreeze");
-a.signalStr.unfreeze();
-a.signalStr.emit("str");
+a.sigStr.unfreeze();
+a.sigStr.emit("str");
