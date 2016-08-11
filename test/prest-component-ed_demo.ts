@@ -25,9 +25,11 @@ window.onload = () => {
             document.createDocumentFragment();
             var ol = document.createElement('ol');
             this._element = ol;
+            this._render();
             ol.onclick = (e) => {
                 e.preventDefault();
-                var target = e.target as HTMLElement;
+                var event = e || window.event;
+                var target = (event.target || e.srcElement) as HTMLElement;
                 if (target.hasAttribute('data-id')) {
                     var id = target.getAttribute('data-id');
                     this._onSelect(this._items[id]);
@@ -35,8 +37,8 @@ window.onload = () => {
                 // if (target && target.nodeName == 'SPAN') {
                 //     this._onSelect(this._items[id]);
                 // }
+                return false;
             };
-            this._render();
             return ol;
         }
 

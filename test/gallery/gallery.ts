@@ -50,8 +50,8 @@ module components {
 
             var updateImage = (e) => {
                 e.stopPropagation();
-                e = e || window.event;
-                var target = e.target || e.srcElement;
+                var event = e || window.event;
+                var target = (event.target || e.srcElement) as HTMLElement;
                 if (target.nodeName == 'IMG') {
                     var a = target.parentNode as HTMLAnchorElement;
                     var i = div.getElementsByClassName('gallery-image')[0]
