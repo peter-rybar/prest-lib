@@ -12,34 +12,34 @@ module prest.form {
 
     export class InputEntry implements Entry {
 
-        private _container:HTMLInputElement;
+        private _element:HTMLInputElement;
         private _validator:(value:string, locale:string)=>string;
         private _onChange:(value:string)=>void;
 
-        constructor(container:HTMLInputElement|string) {
-            if (typeof container === "string") {
-                this._container = <HTMLInputElement>document.getElementById(container);
+        constructor(element:HTMLInputElement|string) {
+            if (typeof element === "string") {
+                this._element = <HTMLInputElement>document.getElementById(element);
             } else {
-                this._container = container;
+                this._element = element;
             }
             var self = this;
-            this._container.addEventListener("change", (e) => {
+            this._element.addEventListener("change", (e) => {
                 if (self._onChange) {
-                    self._onChange(self._container.value);
+                    self._onChange(self._element.value);
                 }
             });
         }
 
         getName():string {
-            return this._container.name;
+            return this._element.name;
         }
 
         getValue():string {
-            return this._container.value;
+            return this._element.value;
         }
 
         setValue(value:string):Entry {
-            this._container.value = value;
+            this._element.value = value;
             return this;
         }
 
@@ -65,34 +65,34 @@ module prest.form {
 
     export class CheckboxEntry implements Entry {
 
-        private _container:HTMLInputElement;
+        private _element:HTMLInputElement;
         private _validator:(value:string, locale:string)=>string;
         private _onChange:(value:boolean)=>void;
 
-        constructor(container:HTMLInputElement|string) {
-            if (typeof container === "string") {
-                this._container = <HTMLInputElement>document.getElementById(container);
+        constructor(element:HTMLInputElement|string) {
+            if (typeof element === "string") {
+                this._element = <HTMLInputElement>document.getElementById(element);
             } else {
-                this._container = container;
+                this._element = element;
             }
             var self = this;
-            this._container.addEventListener("change", (e) => {
+            this._element.addEventListener("change", (e) => {
                 if (self._onChange) {
-                    self._onChange(self._container.checked);
+                    self._onChange(self._element.checked);
                 }
             });
         }
 
         getName():string {
-            return this._container.name;
+            return this._element.name;
         }
 
         getValue():string {
-            return this._container.checked.toString();
+            return this._element.checked.toString();
         }
 
         setValue(value:string):Entry {
-            this._container.checked = (value && value != 'false') ? true : false;
+            this._element.checked = (value && value != 'false') ? true : false;
             return this;
         }
 
@@ -118,35 +118,35 @@ module prest.form {
 
     export class SelectEntry implements Entry {
 
-        private _container:HTMLSelectElement;
+        private _element:HTMLSelectElement;
         private _validator:(value:string, locale:string)=>string;
         private _onChange:(value:string)=>void;
 
-        constructor(container:HTMLSelectElement|string) {
-            if (typeof container === "string") {
-                this._container = <HTMLSelectElement>document.getElementById(container);
+        constructor(element:HTMLSelectElement|string) {
+            if (typeof element === "string") {
+                this._element = <HTMLSelectElement>document.getElementById(element);
             } else {
-                this._container = container;
+                this._element = element;
             }
             var self = this;
-            this._container.addEventListener("change", (e) => {
+            this._element.addEventListener("change", (e) => {
                 if (self._onChange) {
-                    self._onChange(self._container.value);
+                    self._onChange(self._element.value);
                 }
             });
         }
 
         getName():string {
-            return this._container.name;
+            return this._element.name;
         }
 
         getValue():string {
-            var c = this._container;
+            var c = this._element;
             return c.value;
         }
 
         setValue(value:string):Entry {
-            this._container.value = value;
+            this._element.value = value;
             return this;
         }
 
@@ -172,21 +172,21 @@ module prest.form {
 
     export class RadioEntry implements Entry {
 
-        private _containers:HTMLInputElement[] = [];
+        private _elements:HTMLInputElement[] = [];
         private _validator:(value:string, locale:string)=>string;
         private _onChange:(value:string)=>void;
 
-        constructor(containers:HTMLInputElement[]|string[]) {
+        constructor(elements:HTMLInputElement[]|string[]) {
             var self = this;
-            (<any>containers).forEach((c) => {
+            (<any>elements).forEach((c) => {
                 if (typeof c === "string") {
-                    this._containers.push(
+                    this._elements.push(
                         <HTMLInputElement>document.getElementById(c));
                 } else {
-                    this._containers.push(c);
+                    this._elements.push(c);
                 }
             });
-            this._containers.forEach((c) => {
+            this._elements.forEach((c) => {
                 c.addEventListener("change", (e) => {
                     if (self._onChange && c.checked) {
                         self._onChange(c.value);
@@ -196,11 +196,11 @@ module prest.form {
         }
 
         getName():string {
-            return this._containers[0].name;
+            return this._elements[0].name;
         }
 
         getValue():string {
-            for (var c of this._containers) {
+            for (var c of this._elements) {
                 if (c.checked) {
                     return c.value;
                 }
@@ -209,7 +209,7 @@ module prest.form {
         }
 
         setValue(value:string):Entry {
-            for (var c of this._containers) {
+            for (var c of this._elements) {
                 if (c.value == value) {
                     c.checked = true;
                 }
@@ -239,17 +239,17 @@ module prest.form {
 
     export class Form {
 
-        private _container:HTMLFormElement;
+        private _element:HTMLFormElement;
         private _formEntries:Entry[] = [];
         private _onSubmit:()=>void;
 
-        constructor(container:HTMLFormElement|string) {
-            if (typeof container === "string") {
-                this._container = <HTMLFormElement>document.getElementById(container);
+        constructor(element:HTMLFormElement|string) {
+            if (typeof element === "string") {
+                this._element = <HTMLFormElement>document.getElementById(element);
             } else {
-                this._container = container;
+                this._element = element;
             }
-            this._container.onsubmit = (e) => {
+            this._element.onsubmit = (e) => {
                 e.preventDefault();
                 if (this._onSubmit) {
                     this._onSubmit();
@@ -310,7 +310,7 @@ module prest.form {
         }
 
         submit():void {
-            this._container.submit();
+            this._element.submit();
         }
 
         onSubmit(callback:()=>void):Form {
