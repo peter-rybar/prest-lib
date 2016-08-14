@@ -1,9 +1,9 @@
-/// <reference path="../../src/prest/prest-component.ts" />
+/// <reference path="../../src/prest/prest-widgets.ts" />
 /// <reference path="./gallery.ts" />
 
 window.onload = () => {
 
-    var items:components.Item[] = [];
+    var items:gallery.Item[] = [];
     for (var i = 2; i < 7; i++) {
         items.push({
             title: 'Image ' + i,
@@ -14,15 +14,15 @@ window.onload = () => {
     // items = items.concat(items);
     // console.log(items);
 
-    var gallery = new components.Gallery(items);
+    var g = new gallery.Gallery(items);
 
-    gallery.onSelect((item) => {
+    g.onSelect((item) => {
         console.log('selected:', item);
         var selected = document.getElementById('selected') as HTMLSpanElement;
         selected.innerHTML = JSON.stringify(item);
     });
 
-    var galleryElement = gallery.render();
+    var galleryElement = g.element();
 
     var container = document.getElementById('gallery') as HTMLDivElement;
     container.appendChild(galleryElement);

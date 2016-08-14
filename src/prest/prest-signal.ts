@@ -51,7 +51,7 @@ module prest.signal {
         disconnect(callback:(data?:T) => void, object?:Object):void {
             var slots:Slot<T>[] = this._slots;
             this._slots = slots.filter((slot) => {
-                return (slot.callback != callback) && (slot.object != object);
+                return (slot.callback !== callback) && (slot.object !== object);
             });
         }
 

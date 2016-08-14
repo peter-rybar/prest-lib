@@ -1,4 +1,4 @@
-/// <reference path="../src/prest/prest-component.ts" />
+/// <reference path="../src/prest/prest-widgets.ts" />
 
 window.onload = () => {
 
@@ -7,7 +7,7 @@ window.onload = () => {
         }
     }
 
-    class MyComponent implements prest.components.Component {
+    class MyWidget implements prest.widgets.Widget {
 
         private _items:Item[] = [];
         private _onSelect:(item)=>void;
@@ -20,7 +20,7 @@ window.onload = () => {
             this._onSelect = callback;
         }
 
-        render():HTMLElement {
+        element():HTMLElement {
             var _this = this;
             return <ol>
                 { _this._items.map((item) => {
@@ -40,8 +40,7 @@ window.onload = () => {
 
     }
 
-    // create component
-    var myComponent = new MyComponent(
+    var myWidget = new MyWidget(
         [
             new Item('text 1', 1),
             new Item('text 2', 2),
@@ -49,16 +48,14 @@ window.onload = () => {
         ]
     );
 
-    // setup component
-    myComponent.onSelect((item) => {
+    myWidget.onSelect((item) => {
         console.log('selected:', item);
         var selected = document.getElementById('selected') as HTMLSpanElement;
         selected.innerHTML = JSON.stringify(item);
     });
 
-    // render component and add into DOM
-    var myComponentElement = myComponent.render();
+    var myWidgetElement = myWidget.element();
 
     var container = document.getElementById('container') as HTMLDivElement;
-    container.appendChild(myComponentElement);
+    container.appendChild(myWidgetElement);
 };

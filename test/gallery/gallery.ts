@@ -1,13 +1,13 @@
-/// <reference path="../../src/prest/prest-component.ts" />
+/// <reference path="../../src/prest/prest-widgets.ts" />
 
-module components {
+module gallery {
 
     export class Item {
         constructor(public title:string, public url:string, public thumb:string) {
         }
     }
 
-    export class Gallery implements prest.components.Component {
+    export class Gallery implements prest.widgets.Widget {
 
         private _element:HTMLDivElement;
         private _items:Item[] = [];
@@ -21,7 +21,7 @@ module components {
             this._onSelect = callback;
         }
 
-        render():HTMLElement {
+        element():HTMLElement {
             var div = document.createElement('div');
             this._element = div;
             div.innerHTML = `
