@@ -1,10 +1,10 @@
 {
     "compilerOptions": {
-        "declaration": true,
         "target": "es5",
-        "jsx": "preserve",
         "noImplicitAny": false,
-        "sourceMap": false
+        "declaration": false,
+        "sourceMap": false,
+        "inlineSourceMap": false
     },
     "exclude": [
         "node_modules",
