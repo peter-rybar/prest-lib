@@ -7,13 +7,13 @@ window.onload = () => {
         }
     }
 
-    class MyWidget extends prest.widgets.XWidget {
+    class MyWidget implements prest.widgets.Widget {
 
+        private _element:HTMLElement;
         private _items:Item[] = [];
         private _onSelect:(item)=>void;
 
         constructor(items:Item[]) {
-            super();
             this._items = items;
         }
 
@@ -25,27 +25,32 @@ window.onload = () => {
             item.text += this._items.length + 1;
             item.count = this._items.length + 1;
             this._items.push(item);
-            this._element.innerHTML = this._itemsHtml();
+            this._renderItems();
         }
 
-        protected _render():HTMLElement {
-            var e = prest.widgets.XWidget.element(`<ol class="widget"></ol>`);
-            e.innerHTML = this._itemsHtml();
-            prest.widgets.XWidget.xEventsBind(e, this);
-            return e;
+        element():HTMLElement {
+            if (!this._element) {
+                var e = prest.widgets.element(`<ol class="widget"></ol>`);
+                this._element = e;
+                this._renderItems();
+                prest.widgets.xEventsBind(e, this, ['click']);
+            }
+            return this._element;
         }
 
-        private _itemsHtml():string {
-            return this._items.map((item, i) => {
-                return `
-                    <li>
-                        <span class="label" x-click="_click_" data-id="${i}">${item.text}</span>
-                        <small class="count" x-click="_click_" data-id="${i}">[${item.count}]</small>
-                    </li>`;
-            }).join('\n');
+        private _renderItems():void {
+            if (this._element) {
+                this._element.innerHTML = this._items.map((item, i) => {
+                    return `
+                        <li x-click="_click" data-id="${i}">
+                            <span class="label" x-click="_click" data-id="${i}">${item.text}</span>
+                            <small class="count" x-click="_click" data-id="${i}">[${item.count}]</small>
+                        </li>`;
+                }).join('\n');
+            }
         }
 
-        private _click_(target, event):void {
+        private _click(target, event):void {
             if (target.hasAttribute('data-id')) {
                 var id = target.getAttribute('data-id');
                 this._onSelect && this._onSelect(this._items[id]);
