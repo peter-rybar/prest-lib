@@ -1,4 +1,4 @@
-/// <reference path="../../src/prest/prest-widgets.ts" />
+/// <reference path="../../../src/prest/prest-widgets.ts" />
 /// <reference path="./gallery.ts" />
 
 window.onload = () => {
@@ -14,7 +14,7 @@ window.onload = () => {
     // items = items.concat(items);
     // console.log(items);
 
-    var g = new gallery.Gallery(items);
+    var g = new gallery.GalleryWidget(items);
 
     g.onSelect((item) => {
         console.log('selected:', item);

@@ -1,4 +1,4 @@
-/// <reference path="../../src/prest/prest-widgets.ts" />
+/// <reference path="../../../src/prest/prest-widgets.ts" />
 
 module gallery {
 
@@ -7,7 +7,7 @@ module gallery {
         }
     }
 
-    export class Gallery implements prest.widgets.Widget {
+    export class GalleryWidget implements prest.widgets.Widget {
 
         private _element:HTMLDivElement;
         private _items:Item[] = [];
