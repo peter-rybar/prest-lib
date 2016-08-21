@@ -4,7 +4,10 @@
         "noImplicitAny": false,
         "declaration": false,
         "sourceMap": false,
-        "inlineSourceMap": false
+        "inlineSourceMap": false,
+        "removeComments": false,
+        "noExternalResolve": true,
+        "sortOutput": false
     },
     "exclude": [
         "node_modules",
