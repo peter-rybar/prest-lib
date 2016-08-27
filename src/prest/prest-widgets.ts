@@ -1,24 +1,24 @@
-module prest.widgets {
+namespace prest.widgets {
 
     export interface Widget {
-        element():HTMLElement;
+        element(): HTMLElement;
     }
 
 
-    export function element(html:string):HTMLElement {
-        var e:HTMLElement = document.createElement('div');
+    export function element(html: string): HTMLElement {
+        const e: HTMLElement = document.createElement("div");
         e.innerHTML = html.trim();
-        var f:DocumentFragment = document.createDocumentFragment();
+        const f: DocumentFragment = document.createDocumentFragment();
         return <HTMLElement>f.appendChild(e.removeChild(e.firstChild));
     }
 
-    export function empty(element:HTMLElement) {
+    export function empty(element: HTMLElement) {
         while (element.firstChild /*.hasChildNodes()*/) {
             element.removeChild(element.firstChild);
         }
     }
 
-    export function xEventsBind(element:HTMLElement, context:Object, events:Array<string>=[]) {
+    export function xEventsBind(element: HTMLElement, context: Object, events: Array<string> = []) {
         // var events = [];
         if (!events.length) {
             // for (var k in context) {
@@ -27,11 +27,11 @@ module prest.widgets {
             //         events.push(m[1]);
             //     }
             // }
-            for (var k in element) {
-                if (k.search('on') === 0) {
-                    var event = k.slice(2);
-                    var x = element.querySelectorAll('[x-' + event + ']');
-                    // console.log('xEventsBind: ', event, x);
+            for (let k in element) {
+                if (element.hasOwnProperty(k) && k.search("on") === 0) {
+                    const event = k.slice(2);
+                    const x = element.querySelectorAll("[x-" + event + "]");
+                    // console.log("xEventsBind: ", event, x);
                     if (x.length) {
                         events.push(event);
                     }
@@ -39,24 +39,23 @@ module prest.widgets {
             }
         }
         // console.log(events);
-        for (var event of events) {
-            // console.debug('xEventsBind: ', 'x-' + event);
+        for (let event of events) {
+            // console.debug("xEventsBind: ", "x-" + event);
             element.addEventListener(event, function (e) {
-                e.stopPropagation();
-                var evt = e || window.event;
-                var target = (evt.target || e.srcElement) as HTMLElement;
-                if (target.hasAttribute('x-' + evt.type)) {
-                    var methodName = target.getAttribute('x-' + evt.type);
-                    var method = context[methodName];
-                    // console.debug('xEventsBind call: ', evt.type, methodName, method);
+                const evt = e || window.event;
+                const target = (evt.target || e.srcElement) as HTMLElement;
+                if (target.hasAttribute("x-" + evt.type)) {
+                    const methodName = target.getAttribute("x-" + evt.type);
+                    const method = context[methodName];
+                    // console.debug("xEventsBind call: ", evt.type, methodName, method);
                     if (method) {
                         method.call(context, target, evt);
                     } else {
-                        console.warn('xEventsBind mising method: ', methodName);
+                        console.warn("xEventsBind missing method: ", methodName);
                     }
                 }
                 return false;
-            })
+            });
         }
     }
 

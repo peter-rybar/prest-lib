@@ -1,14 +1,14 @@
 ///<reference path="../typings/tsd.d.ts" />
 
-describe('test', function () {
+describe("test", function () {
 
-    fit('check true', function () {
-        var expected = true;
+    fit("check true", function () {
+        const expected = true;
         expect(expected).toBe(true);
     });
 
-    it('check false', function () {
-        var expected = true;
+    it("check false", function () {
+        const expected = true;
         expect(expected).toBe(false);
     });
 

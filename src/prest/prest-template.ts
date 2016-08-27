@@ -1,4 +1,4 @@
-module prest.template {
+namespace prest.template {
 
     // https://gist.github.com/WebReflection/8f227532143e63649804
     // accepts optional transformer
@@ -59,10 +59,10 @@ module prest.template {
      * @param data
      * @returns {(data:Object)=>string|string}
      */
-    export function tmpl(templateOrId:string, data?:Object) {
-        var template = !/[^a-zA-Z0-9_-]+/.test(templateOrId) ?
+    export function tmpl(templateOrId: string, data?: Object) {
+        const template = !/[^a-zA-Z0-9_-]+/.test(templateOrId) ?
             document.getElementById(templateOrId).innerHTML : templateOrId;
-        var
+        let
             stringify = JSON.stringify,
             re = /\$\{([\S\s]*?)\}/g,
             strings = [],
@@ -71,17 +71,17 @@ module prest.template {
             m;
         while ((m = re.exec(template))) {
             str = template.slice(i, m.index);
-            strings.push(stringify(str), '(' + m[1] + ')');
+            strings.push(stringify(str), "(" + m[1] + ")");
             i = re.lastIndex;
         }
         str = template.slice(i);
         strings.push(stringify(str));
-        var fn = new Function('obj', 'with(obj)return ' + strings.join('+'));
+        const fn = new Function("obj", "with(obj)return " + strings.join("+"));
         return data ? fn(data) : fn;
     }
 
 
-    var template_cache = {};
+    const template_cache = {};
 
     /**
      * Template engine
@@ -90,22 +90,22 @@ module prest.template {
      * @param data
      * @returns {(data:Object)=>string|string}
      */
-    export function template(templateOrId:string, data?:any) {
+    export function template(templateOrId: string, data?: any) {
         // Simple JavaScript Templating
         // John Resig - http://ejohn.org/ - MIT Licensed
         // Figure out if we're getting a template, or if we need to
         // load the template - and be sure to cache the result.
-        //var fn = !/\W/.test(str) ?
-        var fn = !/[^a-zA-Z0-9_-]+/.test(templateOrId) ?
+        // var fn = !/\W/.test(str) ?
+        const fn = !/[^a-zA-Z0-9_-]+/.test(templateOrId) ?
             template_cache[templateOrId] = template_cache[templateOrId] ||
                 template(document.getElementById(templateOrId).innerHTML) :
             // Generate a reusable function that will serve as a template
             // generator (and which will be cached).
             new Function("obj",
                 "var p=[],print=function(){p.push.apply(p,arguments);};" +
-                    // Introduce the data as local variables using with(){}
+                // Introduce the data as local variables using with(){}
                 "with(obj){p.push('" +
-                    // Convert the template into pure JavaScript
+                // Convert the template into pure JavaScript
                 templateOrId
                     .replace(/[\r\t\n]/g, " ")
                     .split("<%").join("\t")

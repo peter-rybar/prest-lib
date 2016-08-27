@@ -1,25 +1,26 @@
-module prest.http {
+namespace prest.http {
 
     function is_array(obj) {
         return Array.isArray ?
             Array.isArray(obj) :
-            (obj == null || obj == undefined || "boolean|number|string|function|xml".indexOf(typeof obj) != -1 ) ?
+            (obj == null || obj === undefined || "boolean|number|string|function|xml".indexOf(typeof obj) !== -1 ) ?
                 false :
                 (typeof obj.length === "number" && !(obj.propertyIsEnumerable("length")));
     }
 
     export function encodeUrlData(query) {
-        var key_value_pairs = [];
+        const key_value_pairs = [];
 
-        for (var key in query) {
+        for (let key in query) {
             if (query.hasOwnProperty(key)) {
-                var value = query[key];
-                if (typeof value == "object") {
+                const value = query[key];
+                if (typeof value === "object") {
                     if (is_array(value)) {
-                        for (var j = 0; j < value.length; j++)
+                        for (let j = 0; j < value.length; j++) {
                             key_value_pairs.push(
-                                [key, typeof value[j] == "object" ?
+                                [key, typeof value[j] === "object" ?
                                     JSON.stringify(value[j]) : value[j]]);
+                        }
 
                     } else {
                         key_value_pairs.push([key, JSON.stringify(value)]);
@@ -30,7 +31,7 @@ module prest.http {
             }
         }
 
-        for (var j = 0, pair; pair = key_value_pairs[j++]; ) {
+        for (let j = 0, pair; pair = key_value_pairs[j++]; ) {
             key_value_pairs[j - 1] = "" +
                 encodeURIComponent(pair[0]) + "=" + encodeURIComponent(pair[1]);
         }
@@ -38,83 +39,95 @@ module prest.http {
         return key_value_pairs.join("&");
     }
 
-    export function GET(url:string, urlData:Object,
-                        callback:(err:Event, res:HttpResponse) => void,
-                        headers?:Object):void
-    {
-        return new HttpRequest().url(url, urlData).method('GET')
-            .onResponse(response => { callback(null, response); })
-            .onError(e => { callback(e, null); })
+    export function GET(url: string, urlData: Object,
+                        callback: (err: Event, res: HttpResponse) => void,
+                        headers?: Object): void {
+        return new HttpRequest().url(url, urlData).method("GET")
+            .onResponse(response => {
+                callback(null, response);
+            })
+            .onError(e => {
+                callback(e, null);
+            })
             .send(undefined, headers);
     }
 
-    export function POST(url:string, urlData:Object,
-                         callback:(err:Event, res:HttpResponse) => void,
-                         data:any, headers?:Object):void
-    {
-        return new HttpRequest().url(url, urlData).method('POST')
-            .onResponse(response => { callback(null, response); })
-            .onError(e => { callback(e, null); })
+    export function POST(url: string, urlData: Object,
+                         callback: (err: Event, res: HttpResponse) => void,
+                         data: any, headers?: Object): void {
+        return new HttpRequest().url(url, urlData).method("POST")
+            .onResponse(response => {
+                callback(null, response);
+            })
+            .onError(e => {
+                callback(e, null);
+            })
             .send(data, headers);
     }
 
-    export function PUT(url:string, urlData:Object,
-                        callback:(err:Event, res:HttpResponse) => void,
-                        data:any, headers?:Object):void
-    {
-        return new HttpRequest().url(url, urlData).method('PUT')
-            .onResponse(response => { callback(null, response); })
-            .onError(e => { callback(e, null); })
+    export function PUT(url: string, urlData: Object,
+                        callback: (err: Event, res: HttpResponse) => void,
+                        data: any, headers?: Object): void {
+        return new HttpRequest().url(url, urlData).method("PUT")
+            .onResponse(response => {
+                callback(null, response);
+            })
+            .onError(e => {
+                callback(e, null);
+            })
             .send(data, headers);
     }
 
-    export function DELETE(url:string, urlData:Object,
-                           callback:(err:Event, res:HttpResponse) => void,
-                           headers?:Object):void
-    {
-        return new HttpRequest().url(url, urlData).method('DELETE')
-            .onResponse(response => { callback(null, response); })
-            .onError(e => { callback(e, null); })
+    export function DELETE(url: string, urlData: Object,
+                           callback: (err: Event, res: HttpResponse) => void,
+                           headers?: Object): void {
+        return new HttpRequest().url(url, urlData).method("DELETE")
+            .onResponse(response => {
+                callback(null, response);
+            })
+            .onError(e => {
+                callback(e, null);
+            })
             .send(undefined, headers);
     }
 
     export class HttpResponse {
 
-        private _xmlHttpRequest:XMLHttpRequest;
+        private _xmlHttpRequest: XMLHttpRequest;
 
-        constructor(xmlHttpRequest:XMLHttpRequest) {
+        constructor(xmlHttpRequest: XMLHttpRequest) {
             this._xmlHttpRequest = xmlHttpRequest;
         }
 
-        getHeaders():string {
+        getHeaders(): string {
             return this._xmlHttpRequest.getAllResponseHeaders();
         }
 
-        getHeader(header:string):string {
+        getHeader(header: string): string {
             return this._xmlHttpRequest.getResponseHeader(header);
         }
 
-        getBody():any {
+        getBody(): any {
             return this._xmlHttpRequest.response;
         }
 
-        getType():string {
+        getType(): string {
             return this._xmlHttpRequest.responseType;
         }
 
-        getContentType():string {
-            return this.getHeader('Content-Type');
+        getContentType(): string {
+            return this.getHeader("Content-Type");
         }
 
-        getText():string {
+        getText(): string {
             return this._xmlHttpRequest.responseText;
         }
 
-        getJson():any {
+        getJson(): any {
             return JSON.parse(this._xmlHttpRequest.responseText);
         }
 
-        getXml():string {
+        getXml(): string {
             return this._xmlHttpRequest.responseXML;
         }
 
@@ -122,79 +135,78 @@ module prest.http {
 
     export class HttpRequest {
 
-        private _url:string;
-        private _urlData:Object;
-        private _method:string = 'GET';
+        private _url: string;
+        private _urlData: Object;
+        private _method: string = "GET";
 
-        //private _onProgress:(response:HttpResponse) => void;
-        private _onResponse:(response:HttpResponse) => void;
-        private _onError:(e:Event) => void;
+        // private _onProgress:(response:HttpResponse) => void;
+        private _onResponse: (response: HttpResponse) => void;
+        private _onError: (e: Event) => void;
 
-        private _async:boolean = true;
+        private _async: boolean = true;
 
         constructor() {
         }
 
-        url(url:string, urlData?:Object):HttpRequest {
+        url(url: string, urlData?: Object): HttpRequest {
             this._url = url;
             this._urlData = urlData;
             return this;
         }
 
-        method(method:string):HttpRequest {
+        method(method: string): HttpRequest {
             this._method = method;
             return this;
         }
 
-        //onProgress(onProgress:(response:HttpResponse) => void):HttpRequest {
+        // onProgress(onProgress:(response:HttpResponse) => void):HttpRequest {
         //    this._onProgress = onProgress;
         //    return this;
-        //}
+        // }
 
-        onResponse(onResponse:(response:HttpResponse) => void):HttpRequest {
+        onResponse(onResponse: (response: HttpResponse) => void): HttpRequest {
             this._onResponse = onResponse;
             return this;
         }
 
-        onError(onError:(e:Event) => void):HttpRequest {
+        onError(onError: (e: Event) => void): HttpRequest {
             this._onError = onError;
             return this;
         }
 
-        async(async:boolean):HttpRequest {
+        async(async: boolean): HttpRequest {
             this._async = async;
             return this;
         }
 
-        send(data?:any, headers?:Object):void {
+        send(data?: any, headers?: Object): void {
             this.sendWithCallbacks(this._onResponse, this._onError, data, headers);
         }
 
-        sendWithCallbacks(onResponse:(response:HttpResponse) => void,
-                          onError:(err:Event) => void,
-                          data?:any, headers?:Object):void
-        {
-            var httpRequest = new XMLHttpRequest();
+        sendWithCallbacks(onResponse: (response: HttpResponse) => void,
+                          onError: (err: Event) => void,
+                          data?: any, headers?: Object): void {
+            const httpRequest = new XMLHttpRequest();
 
-            var url = this._url;
+            let url = this._url;
             if (this._urlData) {
-                var query = encodeUrlData(this._urlData);
-                url = query ? (url + '?' + query) : url;
+                const query = encodeUrlData(this._urlData);
+                url = query ? (url + "?" + query) : url;
             }
-            console.debug('HttpRequest: ' + this._method + ' ' + url, data);
+            console.debug("HttpRequest: " + this._method + " " + url, data);
 
             httpRequest.open(this._method, url, this._async);
 
-            for (var header in headers) {
+            for (let header in headers) {
                 if (headers.hasOwnProperty(header)) {
                     httpRequest.setRequestHeader(header, headers[header]);
                 }
             }
 
             if (this._async) {
-                httpRequest.onreadystatechange = (e:Event) => {
+                httpRequest.onreadystatechange = (e: Event) => {
                     switch (httpRequest.readyState) {
-                        //case 3: // loading
+                        // case 3: // loading
                         //    if (this._onProgress) {
                         //        this._onProgress(new HttpResponse(httpRequest));
                         //    }
@@ -202,7 +214,7 @@ module prest.http {
                         case 4: // done
                             if (
                                 (httpRequest.status >= 200 && httpRequest.status < 300) ||
-                                httpRequest.status == 0 // schemes other than http (file, ftp)
+                                httpRequest.status === 0 // schemes other than http (file, ftp)
                             ) {
                                 if (onResponse) {
                                     onResponse(new HttpResponse(httpRequest));
@@ -216,17 +228,17 @@ module prest.http {
                     }
                 };
                 if (data) {
-                    var payload = (typeof data === 'string') ? data : JSON.stringify(data);
+                    const payload = (typeof data === "string") ? data : JSON.stringify(data);
                     httpRequest.send(payload);
                 } else {
                     httpRequest.send();
                 }
             } else {
-                httpRequest.onerror = (e:ErrorEvent) => {
+                httpRequest.onerror = (e: ErrorEvent) => {
                     onError(e);
                 };
                 if (data) {
-                    var payload = (typeof data === 'string') ? data : JSON.stringify(data);
+                    const payload = (typeof data === "string") ? data : JSON.stringify(data);
                     httpRequest.send(payload);
                 } else {
                     httpRequest.send();
@@ -654,43 +666,43 @@ export class HttpRequest {
     }
 */
 
-//private load(url:string) {
-//	var request:XMLHttpRequest = new XMLHttpRequest();
+// private load(url:string) {
+//    var request:XMLHttpRequest = new XMLHttpRequest();
 //
-//	request.addEventListener("load", (e:Event) => {
-//		var request:XMLHttpRequest = (<XMLHttpRequest> e.target);
+//    request.addEventListener("load", (e:Event) => {
+//        var request:XMLHttpRequest = (<XMLHttpRequest> e.target);
 //
-//		console.log(request.responseType);
+//        console.log(request.responseType);
 //
-//		var xml:Document = request.responseXML;
-//		var txt:string = request.responseText;
-//	});
+//        var xml:Document = request.responseXML;
+//        var txt:string = request.responseText;
+//    });
 //
-//	request.onload = (e:Event) => {
-//		var request:XMLHttpRequest = (<XMLHttpRequest> e.target);
+//    request.onload = (e:Event) => {
+//        var request:XMLHttpRequest = (<XMLHttpRequest> e.target);
 //
-//		console.log(request.responseType);
+//        console.log(request.responseType);
 //
-//		var xml:Document = request.responseXML;
-//		var txt:string = request.responseText;
-//	};
+//        var xml:Document = request.responseXML;
+//        var txt:string = request.responseText;
+//    };
 //
-//	request.onerror = (e:Event) => {
-//		var request:XMLHttpRequest = (<XMLHttpRequest> e.target);
-//		console.log(e);
-//		request.statusText;
-//	};
+//    request.onerror = (e:Event) => {
+//        var request:XMLHttpRequest = (<XMLHttpRequest> e.target);
+//        console.log(e);
+//        request.statusText;
+//    };
 
-//			request.open("GET", url);
-//			request.setRequestHeader("Content-Type", "text/json");
-//			request.send(null);
-//		}
+//            request.open("GET", url);
+//            request.setRequestHeader("Content-Type", "text/json");
+//            request.send(null);
+//        }
 
 /*
  HttpRequest httpRequest = new HttpRequest();
  httpRequest.setUrl(url);
- //				httpRequest.setUrlParam("start", Integer.toString(range.getStart()));
- //				httpRequest.setUrlParam("limit", Integer.toString(range.getLength()));
+ //                httpRequest.setUrlParam("start", Integer.toString(range.getStart()));
+ //                httpRequest.setUrlParam("limit", Integer.toString(range.getLength()));
  httpRequest.setUrlParams(urlParams);
  httpRequest.setCallback(selectPersonsCallback);
  httpRequest.get();

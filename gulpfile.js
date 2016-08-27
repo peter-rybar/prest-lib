@@ -3,6 +3,7 @@ var gulp = require('gulp');
 var using = require('gulp-using');
 var del = require('del');
 var typescript = require('gulp-typescript');
+var tslint = require("gulp-tslint");
 var sourcemaps = require('gulp-sourcemaps');
 var concat = require('gulp-concat');
 var uglify = require('gulp-uglify');
@@ -20,9 +21,18 @@ var dest = 'dist/';
 var dest_js = pkg.name + '.js';
 
 
-gulp.task('default', ['build', 'dist']);
+gulp.task('default', ['tslint', 'build', 'dist']);
 
 gulp.task('build', ['build:src', 'build:test']);
+
+gulp.task("tslint", function () {
+    return gulp.src([src_ts, test_ts])
+        .pipe(using({prefix:'tslint -> ' + src_ts}))
+        .pipe(tslint({
+            formatter: "verbose"
+        }))
+        .pipe(tslint.report())
+});
 
 gulp.task('build:src', function () {
     return gulp.src(src_ts)

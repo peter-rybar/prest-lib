@@ -1,4 +1,4 @@
-module prest.signal {
+namespace prest.signal {
 
     /**
      * pREST Signal-Slot pattern module
@@ -8,7 +8,7 @@ module prest.signal {
      * Slot interface
      */
     interface Slot<T> {
-        callback: (data?:T) => void;
+        callback: (data?: T) => void;
         object?: any;
     }
 
@@ -19,8 +19,8 @@ module prest.signal {
      */
     export class Signal<T> {
 
-        private _slots:Slot<T>[];
-        private _emit:boolean;
+        private _slots: Slot<T>[];
+        private _emit: boolean;
 
         constructor() {
             this._slots = [];
@@ -28,16 +28,16 @@ module prest.signal {
         }
 
         // ES5
-        //set slot(slot:(data?:T) => void) {
-        //    this.connect(slot);
-        //}
+        // set slot(slot:(data?:T) => void) {
+        //     this.connect(slot);
+        // }
 
         /**
          * Connects slot
          */
-        connect(callback:(data?:T) => void):void;
-        connect(callback:(data?:T) => void, object?:Object):void;
-        connect(callback:(data?:any) => void, object?:Object):void {
+        connect(callback: (data?: T) => void): void;
+        connect(callback: (data?: T) => void, object?: Object): void;
+        connect(callback: (data?: any) => void, object?: Object): void {
             if (object) {
                 this._slots.push({callback: callback, object: object});
             } else {
@@ -48,9 +48,8 @@ module prest.signal {
         /**
          * Disconnects slot
          */
-        disconnect(callback:(data?:T) => void, object?:Object):void {
-            var slots:Slot<T>[] = this._slots;
-            this._slots = slots.filter((slot) => {
+        disconnect(callback: (data?: T) => void, object?: Object): void {
+            this._slots = this._slots.filter((slot) => {
                 return (slot.callback !== callback) && (slot.object !== object);
             });
         }
@@ -58,15 +57,21 @@ module prest.signal {
         /**
          * Disconnects all slots
          */
-        disconnectAll():void {
+        disconnectAll(): void {
             this._slots = [];
         }
 
-        freeze():void {
+        /**
+         * Freeze signal propagation
+         */
+        freeze(): void {
             this._emit = false;
         }
 
-        unfreeze():void {
+        /**
+         * Unfreeze signal propagation
+         */
+        unfreeze(): void {
             this._emit = true;
         }
 
@@ -75,24 +80,20 @@ module prest.signal {
          * signal.emit({any number of parameters}),
          * emit returns accumulator.value().
          */
-        emit():void;
-        emit(data?:T):void;
-        emit(data?:any):void {
+        emit(): any[];
+        emit(data?: T): any[];
+        emit(data?: any): any[] {
             if (this._emit) {
-                var slots:Slot<T>[] = this._slots;
-                for (var i = 0; i < slots.length; i++) {
-                    var slot:Slot<T> = slots[i];
-                    var object:Object = slot.object;
+                return this._slots.map((slot) => {
+                    const object: Object = slot.object;
                     if (object) {
-                        var cb:Function = slot.callback;
-                        cb.call(object, data);
-                        //cb.apply(object, data);
-                        //slot.callback(data);
+                        return slot.callback.call(object, data);
                     } else {
-                        slot.callback(data);
+                        return slot.callback(data);
                     }
-                }
+                });
             }
+            return [];
         }
 
     }

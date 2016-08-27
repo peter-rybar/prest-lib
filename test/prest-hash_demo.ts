@@ -5,28 +5,28 @@ import Hash = prest.hash.Hash;
 
 
 window.onload = () => {
-    var output = document.getElementById("output");
+    const output = document.getElementById("output");
     output.innerHTML = "test";
 
-    var hash:Hash<any> = new Hash<any>();
+    const hash: Hash<any> = new Hash<any>();
     hash.setEncoder((data) => {
         return prest.encode.UrlEncodedData.encode(data);
-        //return prest.encode.Base64.encode(
+        // return prest.encode.Base64.encode(
         //    prest.encode.UrlEncodedData.encode(data));
     });
     hash.setDecoder((str) => {
         return prest.encode.UrlEncodedData.decode(str);
-        //return prest.encode.UrlEncodedData.decode(
+        // return prest.encode.UrlEncodedData.decode(
         //    prest.encode.Base64.decode(str));
     });
     hash.onChange((data) => {
-        console.log('hash: ' + JSON.stringify(data));
-        output.innerHTML += '<br/>' + 'hash: ' + JSON.stringify(data);
+        console.log("hash: " + JSON.stringify(data));
+        output.innerHTML += "<br/>" + "hash: " + JSON.stringify(data);
     });
-    hash.write({aaa: 'aaa'});
+    hash.write({aaa: "aaa"});
 
-    var h:HTMLElement = document.getElementById("hash");
-    h.onclick = (e:MouseEvent) => {
+    const h: HTMLElement = document.getElementById("hash");
+    h.onclick = (e: MouseEvent) => {
         hash.write({aaa: new Date().getTime()});
     };
 };

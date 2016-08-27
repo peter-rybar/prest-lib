@@ -1,28 +1,28 @@
 /// <reference path="../../../src/prest/prest-widgets.ts" />
 
-module gallery {
+namespace gallery {
 
     export class Item {
-        constructor(public title:string, public url:string, public thumb:string) {
+        constructor(public title: string, public url: string, public thumb: string) {
         }
     }
 
     export class GalleryWidget implements prest.widgets.Widget {
 
-        private _element:HTMLDivElement;
-        private _items:Item[] = [];
-        private _onSelect:(item)=>void;
+        private _element: HTMLDivElement;
+        private _items: Item[] = [];
+        private _onSelect: (item) => void;
 
-        constructor(items:Item[]) {
+        constructor(items: Item[]) {
             this._items = items;
         }
 
-        onSelect(callback:(item:Item)=>void) {
+        onSelect(callback: (item: Item) => void) {
             this._onSelect = callback;
         }
 
-        element():HTMLElement {
-            var div = document.createElement('div');
+        element(): HTMLElement {
+            const div = document.createElement("div");
             this._element = div;
             div.innerHTML = `
                 <style>
@@ -48,21 +48,21 @@ module gallery {
                 <div class="gallery-thumbs"></div>
             `;
 
-            var updateImage = (e) => {
+            const updateImage = (e) => {
                 e.stopPropagation();
-                var event = e || window.event;
-                var target = (event.target || e.srcElement) as HTMLElement;
-                if (target.nodeName == 'IMG') {
-                    var a = target.parentNode as HTMLAnchorElement;
-                    var i = div.getElementsByClassName('gallery-image')[0]
-                        .getElementsByTagName('img')[0] as HTMLImageElement;
+                const event = e || window.event;
+                const target = (event.target || e.srcElement) as HTMLElement;
+                if (target.nodeName === "IMG") {
+                    const a = target.parentNode as HTMLAnchorElement;
+                    const i = div.getElementsByClassName("gallery-image")[0]
+                        .getElementsByTagName("img")[0] as HTMLImageElement;
                     i.alt = a.title;
                     i.src = a.href;
                 }
                 return false;
             };
 
-            var thumbs = div.getElementsByClassName('gallery-thumbs')[0] as HTMLDivElement;
+            const thumbs = div.getElementsByClassName("gallery-thumbs")[0] as HTMLDivElement;
             thumbs.onclick = updateImage;
             thumbs.onmouseover = updateImage;
 
@@ -70,16 +70,16 @@ module gallery {
             return div;
         }
 
-        private _render():void {
+        private _render(): void {
             if (this._items.length > 0) {
-                var item = this._items[0];
-                var e = this._element.getElementsByClassName('gallery-image')[0];
+                const item = this._items[0];
+                const e = this._element.getElementsByClassName("gallery-image")[0];
                 e.innerHTML = `<img src="${item.url}" alt="${item.title}">`;
             }
-            var t = this._element.getElementsByClassName('gallery-thumbs')[0];
+            const t = this._element.getElementsByClassName("gallery-thumbs")[0];
             t.innerHTML = this._items.map((item) => {
                 return `<a href="${item.url}" title="${item.title}"><img src="${item.thumb}"></a>`;
-            }).join(' ');
+            }).join(" ");
         }
 
     }

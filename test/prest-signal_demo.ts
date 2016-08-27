@@ -3,11 +3,11 @@
 import Signal = prest.signal.Signal;
 
 
-var s:Signal<string> = new Signal<string>();
+const s: Signal<string> = new Signal<string>();
 
 console.log("-------------------------------------");
 
-var slotFunction = (data) => {
+const slotFunction = (data) => {
     console.log("function data: " + data);
 };
 
@@ -23,12 +23,12 @@ s.emit("emit");
 console.log("-------------------------------------");
 
 class X {
-    slotMethod(data:string):void {
+    slotMethod(data: string): void {
         console.log("method data: " + data, this);
     }
 }
 
-var x = new X();
+const x = new X();
 
 s.connect(x.slotMethod, x);
 
@@ -56,18 +56,18 @@ class A {
 class B {
     private a = "B.a";
 
-    slot = (data:number) => {
+    slot = (data: number) => {
         console.log("B.slot() data: '" + this.a + "' " + " " + data);
     }
 }
 
-function slot(data:number) {
+function slot(data: number) {
     console.log("slot() data: '" + this.a + "' " + " " + data);
 }
 
-var a = new A();
+const a = new A();
 
-var b = new B();
+const b = new B();
 
 a.sigNum.connect(a.slot);
 a.sigNum.connect(a.slot, a);
@@ -83,7 +83,7 @@ a.sigNum.emit(5);
 console.log("-------------------------------------");
 
 a.sigStr.connect(a.slot, a);
-//a.sigStr.slot = slot; // ES5
+// a.sigStr.slot = slot; // ES5
 
 a.sigStr.emit("str");
 
