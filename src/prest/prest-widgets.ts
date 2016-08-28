@@ -18,45 +18,40 @@ namespace prest.widgets {
         }
     }
 
-    export function xEventsBind(element: HTMLElement, context: Object, events: Array<string> = []) {
-        // var events = [];
-        if (!events.length) {
-            // for (var k in context) {
-            //     var m = k.match(/^_([a-z]+)_.*/);
-            //     if (m && events.indexOf(m[1]) == -1) {
-            //         events.push(m[1]);
-            //     }
-            // }
-            for (let k in element) {
-                if (element.hasOwnProperty(k) && k.search("on") === 0) {
-                    const event = k.slice(2);
-                    const x = element.querySelectorAll("[x-" + event + "]");
-                    // console.log("xEventsBind: ", event, x);
-                    if (x.length) {
-                        events.push(event);
-                    }
-                }
-            }
-        }
-        // console.log(events);
-        for (let event of events) {
-            // console.debug("xEventsBind: ", "x-" + event);
-            element.addEventListener(event, function (e) {
-                const evt = e || window.event;
+
+    if (!Element.prototype.matches) {
+        const ep: any = Element.prototype;
+        if (ep.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
+            ep.matches = ep.webkitMatchesSelector;
+        if (ep.msMatchesSelector) // IE9/10/11 & Edge
+            ep.matches = ep.msMatchesSelector;
+        if (ep.mozMatchesSelector) // FF<34
+            ep.matches = ep.mozMatchesSelector;
+        if (ep.oMatchesSelector) // Opera
+            ep.matches = ep.oMatchesSelector;
+    }
+
+    export function addEventListener(element: HTMLElement,
+                                     selector: string,
+                                     event: string,
+                                     listener: (target: HTMLElement, evt: Event) => void,
+                                     useCapture: boolean = false) {
+        element.addEventListener(
+            event,
+            function (e: Event) {
+                const evt: Event = e || window.event;
                 const target = (evt.target || e.srcElement) as HTMLElement;
-                if (target.hasAttribute("x-" + evt.type)) {
-                    const methodName = target.getAttribute("x-" + evt.type);
-                    const method = context[methodName];
-                    // console.debug("xEventsBind call: ", evt.type, methodName, method);
-                    if (method) {
-                        method.call(context, target, evt);
-                    } else {
-                        console.warn("xEventsBind missing method: ", methodName);
-                    }
+                if (target && target.matches(selector)) {
+                    listener(target, evt);
                 }
-                return false;
-            });
-        }
+            },
+            useCapture);
+    }
+    export function removeEventListener(element: HTMLElement,
+                                        event: string,
+                                        listener: (evt: Event) => void,
+                                        useCapture: boolean = false) {
+        element.removeEventListener(event, listener, useCapture);
     }
 
 }

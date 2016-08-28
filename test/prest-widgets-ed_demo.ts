@@ -33,7 +33,13 @@ window.onload = () => {
                 const e = prest.widgets.element(`<ol class="widget"></ol>`);
                 this._element = e;
                 this._renderItems();
-                prest.widgets.xEventsBind(e, this, ["click"]);
+                prest.widgets.addEventListener(e, "li, li *", "click",
+                    (target: HTMLElement, e: Event) => {
+                        if (target.hasAttribute("data-id")) {
+                            const id = target.getAttribute("data-id");
+                            this._onSelect && this._onSelect(this._items[id]);
+                        }
+                    });
             }
             return this._element;
         }
@@ -42,18 +48,11 @@ window.onload = () => {
             if (this._element) {
                 this._element.innerHTML = this._items.map((item, i) => {
                     return `
-                        <li x-click="_click" data-id="${i}">
-                            <span class="label" x-click="_click" data-id="${i}">${item.text}</span>
-                            <small class="count" x-click="_click" data-id="${i}">[${item.count}]</small>
+                        <li data-id="${i}">
+                            <span class="label" data-id="${i}">${item.text}</span>
+                            <small class="count" data-id="${i}">[${item.count}]</small>
                         </li>`;
                 }).join("\n");
-            }
-        }
-
-        private _click(target, event): void {
-            if (target.hasAttribute("data-id")) {
-                const id = target.getAttribute("data-id");
-                this._onSelect && this._onSelect(this._items[id]);
             }
         }
 
