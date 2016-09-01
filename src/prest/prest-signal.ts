@@ -96,6 +96,27 @@ namespace prest.signal {
             return [];
         }
 
+        /*
+        emitAsync(): void;
+        emitAsync(data?: T): void;
+        emitAsync(data?: any): void {
+            if (this._emit) {
+                this._slots.forEach((slot) => {
+                    const object: Object = slot.object;
+                    if (object) {
+                        setTimeout(() => {
+                            slot.callback.call(object, data);
+                        });
+                    } else {
+                        setTimeout(() => {
+                            slot.callback(data);
+                        });
+                    }
+                });
+            }
+        }
+        */
+
     }
 
 }
