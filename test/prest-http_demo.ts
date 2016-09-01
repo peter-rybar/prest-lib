@@ -3,25 +3,32 @@
 window.onload = () => {
 
     new prest.http.HttpRequest()
-        .url("https://maps.googleapis.com/maps/api/geocode/json",
-            {sensor: false, address: "Bratislava I", xxx: ["yyy", "zzz"]})
-        .method("GET")
+        .get("https://maps.googleapis.com/maps/api/geocode/json", {
+            sensor: false,
+            address: "Bratislava I",
+            xxx: ["yyy", "zzz"]
+        })
         .onResponse((response: prest.http.HttpResponse) => {
             console.log("response: " + response.getContentType(), response.getJson());
         })
         .onError((error) => {
             console.log("response error: ", error);
         })
+        .noCache()
         .send();
 
-    prest.http.GET(
-        "https://maps.googleapis.com/maps/api/geocode/json",
-        {sensor: false, address: "Bratislava II", xxx: ["yyy", "zzz"]},
-        (err, res) => {
-            if (err) {
-                console.log("response error: ", err);
-            } else {
-                console.log("response: " + res.getContentType(), res.getJson());
-            }
-        });
+    // new prest.http.HttpRequest()
+    //     .get()
+    //     .url("bigfile.data")
+    //     .onProgress((progress) => {
+    //         console.log("progress: ", progress);
+    //     })
+    //     .onResponse((response: prest.http.HttpResponse) => {
+    //         console.log("response: " + response.getContentType(), response.getJson());
+    //     })
+    //     .onError((error) => {
+    //         console.log("response error: ", error);
+    //     })
+    //     .noCache()
+    //     .send();
 };

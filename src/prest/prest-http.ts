@@ -39,58 +39,6 @@ namespace prest.http {
         return key_value_pairs.join("&");
     }
 
-    export function GET(url: string, urlData: Object,
-                        callback: (err: Event, res: HttpResponse) => void,
-                        headers?: Object): void {
-        return new HttpRequest().url(url, urlData).method("GET")
-            .onResponse(response => {
-                callback(null, response);
-            })
-            .onError(e => {
-                callback(e, null);
-            })
-            .send(undefined, headers);
-    }
-
-    export function POST(url: string, urlData: Object,
-                         callback: (err: Event, res: HttpResponse) => void,
-                         data: any, headers?: Object): void {
-        return new HttpRequest().url(url, urlData).method("POST")
-            .onResponse(response => {
-                callback(null, response);
-            })
-            .onError(e => {
-                callback(e, null);
-            })
-            .send(data, headers);
-    }
-
-    export function PUT(url: string, urlData: Object,
-                        callback: (err: Event, res: HttpResponse) => void,
-                        data: any, headers?: Object): void {
-        return new HttpRequest().url(url, urlData).method("PUT")
-            .onResponse(response => {
-                callback(null, response);
-            })
-            .onError(e => {
-                callback(e, null);
-            })
-            .send(data, headers);
-    }
-
-    export function DELETE(url: string, urlData: Object,
-                           callback: (err: Event, res: HttpResponse) => void,
-                           headers?: Object): void {
-        return new HttpRequest().url(url, urlData).method("DELETE")
-            .onResponse(response => {
-                callback(null, response);
-            })
-            .onError(e => {
-                callback(e, null);
-            })
-            .send(undefined, headers);
-    }
-
     export class HttpResponse {
 
         private _xmlHttpRequest: XMLHttpRequest;
@@ -139,13 +87,38 @@ namespace prest.http {
         private _urlData: Object;
         private _method: string = "GET";
 
-        // private _onProgress:(response:HttpResponse) => void;
+        private _onProgress: (progress: any) => void;
         private _onResponse: (response: HttpResponse) => void;
         private _onError: (e: Event) => void;
 
         private _async: boolean = true;
+        private _noCache: boolean = false;
 
         constructor() {
+        }
+
+        get(url: string, urlData?: Object): HttpRequest {
+            this.method("GET");
+            this.url(url, urlData);
+            return this;
+        }
+
+        post(url: string, urlData?: Object): HttpRequest {
+            this.method("POST");
+            this.url(url, urlData);
+            return this;
+        }
+
+        put(url: string, urlData?: Object): HttpRequest {
+            this.method("PUT");
+            this.url(url, urlData);
+            return this;
+        }
+
+        del(url: string, urlData?: Object): HttpRequest {
+            this.method("DELETE");
+            this.url(url, urlData);
+            return this;
         }
 
         url(url: string, urlData?: Object): HttpRequest {
@@ -159,10 +132,10 @@ namespace prest.http {
             return this;
         }
 
-        // onProgress(onProgress:(response:HttpResponse) => void):HttpRequest {
-        //    this._onProgress = onProgress;
-        //    return this;
-        // }
+        onProgress(onProgress: (progress: any) => void): HttpRequest {
+            this._onProgress = onProgress;
+            return this;
+        }
 
         onResponse(onResponse: (response: HttpResponse) => void): HttpRequest {
             this._onResponse = onResponse;
@@ -179,19 +152,28 @@ namespace prest.http {
             return this;
         }
 
-        send(data?: any, headers?: Object): void {
-            this.sendWithCallbacks(this._onResponse, this._onError, data, headers);
+        noCache(noCache: boolean = true): HttpRequest {
+            this._noCache = noCache;
+            return this;
         }
 
-        sendWithCallbacks(onResponse: (response: HttpResponse) => void,
-                          onError: (err: Event) => void,
-                          data?: any, headers?: Object): void {
+        send(data?: any, headers?: Object): void {
+            this._send(this._onResponse, this._onError, data, headers);
+        }
+
+        private _send(onResponse: (response: HttpResponse) => void,
+                      onError: (err: Event) => void,
+                      data?: any,
+                      headers?: Object): void {
             const httpRequest = new XMLHttpRequest();
 
             let url = this._url;
             if (this._urlData) {
                 const query = encodeUrlData(this._urlData);
                 url = query ? (url + "?" + query) : url;
+            }
+            if (this._noCache) {
+                url += ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
             }
             console.debug("HttpRequest: " + this._method + " " + url, data);
 
@@ -227,6 +209,18 @@ namespace prest.http {
                             break;
                     }
                 };
+
+                if ("onprogress" in httpRequest) {
+                    if (this._onProgress) {
+                        const onprogress = (e) => {
+                            if (e.lengthComputable) {
+                                this._onProgress({loaded: e.loaded, total: e.total});
+                            }
+                        };
+                        httpRequest.upload.onprogress = onprogress;
+                        httpRequest.onprogress = onprogress;
+                    }
+                }
                 if (data) {
                     const payload = (typeof data === "string") ? data : JSON.stringify(data);
                     httpRequest.send(payload);
@@ -637,8 +631,8 @@ export class HttpRequest {
             payload.push('Content-Disposition: file; name="' + file[file].name + '"; filename="' + files[file].filename + '"');
             payload.push('Content-Type: application/octet-stream');
             payload.push('');
-            payload.push(files[file].data);//todo
-            //payload.push(HttpRequest.get_file_content(files[file]));//todo
+            payload.push(files[file].data);
+            //payload.push(HttpRequest.get_file_content(files[file]));
             payload.push(boundary);
         }
 
