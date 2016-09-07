@@ -1,44 +1,58 @@
 /// <reference path="../src/prest/prest-form.ts" />
 
 window.onload = () => {
-    const emptyValueValidator = (value: string, locale: string) => {
+    const stringValidator = (entry: prest.form.Entry, locale: string) => {
         switch (locale) {
             case "sk":
-                return value ? "" : "Prázdna hodnota";
+                return entry.getValue() ? "" : "Prázdna hodnota";
             default:
-                return value ? "" : "Empty value";
+                return entry.getValue() ? "" : "Empty value";
         }
     };
-    const showChange = (value) => {
-        document.getElementById("change").innerHTML = value;
+
+    const fileValidator = (entry: prest.form.FileEntry, locale: string) => {
+        switch (locale) {
+            case "sk":
+                return entry.getFile() ? "" : "Prázdna hodnota";
+            default:
+                return entry.getFile() ? "" : "Empty value";
+        }
     };
 
-    const f = new prest.form.Form("form")
+    const showChange = (entry: prest.form.Entry) => {
+        document.getElementById("change").innerHTML = entry.getValue();
+    };
+
+    new prest.form.Form("form")
         .addEntry(new prest.form.InputEntry("name")
             .setValue("Peter")
-            .setValidator(emptyValueValidator)
+            .setValidator(stringValidator)
             .onChange(showChange))
         .addEntry(new prest.form.SelectEntry("sex")
             .setValue("M")
-            .setValidator(emptyValueValidator)
+            .setValidator(stringValidator)
             .onChange(showChange))
         .addEntry(new prest.form.CheckboxEntry("agree")
             .setValue(true.toString())
-            .setValidator(emptyValueValidator)
+            .setValidator(stringValidator)
             .onChange(showChange))
         .addEntry(new prest.form.RadioEntry(["yes-no-y", "yes-no-n"])
             .setValue("n")
-            .setValidator(emptyValueValidator)
+            .setValidator(stringValidator)
             .onChange(showChange))
-        .onSubmit(() => {
-            const errors = f.validate("sk");
-            for (let error in errors) {
+        .addEntry(new prest.form.FileEntry("file")
+            .setValue("File")
+            .setValidator(fileValidator)
+            .onChange(showChange))
+        .onSubmit((form: prest.form.Form) => {
+            const errors = form.validate("sk");
+            for (const error in errors) {
                 if (errors.hasOwnProperty(error)) {
                     document.getElementById(error + "-err").innerHTML = errors[error];
                 }
             }
-            if (f.isValid(errors)) {
-                document.getElementById("values").innerHTML = JSON.stringify(f.getValues());
+            if (form.isValid(errors)) {
+                document.getElementById("values").innerHTML = JSON.stringify(form.getValues());
             } else {
                 document.getElementById("values").innerHTML = "";
             }

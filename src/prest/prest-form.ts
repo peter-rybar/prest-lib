@@ -5,27 +5,26 @@ namespace prest.form {
         getValue(): string;
         setValue(value: string): Entry;
         validate(locale?: string): Object;
-        setValidator(validator: (value: string, locale?: string) => string): Entry;
-        onChange(callback: (value) => void): Entry;
+        setValidator(validator: (entry: Entry, locale?: string) => string): Entry;
+        onChange(callback: (entry: Entry) => void): Entry;
     }
 
 
     export class InputEntry implements Entry {
 
         private _element: HTMLInputElement;
-        private _validator: (value: string, locale: string) => string;
-        private _onChange: (value: string) => void;
+        private _validator: (entry: Entry, locale: string) => string;
+        private _onChange: (entry: Entry) => void;
 
         constructor(element: HTMLInputElement|string) {
             if (typeof element === "string") {
-                this._element = <HTMLInputElement>document.getElementById(element);
+                this._element = document.getElementById(element) as HTMLInputElement;
             } else {
                 this._element = element;
             }
-            const self = this;
             this._element.addEventListener("change", (e) => {
-                if (self._onChange) {
-                    self._onChange(self._element.value);
+                if (this._onChange) {
+                    this._onChange(this);
                 }
             });
         }
@@ -45,17 +44,17 @@ namespace prest.form {
 
         validate(locale?: string): Object {
             if (this._validator) {
-                return this._validator(this.getValue(), locale);
+                return this._validator(this, locale);
             }
             return "";
         }
 
-        setValidator(validator: (value: string, locale?: string) => string): Entry {
+        setValidator(validator: (entry: Entry, locale?: string) => string): Entry {
             this._validator = validator;
             return this;
         }
 
-        onChange(callback: (value) => void): Entry {
+        onChange(callback: (entry: Entry) => void): Entry {
             this._onChange = callback;
             return this;
         }
@@ -66,19 +65,18 @@ namespace prest.form {
     export class CheckboxEntry implements Entry {
 
         private _element: HTMLInputElement;
-        private _validator: (value: string, locale: string) => string;
-        private _onChange: (value: boolean) => void;
+        private _validator: (entry: Entry, locale: string) => string;
+        private _onChange: (entry: Entry) => void;
 
         constructor(element: HTMLInputElement|string) {
             if (typeof element === "string") {
-                this._element = <HTMLInputElement>document.getElementById(element);
+                this._element = document.getElementById(element) as HTMLInputElement;
             } else {
                 this._element = element;
             }
-            const self = this;
             this._element.addEventListener("change", (e) => {
-                if (self._onChange) {
-                    self._onChange(self._element.checked);
+                if (this._onChange) {
+                    this._onChange(this);
                 }
             });
         }
@@ -98,17 +96,17 @@ namespace prest.form {
 
         validate(locale?: string): Object {
             if (this._validator) {
-                return this._validator(this.getValue(), locale);
+                return this._validator(this, locale);
             }
             return "";
         }
 
-        setValidator(validator: (value: string, locale?: string) => string): Entry {
+        setValidator(validator: (entry: Entry, locale?: string) => string): Entry {
             this._validator = validator;
             return this;
         }
 
-        onChange(callback: (value) => void): Entry {
+        onChange(callback: (entry: Entry) => void): Entry {
             this._onChange = callback;
             return this;
         }
@@ -119,19 +117,18 @@ namespace prest.form {
     export class SelectEntry implements Entry {
 
         private _element: HTMLSelectElement;
-        private _validator: (value: string, locale: string) => string;
-        private _onChange: (value: string) => void;
+        private _validator: (entry: Entry, locale: string) => string;
+        private _onChange: (entry: Entry) => void;
 
         constructor(element: HTMLSelectElement|string) {
             if (typeof element === "string") {
-                this._element = <HTMLSelectElement>document.getElementById(element);
+                this._element = document.getElementById(element) as HTMLSelectElement;
             } else {
                 this._element = element;
             }
-            const self = this;
             this._element.addEventListener("change", (e) => {
-                if (self._onChange) {
-                    self._onChange(self._element.value);
+                if (this._onChange) {
+                    this._onChange(this);
                 }
             });
         }
@@ -151,17 +148,17 @@ namespace prest.form {
 
         validate(locale?: string): Object {
             if (this._validator) {
-                return this._validator(this.getValue(), locale);
+                return this._validator(this, locale);
             }
             return "";
         }
 
-        setValidator(validator: (value: string, locale?: string) => string): Entry {
+        setValidator(validator: (entry: Entry, locale?: string) => string): Entry {
             this._validator = validator;
             return this;
         }
 
-        onChange(callback: (value) => void): Entry {
+        onChange(callback: (entry: Entry) => void): Entry {
             this._onChange = callback;
             return this;
         }
@@ -172,23 +169,21 @@ namespace prest.form {
     export class RadioEntry implements Entry {
 
         private _elements: HTMLInputElement[] = [];
-        private _validator: (value: string, locale: string) => string;
-        private _onChange: (value: string) => void;
+        private _validator: (entry: Entry, locale: string) => string;
+        private _onChange: (entry: Entry) => void;
 
         constructor(elements: HTMLInputElement[]|string[]) {
-            const self = this;
-            (<any>elements).forEach((c) => {
+            (elements as any).forEach((c) => {
                 if (typeof c === "string") {
-                    this._elements.push(
-                        <HTMLInputElement>document.getElementById(c));
+                    this._elements.push(document.getElementById(c)  as HTMLInputElement);
                 } else {
                     this._elements.push(c);
                 }
             });
             this._elements.forEach((c) => {
                 c.addEventListener("change", (e) => {
-                    if (self._onChange && c.checked) {
-                        self._onChange(c.value);
+                    if (this._onChange && c.checked) {
+                        this._onChange(this);
                     }
                 });
             });
@@ -199,18 +194,18 @@ namespace prest.form {
         }
 
         getValue(): string {
-            for (let c of this._elements) {
-                if (c.checked) {
-                    return c.value;
+            for (let e of this._elements) {
+                if (e.checked) {
+                    return e.value;
                 }
             }
             return null;
         }
 
         setValue(value: string): Entry {
-            for (let c of this._elements) {
-                if (c.value === value) {
-                    c.checked = true;
+            for (let e of this._elements) {
+                if (e.value === value) {
+                    e.checked = true;
                 }
             }
             return this;
@@ -218,17 +213,97 @@ namespace prest.form {
 
         validate(locale?: string): Object {
             if (this._validator) {
-                return this._validator(this.getValue(), locale);
+                return this._validator(this, locale);
             }
             return "";
         }
 
-        setValidator(validator: (value: string, locale?: string) => string): Entry {
+        setValidator(validator: (entry: Entry, locale?: string) => string): Entry {
             this._validator = validator;
             return this;
         }
 
-        onChange(callback: (value) => void): Entry {
+        onChange(callback: (entry: Entry) => void): Entry {
+            this._onChange = callback;
+            return this;
+        }
+
+    }
+
+
+    /*
+     var fileInput = document.getElementById('fileInput');
+     var fileDisplayArea = document.getElementById('fileDisplayArea');
+
+     fileInput.addEventListener('change', function(e) {
+     var file = fileInput.files[0];
+     var textType = /text.*!/;
+
+     if (file.type.match(textType)) {
+     var reader = new FileReader();
+     reader.onload = function (e) {
+     fileDisplayArea.innerText = reader.result;
+     }
+     reader.readAsText(file);
+     } else {
+     fileDisplayArea.innerText = "File not supported!"
+     }
+     });
+     */
+    export class FileEntry implements Entry {
+
+        private _element: HTMLInputElement;
+        private _validator: (entry: Entry, locale: string) => string;
+        private _onChange: (entry: Entry) => void;
+
+        constructor(element: HTMLInputElement|string) {
+            if (typeof element === "string") {
+                this._element = document.getElementById(element) as HTMLInputElement;
+            } else {
+                this._element = element;
+            }
+            this._element.addEventListener("change", (e) => {
+                if (this._onChange) {
+                    this._onChange(this);
+                }
+            });
+        }
+
+        getName(): string {
+            return this._element.name;
+        }
+
+        getValue(): string {
+            return this._element.files.length ?
+            this._element.files[0].name + " (" +
+            this._element.files[0].type + ", " +
+            this._element.files[0].size + ")"
+                :
+                "";
+        }
+
+        getFile(): File {
+            return this._element.files.length ? this._element.files[0] : null;
+        }
+
+        setValue(value: string): Entry {
+            // this._element.files..value = value;
+            return this;
+        }
+
+        validate(locale?: string): Object {
+            if (this._validator) {
+                return this._validator(this, locale);
+            }
+            return "";
+        }
+
+        setValidator(validator: (entry: Entry, locale?: string) => string): Entry {
+            this._validator = validator;
+            return this;
+        }
+
+        onChange(callback: (entry: Entry) => void): Entry {
             this._onChange = callback;
             return this;
         }
@@ -240,18 +315,18 @@ namespace prest.form {
 
         private _element: HTMLFormElement;
         private _formEntries: Entry[] = [];
-        private _onSubmit: () => void;
+        private _onSubmit: (form: Form) => void;
 
-        constructor(element: HTMLFormElement|string) {
+        constructor(element: HTMLFormElement | string) {
             if (typeof element === "string") {
-                this._element = <HTMLFormElement>document.getElementById(element);
+                this._element = document.getElementById(element) as HTMLFormElement;
             } else {
                 this._element = element;
             }
             this._element.onsubmit = (e) => {
                 e.preventDefault();
                 if (this._onSubmit) {
-                    this._onSubmit();
+                    this._onSubmit(this);
                 }
                 return false;
             };
@@ -312,7 +387,7 @@ namespace prest.form {
             this._element.submit();
         }
 
-        onSubmit(callback: () => void): Form {
+        onSubmit(callback: (form: Form) => void): Form {
             this._onSubmit = callback;
             return this;
         }
