@@ -175,7 +175,19 @@ namespace prest.http {
             if (this._noCache) {
                 url += ((/\?/).test(url) ? "&" : "?") + (new Date()).getTime();
             }
-            console.debug("HttpRequest: " + this._method + " " + url, data);
+            // console.debug("HttpRequest: " + this._method + " " + url, data);
+
+            if ("onprogress" in httpRequest) {
+                if (this._onProgress) {
+                    const onprogress = (e) => {
+                        if (e.lengthComputable) {
+                            this._onProgress({loaded: e.loaded, total: e.total});
+                        }
+                    };
+                    httpRequest.upload.onprogress = onprogress;
+                    httpRequest.onprogress = onprogress;
+                }
+            }
 
             httpRequest.open(this._method, url, this._async);
 
@@ -210,20 +222,12 @@ namespace prest.http {
                     }
                 };
 
-                if ("onprogress" in httpRequest) {
-                    if (this._onProgress) {
-                        const onprogress = (e) => {
-                            if (e.lengthComputable) {
-                                this._onProgress({loaded: e.loaded, total: e.total});
-                            }
-                        };
-                        httpRequest.upload.onprogress = onprogress;
-                        httpRequest.onprogress = onprogress;
+                if (data !== undefined) {
+                    if ((typeof data === "string") || (data instanceof FormData)) {
+                        httpRequest.send(data);
+                    } else {
+                        httpRequest.send(JSON.stringify(data));
                     }
-                }
-                if (data) {
-                    const payload = (typeof data === "string") ? data : JSON.stringify(data);
-                    httpRequest.send(payload);
                 } else {
                     httpRequest.send();
                 }
