@@ -15,7 +15,7 @@ namespace prest.hash {
         /**
          * Listen on URL hash fragment changes
          */
-        onChange(callback: (hashData: T) => void): Hash<T> {
+        onChange(callback: (hashData: T) => void): this {
             if ("onhashchange" in window) {
                 window.onhashchange = () => {
                     callback(this.read());
@@ -36,12 +36,12 @@ namespace prest.hash {
             return this;
         }
 
-        setEncoder(encoder: (data: T) => string): Hash<T> {
+        setEncoder(encoder: (data: T) => string): this {
             this._encoder = encoder;
             return this;
         }
 
-        setDecoder(decoder: (data: string) => T): Hash<T> {
+        setDecoder(decoder: (data: string) => T): this {
             this._decoder = decoder;
             return this;
         }

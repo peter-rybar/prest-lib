@@ -57,7 +57,7 @@ namespace prest.template {
      *
      * @param templateOrId
      * @param data
-     * @returns {(data:Object)=>string|string}
+     * @returns {(data: Object) => string | string}
      */
     export function tmpl(templateOrId: string, data?: Object) {
         const template = !/[^a-zA-Z0-9_-]+/.test(templateOrId) ?

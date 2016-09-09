@@ -47,6 +47,7 @@ namespace prest.widgets {
             },
             useCapture);
     }
+
     export function removeEventListener(element: HTMLElement,
                                         event: string,
                                         listener: (evt: Event) => void,

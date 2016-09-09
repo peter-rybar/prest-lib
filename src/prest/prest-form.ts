@@ -3,10 +3,10 @@ namespace prest.form {
     export interface Entry {
         getName(): string;
         getValue(): string;
-        setValue(value: string): Entry;
+        setValue(value: string): this;
         validate(locale?: string): Object;
-        setValidator(validator: (entry: Entry, locale?: string) => string): Entry;
-        onChange(callback: (entry: Entry) => void): Entry;
+        setValidator(validator: (entry: Entry, locale?: string) => string): this;
+        onChange(callback: (entry: Entry) => void): this;
     }
 
 
@@ -37,7 +37,7 @@ namespace prest.form {
             return this._element.value;
         }
 
-        setValue(value: string): Entry {
+        setValue(value: string): this {
             this._element.value = value;
             return this;
         }
@@ -49,12 +49,12 @@ namespace prest.form {
             return "";
         }
 
-        setValidator(validator: (entry: Entry, locale?: string) => string): Entry {
+        setValidator(validator: (entry: Entry, locale?: string) => string): this {
             this._validator = validator;
             return this;
         }
 
-        onChange(callback: (entry: Entry) => void): Entry {
+        onChange(callback: (entry: Entry) => void): this {
             this._onChange = callback;
             return this;
         }
@@ -68,7 +68,7 @@ namespace prest.form {
         private _validator: (entry: Entry, locale: string) => string;
         private _onChange: (entry: Entry) => void;
 
-        constructor(element: HTMLInputElement|string) {
+        constructor(element: HTMLInputElement | string) {
             if (typeof element === "string") {
                 this._element = document.getElementById(element) as HTMLInputElement;
             } else {
@@ -89,7 +89,7 @@ namespace prest.form {
             return this._element.checked.toString();
         }
 
-        setValue(value: string): Entry {
+        setValue(value: string): this {
             this._element.checked = (value && value !== "false") ? true : false;
             return this;
         }
@@ -101,12 +101,12 @@ namespace prest.form {
             return "";
         }
 
-        setValidator(validator: (entry: Entry, locale?: string) => string): Entry {
+        setValidator(validator: (entry: Entry, locale?: string) => string): this {
             this._validator = validator;
             return this;
         }
 
-        onChange(callback: (entry: Entry) => void): Entry {
+        onChange(callback: (entry: Entry) => void): this {
             this._onChange = callback;
             return this;
         }
@@ -120,7 +120,7 @@ namespace prest.form {
         private _validator: (entry: Entry, locale: string) => string;
         private _onChange: (entry: Entry) => void;
 
-        constructor(element: HTMLSelectElement|string) {
+        constructor(element: HTMLSelectElement | string) {
             if (typeof element === "string") {
                 this._element = document.getElementById(element) as HTMLSelectElement;
             } else {
@@ -141,7 +141,7 @@ namespace prest.form {
             return this._element.value;
         }
 
-        setValue(value: string): Entry {
+        setValue(value: string): this {
             this._element.value = value;
             return this;
         }
@@ -153,12 +153,12 @@ namespace prest.form {
             return "";
         }
 
-        setValidator(validator: (entry: Entry, locale?: string) => string): Entry {
+        setValidator(validator: (entry: Entry, locale?: string) => string): this {
             this._validator = validator;
             return this;
         }
 
-        onChange(callback: (entry: Entry) => void): Entry {
+        onChange(callback: (entry: Entry) => void): this {
             this._onChange = callback;
             return this;
         }
@@ -172,7 +172,7 @@ namespace prest.form {
         private _validator: (entry: Entry, locale: string) => string;
         private _onChange: (entry: Entry) => void;
 
-        constructor(elements: HTMLInputElement[]|string[]) {
+        constructor(elements: HTMLInputElement[] | string[]) {
             (elements as any).forEach((c) => {
                 if (typeof c === "string") {
                     this._elements.push(document.getElementById(c)  as HTMLInputElement);
@@ -202,7 +202,7 @@ namespace prest.form {
             return null;
         }
 
-        setValue(value: string): Entry {
+        setValue(value: string): this {
             for (let e of this._elements) {
                 if (e.value === value) {
                     e.checked = true;
@@ -218,12 +218,12 @@ namespace prest.form {
             return "";
         }
 
-        setValidator(validator: (entry: Entry, locale?: string) => string): Entry {
+        setValidator(validator: (entry: Entry, locale?: string) => string): this {
             this._validator = validator;
             return this;
         }
 
-        onChange(callback: (entry: Entry) => void): Entry {
+        onChange(callback: (entry: Entry) => void): this {
             this._onChange = callback;
             return this;
         }
@@ -286,7 +286,7 @@ namespace prest.form {
             return this._element.files.length ? this._element.files[0] : null;
         }
 
-        setValue(value: string): Entry {
+        setValue(value: string): this {
             // this._element.files..value = value;
             return this;
         }
@@ -298,12 +298,12 @@ namespace prest.form {
             return "";
         }
 
-        setValidator(validator: (entry: Entry, locale?: string) => string): Entry {
+        setValidator(validator: (entry: Entry, locale?: string) => string): this {
             this._validator = validator;
             return this;
         }
 
-        onChange(callback: (entry: Entry) => void): Entry {
+        onChange(callback: (entry: Entry) => void): this {
             this._onChange = callback;
             return this;
         }
@@ -332,12 +332,12 @@ namespace prest.form {
             };
         }
 
-        addEntry(entry: Entry): Form {
+        addEntry(entry: Entry): this {
             this._formEntries.push(entry);
             return this;
         }
 
-        setEntries(entries: Entry[]): Form {
+        setEntries(entries: Entry[]): this {
             this._formEntries = entries;
             return this;
         }
@@ -387,7 +387,7 @@ namespace prest.form {
             this._element.submit();
         }
 
-        onSubmit(callback: (form: Form) => void): Form {
+        onSubmit(callback: (form: Form) => void): this {
             this._onSubmit = callback;
             return this;
         }

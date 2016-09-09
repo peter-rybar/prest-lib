@@ -8,7 +8,7 @@ namespace prest.http {
                 (typeof obj.length === "number" && !(obj.propertyIsEnumerable("length")));
     }
 
-    export function encodeUrlData(query) {
+    export function encodeUrlData(query): string {
         const key_value_pairs = [];
 
         for (let key in query) {
@@ -97,62 +97,62 @@ namespace prest.http {
         constructor() {
         }
 
-        get(url: string, urlData?: Object): HttpRequest {
+        get(url: string, urlData?: Object): this {
             this.method("GET");
             this.url(url, urlData);
             return this;
         }
 
-        post(url: string, urlData?: Object): HttpRequest {
+        post(url: string, urlData?: Object): this {
             this.method("POST");
             this.url(url, urlData);
             return this;
         }
 
-        put(url: string, urlData?: Object): HttpRequest {
+        put(url: string, urlData?: Object): this {
             this.method("PUT");
             this.url(url, urlData);
             return this;
         }
 
-        del(url: string, urlData?: Object): HttpRequest {
+        del(url: string, urlData?: Object): this {
             this.method("DELETE");
             this.url(url, urlData);
             return this;
         }
 
-        url(url: string, urlData?: Object): HttpRequest {
+        url(url: string, urlData?: Object): this {
             this._url = url;
             this._urlData = urlData;
             return this;
         }
 
-        method(method: string): HttpRequest {
+        method(method: string): this {
             this._method = method;
             return this;
         }
 
-        onProgress(onProgress: (progress: any) => void): HttpRequest {
+        onProgress(onProgress: (progress: any) => void): this {
             this._onProgress = onProgress;
             return this;
         }
 
-        onResponse(onResponse: (response: HttpResponse) => void): HttpRequest {
+        onResponse(onResponse: (response: HttpResponse) => void): this {
             this._onResponse = onResponse;
             return this;
         }
 
-        onError(onError: (e: Event) => void): HttpRequest {
+        onError(onError: (e: Event) => void): this {
             this._onError = onError;
             return this;
         }
 
-        async(async: boolean): HttpRequest {
+        async(async: boolean): this {
             this._async = async;
             return this;
         }
 
-        noCache(noCache: boolean = true): HttpRequest {
+        noCache(noCache: boolean = true): this {
             this._noCache = noCache;
             return this;
         }
