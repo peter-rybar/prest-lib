@@ -6,11 +6,11 @@ namespace prest.widgets {
 
 
     export function element(html: string): HTMLElement {
-        const t = document.createElement("template") as HTMLTemplateElement;
-        if ("content" in t) {
-            t.innerHTML = html;
-            return t.content.cloneNode(true) as HTMLElement;
-        } else {
+        // const t = document.createElement("template") as HTMLTemplateElement;
+        // if ("content" in t) {
+        //     t.innerHTML = html;
+        //     return t.content.cloneNode(true) as HTMLElement;
+        // } else {
             let wrapMap: any = {
                 option: [1, "<select multiple='multiple'>", "</select>"],
                 legend: [1, "<fieldset>", "</fieldset>"],
@@ -55,7 +55,7 @@ namespace prest.widgets {
                 element = element.lastChild as HTMLElement;
             }
             return element;
-        }
+        // }
     }
 
     export function empty(element: HTMLElement) {
