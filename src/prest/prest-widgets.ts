@@ -27,14 +27,14 @@ namespace prest.widgets {
             wrapMap.tbody = wrapMap.tfoot = wrapMap.colgroup = wrapMap.caption = wrapMap.thead;
             wrapMap.th = wrapMap.td;
             const match = /<\s*\w.*?>/g.exec(html);
-            let element: HTMLElement = document.createElement("div");
+            let el: HTMLElement = document.createElement("div");
             if (match != null) {
                 const tag = match[0].replace(/</g, "").replace(/>/g, "").split(" ")[0];
                 if (tag.toLowerCase() === "body") {
                     const body = document.createElement("body");
                     // keeping the attributes
-                    element.innerHTML = html.replace(/<body/g, "<div").replace(/<\/body>/g, "</div>");
-                    const attrs = element.firstChild.attributes;
+                    el.innerHTML = html.replace(/<body/g, "<div").replace(/<\/body>/g, "</div>");
+                    const attrs = el.firstChild.attributes;
                     body.innerHTML = html;
                     for (let i = 0; i < attrs.length; i++) {
                         body.setAttribute(attrs[i].name, attrs[i].value);
@@ -43,18 +43,18 @@ namespace prest.widgets {
                 } else {
                     const map = wrapMap[tag] || wrapMap._default;
                     html = map[1] + html + map[2];
-                    element.innerHTML = html;
+                    el.innerHTML = html;
                     // Descend through wrappers to the right content
                     let j = map[0] + 1;
                     while (j--) {
-                        element = element.lastChild as HTMLElement;
+                        el = el.lastChild as HTMLElement;
                     }
                 }
             } else {
-                element.innerHTML = html;
-                element = element.lastChild as HTMLElement;
+                el.innerHTML = html;
+                el = el.lastChild as HTMLElement;
             }
-            return element;
+            return el;
         // }
     }
 
