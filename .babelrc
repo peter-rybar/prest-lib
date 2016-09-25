@@ -1,12 +1,18 @@
 {
-    "presets": ["es2015"],
-    "plugins": [
-        [
-            "incremental-dom",
-            {
-                "inlineExpressions": true,
-                "prefix": "IncrementalDOM"
-            }
-        ]
-    ]
+    "presets": ["es2015"]
+//    "presets": ["es2015", "babili"]
+//    "env": {
+//        "production": {
+//            "presets": ["babili"]
+//        }
+//    }
+//    "plugins": [
+//        [
+//            "incremental-dom",
+//            {
+//                "inlineExpressions": true,
+//                "prefix": "IncrementalDOM"
+//            }
+//        ]
+//    ]
 }
