@@ -6,6 +6,7 @@ namespace prest.widgets {
 
 
     export function element(html: string): HTMLElement {
+        html = html.trim();
         // const t = document.createElement("template") as HTMLTemplateElement;
         // if ("content" in t) {
         //     t.innerHTML = html;
