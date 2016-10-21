@@ -1,17 +1,20 @@
 {
     "compilerOptions": {
-        "target": "ES5",
-        "jsx": "preserve",
+        "target": "es5",
+        "module": "umd",
         "noImplicitAny": false,
-        "declaration": false,
-        "sourceMap": false,
+        "noImplicitReturns": false,
+        "declaration": true,
+        "sourceMap": true,
         "inlineSourceMap": false,
-        "removeComments": false,
-        "noExternalResolve": true,
-        "sortOutput": false
+        "outDir": "build"
     },
+    "include": [
+        "src/**/*"
+    ],
     "exclude": [
         "node_modules",
-        "dist"
+        "dist",
+        "build"
     ]
 }

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>pREST form demo</title>
+</head>
+<body>
+
+<h1>pREST form demo</h1>
+
+<form id="form" action="">
+    <p>
+        <label for="name">Name:</label>
+        <input id="name" type="text" name="name" value="">
+        <span id="name-err"></span>
+    </p>
+    <p>
+        <label for="sex">Sex:</label>
+        <select id="sex" name="sex">
+            <option value=""></option>
+            <option value="M">Male</option>
+            <option value="F">Female</option>
+        </select>
+        <span id="sex-err"></span>
+    </p>
+    <p>
+        <label for="agree">Agreement:</label>
+        <input id="agree" type="checkbox" name="agree">
+        <span id="agree-err"></span>
+    </p>
+    <p>
+        <label for="yes-no-y">yes</label>
+        <input id="yes-no-y" type="radio" name="yes-no" value="y">
+        <label for="yes-no-n">no</label>
+        <input id="yes-no-n" type="radio" name="yes-no" value="n">
+        <span id="yes-no-err"></span>
+    </p>
+    <p>
+        <label for="file"></label>
+        <input id="file" type="file" name="file">
+        <span id="file-err"></span>
+    </p>
+    <p>
+        <input type="submit" value="Submit">
+    </p>
+</form>
+
+<p>
+    change:
+    <span id="change"></span>
+</p>
+<p>
+    values:
+    <span id="values"></span>
+</p>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"
+        data-main="../../build/demo/form_demo"
+        type="text/javascript"></script>
+
+</body>
+</html>

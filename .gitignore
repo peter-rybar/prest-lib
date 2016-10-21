@@ -4,6 +4,7 @@ _*
 *_
 
 dist/
+build/
 tmp/
 
 node_modules/
@@ -12,11 +13,13 @@ node_modules/
 .idea
 
 src/**/*.js
-src/**/*.map
+src/**/*.d.ts
+src/**/*.js.map
 src/**/*.jsx
 
 test/**/*.js
-test/**/*.map
+test/**/*.d.ts
+test/**/*.js.map
 test/**/*.jsx
 
 typings/*
