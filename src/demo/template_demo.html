@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html  lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>pREST template demo</title>
+</head>
+<body>
+
+<h1>pREST template demo</h1>
+
+<script type="text/html" id="item-tmpl">
+    <div id="<%= id %>" class="<%= (1 % 2 == 1 ? ' even' : '') %>">
+        <div class="grid_1 alpha right">
+            <img class="righted" height="100" src="<%= profile_image_url %>"/>
+        </div>
+        <div class="grid_6 omega contents">
+            <p>
+                <strong>
+                    <a href="/<%= from_user %>"><%= from_user %></a>:
+                </strong>
+                <%= text %>
+            </p>
+        </div>
+    </div>
+</script>
+<script type="text/html" id="user-tmpl">
+    <% for (var i = 0; i < users.length; i++) { %>
+    <li><a href="<%= users[i].url %>"><%= users[i].name %></a></li>
+    <% } %>
+</script>
+<script type="text/html" id="hello-tmpl">
+    Hello ${name}, greeting from template!
+</script>
+
+<script type="text/javascript" src="../../build/main/prest/template.js"></script>
+
+<div id="results" style="border: 1px solid red"></div>
+
+<div id="container"></div>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/require.js/2.2.0/require.min.js"
+        data-main="../../build/demo/template_demo"
+        type="text/javascript"></script>
+
+</body>
+</html>
