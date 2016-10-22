@@ -6,14 +6,15 @@
   "license": "GPLv3",
   "main": "index.js",
   "scripts": {
-    "tsd": "tsd install",
+    "postinstall": "tsd install",
     "build": "tsc",
-    "build:watch": "tsc -w",
+    "build:watch": "npm run build -- -w",
     "dist": "rollup -c",
-    "dist:watch": "rollup -c -w",
+    "predist": "npm run tslint && npm run clean",
+    "dist:watch": "npm run dist -- -w",
     "tslint": "tslint --project tsconfig.json --type-check",
     "test": "./node_modules/karma-cli/bin/karma start ./karma.conf.js --single-run",
-    "clean": "rm -rf build dist"
+    "clean": "rimraf build; rimraf dist"
   },
   "repository": {
     "type": "git",
@@ -34,6 +35,7 @@
     "karma-cli": "^1.0.1",
     "karma-jasmine": "^1.0.2",
     "karma-typescript-preprocessor": "^0.2.1",
+    "rimraf": "^2.5.4",
     "rollup": "^0.36.3",
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-replace": "^1.1.1",
