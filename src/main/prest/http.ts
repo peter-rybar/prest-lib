@@ -79,13 +79,19 @@ export class HttpResponse {
 
 }
 
+export interface HttpProgress {
+    loaded: number;
+    total: number;
+}
+
 export class HttpRequest {
 
     private _url: string;
     private _urlData: Object;
     private _method: string = "GET";
+    private _headers: {[key: string]: string} = {};
 
-    private _onProgress: (progress: any) => void;
+    private _onProgress: (progress: HttpProgress) => void;
     private _onResponse: (response: HttpResponse) => void;
     private _onError: (e: Event) => void;
 
@@ -130,7 +136,12 @@ export class HttpRequest {
         return this;
     }
 
-    onProgress(onProgress: (progress: any) => void): this {
+    headers(headers: {[key: string]: string}): this {
+        this._headers = headers;
+        return this;
+    }
+
+    onProgress(onProgress: (progress: HttpProgress) => void): this {
         this._onProgress = onProgress;
         return this;
     }
@@ -155,14 +166,17 @@ export class HttpRequest {
         return this;
     }
 
-    send(data?: any, headers?: Object): void {
-        this._send(this._onResponse, this._onError, data, headers);
+    send(data?: any, contentType?: string): void {
+        if (contentType) {
+            this._headers["Content-Type"] = contentType;
+        }
+        this._send(this._onResponse, this._onError, data, this._headers);
     }
 
     private _send(onResponse: (response: HttpResponse) => void,
                   onError: (err: Event) => void,
                   data?: any,
-                  headers?: Object): void {
+                  headers?: {[key: string]: string}): void {
         const httpRequest = new XMLHttpRequest();
 
         let url = this._url;
@@ -189,7 +203,7 @@ export class HttpRequest {
 
         httpRequest.open(this._method, url, this._async);
 
-        for (let header in headers) {
+        for (const header in headers) {
             if (headers.hasOwnProperty(header)) {
                 httpRequest.setRequestHeader(header, headers[header]);
             }
