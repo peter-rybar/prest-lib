@@ -1,10 +1,10 @@
 {
   "name": "prest",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "description": "pREST js",
   "author": "Peter Rybar, pr.rybar@gmail.com",
   "license": "GPLv3",
-  "main": "index.js",
+  "main": "prest.js",
   "scripts": {
     "postinstall": "tsd install",
     "build": "tsc",
@@ -23,7 +23,7 @@
   "keywords": [
     "pREST",
     "javascript",
-    "pREST, signal-slot, DOM, encode, Hash, HTTP, component"
+    "pREST, signal-slot, DOM, encode, hash, HTTP, component"
   ],
   "devDependencies": {
     "babel-polyfill": "^6.13.0",

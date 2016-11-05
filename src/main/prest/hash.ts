@@ -13,7 +13,7 @@ export class Hash<T> {
     /**
      * Listen on URL hash fragment changes
      */
-    onChange(callback: (hashData: T) => void): this {
+    onChange(callback: (data: T) => void): this {
         if ("onhashchange" in window) {
             window.onhashchange = () => {
                 callback(this.read());

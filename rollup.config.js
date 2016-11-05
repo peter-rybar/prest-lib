@@ -8,7 +8,7 @@ import {minify} from 'uglify-js';
 const pkg = require('./package.json');
 
 export default {
-    entry: './src/main/index.ts',
+    entry: './src/main/main.ts',
     plugins: [
         typescript({
             typescript: require('typescript')
@@ -27,12 +27,12 @@ export default {
     external: Object.keys(pkg.dependencies),
     targets: [
         // {
-        //     dest: './dist/es/index.js',
+        //     dest: './dist/umd/' + pkg.name + '.js',
         //     format: 'es',
         //     sourceMap: true
         // },
         {
-            dest: './dist/umd/index.js',
+            dest: './dist/umd/' + pkg.name + '.js',
             // format: 'iife',
             format: 'umd',
             moduleName: 'veng',
