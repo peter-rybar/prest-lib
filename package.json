@@ -22,8 +22,8 @@
   },
   "keywords": [
     "pREST",
-    "javascript",
-    "pREST, signal-slot, DOM, encode, hash, HTTP, component"
+    "javascript", "typescript",
+    "signal", "slot", "encode", "hash", "form", "widgets"
   ],
   "devDependencies": {
     "babel-polyfill": "^6.13.0",
