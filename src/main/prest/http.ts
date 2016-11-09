@@ -6,10 +6,22 @@ function is_array(obj) {
             (typeof obj.length === "number" && !(obj.propertyIsEnumerable("length")));
 }
 
-export function encodeUrlData(query): string {
+export function decodeUrlQuery(queryStr: string) {
+    const query = {};
+    if (queryStr) {
+        const a = queryStr.substr(1).split("&");
+        for (let i = 0; i < a.length; i++) {
+            const b = a[i].split("=");
+            query[decodeURIComponent(b[0])] = decodeURIComponent(b[1] || "");
+        }
+    }
+    return query;
+}
+
+export function encodeUrlQuery(query): string {
     const key_value_pairs = [];
 
-    for (let key in query) {
+    for (const key in query) {
         if (query.hasOwnProperty(key)) {
             const value = query[key];
             if (typeof value === "object") {
@@ -87,7 +99,7 @@ export interface HttpProgress {
 export class HttpRequest {
 
     private _url: string;
-    private _urlData: Object;
+    private _query: Object;
     private _method: string = "GET";
     private _headers: {[key: string]: string} = {};
 
@@ -101,33 +113,33 @@ export class HttpRequest {
     constructor() {
     }
 
-    get(url: string, urlData?: Object): this {
+    get(url: string, query?: Object): this {
         this.method("GET");
-        this.url(url, urlData);
+        this.url(url, query);
         return this;
     }
 
-    post(url: string, urlData?: Object): this {
+    post(url: string, query?: Object): this {
         this.method("POST");
-        this.url(url, urlData);
+        this.url(url, query);
         return this;
     }
 
-    put(url: string, urlData?: Object): this {
+    put(url: string, query?: Object): this {
         this.method("PUT");
-        this.url(url, urlData);
+        this.url(url, query);
         return this;
     }
 
-    del(url: string, urlData?: Object): this {
+    del(url: string, query?: Object): this {
         this.method("DELETE");
-        this.url(url, urlData);
+        this.url(url, query);
         return this;
     }
 
-    url(url: string, urlData?: Object): this {
+    url(url: string, query?: Object): this {
         this._url = url;
-        this._urlData = urlData;
+        this._query = query;
         return this;
     }
 
@@ -180,8 +192,8 @@ export class HttpRequest {
         const httpRequest = new XMLHttpRequest();
 
         let url = this._url;
-        if (this._urlData) {
-            const query = encodeUrlData(this._urlData);
+        if (this._query) {
+            const query = encodeUrlQuery(this._query);
             url = query ? (url + "?" + query) : url;
         }
         if (this._noCache) {
