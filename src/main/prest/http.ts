@@ -232,7 +232,7 @@ export class HttpRequest {
                     case 4: // done
                         if (
                             (httpRequest.status >= 200 && httpRequest.status < 300) ||
-                            httpRequest.status === 0 // schemes other than http (file, ftp)
+                            (httpRequest.status === 0 && !this._url.match(/^https?:\/\//)) // schemes other than http (file, ftp)
                         ) {
                             if (onResponse) {
                                 onResponse(new HttpResponse(httpRequest));
