@@ -9,6 +9,15 @@ const stringValidator = (entry: form.Entry, locale: string) => {
     }
 };
 
+const numberValidator = (entry: form.Entry, locale: string) => {
+    switch (locale) {
+        case "sk":
+            return entry.getValue() ? "" : "Prázdna hodnota";
+        default:
+            return entry.getValue() ? "" : "Empty value";
+    }
+};
+
 const fileValidator = (entry: form.FileEntry, locale: string) => {
     switch (locale) {
         case "sk":
@@ -26,6 +35,10 @@ new form.Form("form")
     .addEntry(new form.InputEntry("name")
         .setValue("Peter")
         .setValidator(stringValidator)
+        .onChange(showChange))
+    .addEntry(new form.NumberInputEntry("age")
+        .setValue("20")
+        .setValidator(numberValidator)
         .onChange(showChange))
     .addEntry(new form.SelectEntry("sex")
         .setValue("M")

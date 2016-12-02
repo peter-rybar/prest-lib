@@ -12,7 +12,7 @@ export class InputEntry implements Entry {
 
     private _element: HTMLInputElement;
     private _validator: (entry: Entry, locale: string) => string;
-    private _onChange: (entry: Entry) => void;
+    private _onChange: (entry: Entry, final: boolean) => void;
 
     constructor(element: HTMLInputElement|string) {
         if (typeof element === "string") {
@@ -22,7 +22,12 @@ export class InputEntry implements Entry {
         }
         this._element.addEventListener("change", (e) => {
             if (this._onChange) {
-                this._onChange(this);
+                this._onChange(this, true);
+            }
+        });
+        this._element.addEventListener("input", (e) => {
+            if (this._onChange) {
+                this._onChange(this, false);
             }
         });
     }
@@ -52,10 +57,132 @@ export class InputEntry implements Entry {
         return this;
     }
 
-    onChange(callback: (entry: Entry) => void): this {
+    onChange(callback: (entry: Entry, final: boolean) => void): this {
         this._onChange = callback;
         return this;
     }
+
+}
+
+
+export class NumberInputEntry implements Entry {
+
+    private static _decimals(num: number): number {
+        const s = num.toString().split(".")[1];
+        return s ? s.length : 0;
+    }
+
+    private _element: HTMLInputElement;
+    private _validator: (entry: Entry, locale: string) => string;
+    private _onChange: (entry: Entry, final: boolean) => void;
+
+    private _step: number;
+    private _decimals: number;
+
+    constructor(element: HTMLInputElement|string) {
+        if (typeof element === "string") {
+            this._element = document.getElementById(element) as HTMLInputElement;
+        } else {
+            this._element = element;
+        }
+        this._element.addEventListener("change", (e) => {
+            if (this._onChange) {
+                this._onChange(this, true);
+            }
+        });
+        this._element.addEventListener("focus", () => {
+            this._element.addEventListener("mousewheel", this._onMouseWheel);
+        });
+        this._element.addEventListener("blur", () => {
+            this._element.removeEventListener("mousewheel", this._onMouseWheel);
+        });
+        this._element.addEventListener("mousedown", this._onMouseDown);
+        this.setStep(1);
+    }
+
+    getName(): string {
+        return this._element.name;
+    }
+
+    getValue(): string {
+        return this._element.value;
+    }
+
+    setValue(value: string): this {
+        this._element.value = value;
+        return this;
+    }
+
+    setStep(value: number): this {
+        this._step = value;
+        this._decimals = NumberInputEntry._decimals(this._step);
+        return this;
+    }
+
+    setMin(value: number): this {
+        this._element.min = value.toString();
+        return this;
+    }
+
+    setMax(value: number): this {
+        this._element.max = value.toString();
+        return this;
+    }
+
+    validate(locale?: string): Object {
+        if (this._validator) {
+            return this._validator(this, locale);
+        }
+        return "";
+    }
+
+    setValidator(validator: (entry: Entry, locale?: string) => string): this {
+        this._validator = validator;
+        return this;
+    }
+
+    onChange(callback: (entry: Entry, final: boolean) => void): this {
+        this._onChange = callback;
+        return this;
+    }
+
+    private _onMouseWheel = e => {
+        if (this._onChange) {
+            setTimeout(() => {
+                this._onChange(this, false);
+            }, 0);
+        }
+    };
+
+    private _onMouseDown = e => {
+        const initialY = e.pageY;
+        const value = Number(this.getValue());
+        const min = this._element.min === "" ? null : Number(this._element.min);
+        const max = this._element.max === "" ? null : Number(this._element.max);
+        const num: number = isNaN(value) ? (min === null ? 0 : min) : value;
+
+        const onMouseMove = e => {
+            const diffY = e.pageY - initialY;
+            const newValue = num - diffY * this._step;
+            if (min !== null && newValue < min) {
+                this.setValue(min.toFixed(this._decimals));
+            } else if (max !== null && newValue > max) {
+                this.setValue(max.toFixed(this._decimals));
+            } else {
+                this.setValue(newValue.toFixed(this._decimals));
+            }
+            this._onChange(this, false);
+        };
+
+        const onMouseUp = e => {
+            document.removeEventListener("mousemove", onMouseMove);
+            document.removeEventListener("mouseup", onMouseUp);
+            this._onChange(this, true);
+        };
+
+        document.addEventListener("mousemove", onMouseMove);
+        document.addEventListener("mouseup", onMouseUp);
+    };
 
 }
 
