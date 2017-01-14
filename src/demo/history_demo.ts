@@ -43,17 +43,19 @@ function displayPage(state) {
 const h = new history.History<PageState>();
 
 h.onChange((pageState) => {
+    console.log("onChange", pageState);
     displayPage(pageState);
 });
 
 
-for (let i = 0; i < navLinks.length; i++) {
+for (let i = 0, l = navLinks.length; i < l; i++) {
     navLinks[i].addEventListener("click", function (e) {
         e.preventDefault();
         const pageURL = this.attributes["href"].value;
         const pageState = pages[pageURL.split(".")[0]];
         displayPage(pageState);
         h.pushState(pageState, pageState.title, pageURL);
+        console.log("pushState", pageState, pageState.title, pageURL);
     });
 }
 
