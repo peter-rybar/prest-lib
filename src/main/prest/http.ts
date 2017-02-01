@@ -10,7 +10,7 @@ export function decodeUrlQuery(queryStr: string) {
     const query = {};
     if (queryStr) {
         const a = queryStr.substr(1).split("&");
-        for (let i = 0; i < a.length; i++) {
+        for (let i = 0, l = a.length; i < l; i++) {
             const b = a[i].split("=");
             query[decodeURIComponent(b[0])] = decodeURIComponent(b[1] || "");
         }
@@ -26,7 +26,7 @@ export function encodeUrlQuery(query): string {
             const value = query[key];
             if (typeof value === "object") {
                 if (is_array(value)) {
-                    for (let j = 0; j < value.length; j++) {
+                    for (let j = 0, l = value.length; j < l; j++) {
                         key_value_pairs.push(
                             [key, typeof value[j] === "object" ?
                                 JSON.stringify(value[j]) : value[j]]);
@@ -51,26 +51,26 @@ export function encodeUrlQuery(query): string {
 
 export class HttpResponse {
 
-    private _xmlHttpRequest: XMLHttpRequest;
+    private _xhr: XMLHttpRequest;
 
     constructor(xmlHttpRequest: XMLHttpRequest) {
-        this._xmlHttpRequest = xmlHttpRequest;
+        this._xhr = xmlHttpRequest;
     }
 
     getHeaders(): string {
-        return this._xmlHttpRequest.getAllResponseHeaders();
+        return this._xhr.getAllResponseHeaders();
     }
 
     getHeader(header: string): string {
-        return this._xmlHttpRequest.getResponseHeader(header);
+        return this._xhr.getResponseHeader(header);
     }
 
     getBody(): any {
-        return this._xmlHttpRequest.response;
+        return this._xhr.response;
     }
 
     getType(): string {
-        return this._xmlHttpRequest.responseType;
+        return this._xhr.responseType;
     }
 
     getContentType(): string {
@@ -78,15 +78,15 @@ export class HttpResponse {
     }
 
     getText(): string {
-        return this._xmlHttpRequest.responseText;
+        return this._xhr.responseText;
     }
 
     getJson(): any {
-        return JSON.parse(this._xmlHttpRequest.responseText);
+        return JSON.parse(this._xhr.responseText);
     }
 
     getXml(): string {
-        return this._xmlHttpRequest.responseXML;
+        return this._xhr.responseXML;
     }
 
 }
@@ -102,11 +102,13 @@ export class HttpRequest {
     private _query: Object;
     private _method: string = "GET";
     private _headers: {[key: string]: string} = {};
+    private _timeout: number;
 
     private _onProgress: (progress: HttpProgress) => void;
     private _onResponse: (response: HttpResponse) => void;
     private _onError: (e: Event) => void;
 
+    private _xhr: XMLHttpRequest;
     private _async: boolean = true;
     private _noCache: boolean = false;
 
@@ -153,6 +155,11 @@ export class HttpRequest {
         return this;
     }
 
+    timeout(timeout: number): this {
+        this._timeout = timeout;
+        return this;
+    }
+
     onProgress(onProgress: (progress: HttpProgress) => void): this {
         this._onProgress = onProgress;
         return this;
@@ -178,18 +185,24 @@ export class HttpRequest {
         return this;
     }
 
-    send(data?: any, contentType?: string): void {
+    abort(): this {
+        if (this._xhr) {
+            this._xhr.abort();
+        }
+        return this;
+    }
+
+    send(data?: any, contentType?: string): this {
         if (contentType) {
             this._headers["Content-Type"] = contentType;
         }
-        this._send(this._onResponse, this._onError, data, this._headers);
+        this._send(data, this._headers);
+        return this;
     }
 
-    private _send(onResponse: (response: HttpResponse) => void,
-                  onError: (err: Event) => void,
-                  data?: any,
-                  headers?: {[key: string]: string}): void {
-        const httpRequest = new XMLHttpRequest();
+    private _send(data?: any, headers?: {[key: string]: string}): void {
+        const xhr = new XMLHttpRequest();
+        this._xhr = xhr;
 
         let url = this._url;
         if (this._query) {
@@ -201,29 +214,49 @@ export class HttpRequest {
         }
         // console.debug("HttpRequest: " + this._method + " " + url, data);
 
-        if ("onprogress" in httpRequest) {
+        if ("onprogress" in xhr) {
             if (this._onProgress) {
                 const onprogress = (e) => {
                     if (e.lengthComputable) {
                         this._onProgress({loaded: e.loaded, total: e.total});
                     }
                 };
-                httpRequest.upload.onprogress = onprogress;
-                httpRequest.onprogress = onprogress;
+                xhr.upload.onprogress = onprogress;
+                xhr.onprogress = onprogress;
             }
         }
 
-        httpRequest.open(this._method, url, this._async);
+        xhr.open(this._method, url, this._async);
 
         for (const header in headers) {
             if (headers.hasOwnProperty(header)) {
-                httpRequest.setRequestHeader(header, headers[header]);
+                xhr.setRequestHeader(header, headers[header]);
+            }
+        }
+
+        if (this._timeout) {
+            xhr.timeout = this._timeout;
+        }
+
+        if ("ontimeout" in xhr) {
+            if (this._onError) {
+                xhr.ontimeout = (e: Event) => {
+                    this._onError(e);
+                };
+            }
+        }
+
+        if ("onabort" in xhr) {
+            if (this._onError) {
+                xhr.onabort = () => {
+                    this._onError(undefined);
+                };
             }
         }
 
         if (this._async) {
-            httpRequest.onreadystatechange = (e: Event) => {
-                switch (httpRequest.readyState) {
+            xhr.onreadystatechange = (e: Event) => {
+                switch (xhr.readyState) {
                     // case 3: // loading
                     //    if (this._onProgress) {
                     //        this._onProgress(new HttpResponse(httpRequest));
@@ -231,15 +264,15 @@ export class HttpRequest {
                     //    break;
                     case 4: // done
                         if (
-                            (httpRequest.status >= 200 && httpRequest.status < 300) ||
-                            (httpRequest.status === 0 && !this._url.match(/^https?:\/\//)) // schemes other than http (file, ftp)
+                            (xhr.status >= 200 && xhr.status < 300) ||
+                            (xhr.status === 0 && !this._url.match(/^https?:\/\//)) // schemes other than http (file, ftp)
                         ) {
-                            if (onResponse) {
-                                onResponse(new HttpResponse(httpRequest));
+                            if (this._onResponse) {
+                                this._onResponse(new HttpResponse(xhr));
                             }
                         } else {
-                            if (onError) {
-                                onError(e);
+                            if (this._onError) {
+                                this._onError(e);
                             }
                         }
                         break;
@@ -248,24 +281,26 @@ export class HttpRequest {
 
             if (data !== undefined) {
                 if ((typeof data === "string") || (data instanceof FormData)) {
-                    httpRequest.send(data);
+                    xhr.send(data);
                 } else {
-                    httpRequest.send(JSON.stringify(data));
+                    xhr.send(JSON.stringify(data));
                 }
             } else {
-                httpRequest.send();
+                xhr.send();
             }
         } else {
-            httpRequest.onerror = (e: ErrorEvent) => {
-                onError(e);
-            };
+            if (this._onError) {
+                xhr.onerror = (e: ErrorEvent) => {
+                    this._onError(e);
+                };
+            }
             if (data) {
                 const payload = (typeof data === "string") ? data : JSON.stringify(data);
-                httpRequest.send(payload);
+                xhr.send(payload);
             } else {
-                httpRequest.send();
+                xhr.send();
             }
-            return JSON.parse(httpRequest.responseText);
+            return JSON.parse(xhr.responseText);
         }
     }
 

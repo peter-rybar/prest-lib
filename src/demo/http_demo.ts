@@ -6,6 +6,7 @@ new HttpRequest()
         address: "Bratislava I",
         xxx: ["yyy", "zzz"]
     })
+    // .timeout(10)
     .onProgress((progress: HttpProgress) => {
         console.log("response progress: ", progress);
     })
