@@ -2,12 +2,16 @@
  * pREST Signal-Slot pattern module
  */
 
-/**
- * Slot interface
- */
+type SlotCallback<T> = (data?: T) => void;
+
 interface Slot<T> {
-    callback: (data?: T) => void;
+    callback: SlotCallback<T>;
     object?: any;
+}
+
+export interface Sig<T> {
+    connect(callback: SlotCallback<T>, object?: any): void;
+    disconnect(callback: SlotCallback<T>, object?: any): void;
 }
 
 /**
@@ -15,14 +19,23 @@ interface Slot<T> {
  *
  * <T> signal data type
  */
-export class Signal<T> {
+export class Signal<T> implements Sig<T> {
 
-    private _slots: Slot<T>[];
-    private _emit: boolean;
+    private _slots: Slot<T>[] = [];
+    private _emit: boolean = true;
+
+    private _onConnect: (connNo: number) => void;
+    private _onDisconnect: (connNo: number) => void;
 
     constructor() {
-        this._slots = [];
-        this._emit = true;
+    }
+
+    onConnect(onConnect: (connNo: number) => void): void {
+        this._onConnect = onConnect;
+    }
+
+    onDisconnect(onDisconnect: (connNo: number) => void): void {
+        this._onDisconnect = onDisconnect;
     }
 
     // ES5
@@ -37,9 +50,12 @@ export class Signal<T> {
     connect(callback: (data?: T) => void, object?: Object): void;
     connect(callback: (data?: any) => void, object?: Object): void {
         if (object) {
-            this._slots.push({callback: callback, object: object});
+            this._slots.push({ callback: callback, object: object });
         } else {
-            this._slots.push({callback: callback});
+            this._slots.push({ callback: callback });
+        }
+        if (this._onConnect) {
+            this._onConnect(this._slots.length);
         }
     }
 
@@ -47,11 +63,14 @@ export class Signal<T> {
      * Disconnects slot
      */
     disconnect(callback: (data?: T) => void, object?: Object): void {
-        this._slots = this._slots.filter((slot) => {
+        this._slots = this._slots.filter(slot => {
             return (object === undefined) ?
                 (slot.callback !== callback) :
-                (slot.callback !== callback) && (slot.object !== object);
+            (slot.callback !== callback) && (slot.object !== object);
         });
+        if (this._onDisconnect) {
+            this._onDisconnect(this._slots.length);
+        }
     }
 
     /**
@@ -59,6 +78,9 @@ export class Signal<T> {
      */
     disconnectAll(): void {
         this._slots = [];
+        if (this._onDisconnect) {
+            this._onDisconnect(this._slots.length);
+        }
     }
 
     /**
@@ -84,7 +106,7 @@ export class Signal<T> {
     emit(data?: T): any[];
     emit(data?: any): any[] {
         if (this._emit) {
-            return this._slots.map((slot) => {
+            return this._slots.map(slot => {
                 const object: Object = slot.object;
                 if (object) {
                     return slot.callback.call(object, data);
@@ -101,7 +123,7 @@ export class Signal<T> {
     emitAsync(data?: T): void;
     emitAsync(data?: any): void {
         if (this._emit) {
-            this._slots.forEach((slot) => {
+            this._slots.forEach(slot => {
                 const object: Object = slot.object;
                 if (object) {
                     setTimeout(() => {

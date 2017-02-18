@@ -1,4 +1,4 @@
-import {Signal} from "../main/prest/signal";
+import { Signal } from "../main/prest/signal";
 
 
 const s: Signal<string> = new Signal<string>();
@@ -67,6 +67,12 @@ const a = new A();
 
 const b = new B();
 
+a.sigNum.onConnect(connNo => console.log("a.sigNum connect:", connNo));
+a.sigNum.onDisconnect(connNo => console.log("a.sigNum disconnect:", connNo));
+
+a.sigStr.onConnect(connNo => console.log("a.sigStr connect:", connNo));
+a.sigStr.onDisconnect(connNo => console.log("a.sigStr disconnect:", connNo));
+
 a.sigNum.connect(a.slot);
 a.sigNum.connect(a.slot, a);
 a.sigNum.connect(a.slot, b);
@@ -92,3 +98,6 @@ a.sigStr.emit("str");
 console.log("unfreeze");
 a.sigStr.unfreeze();
 a.sigStr.emit("str");
+
+a.sigNum.disconnectAll();
+a.sigStr.disconnectAll();
