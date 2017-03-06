@@ -1,6 +1,12 @@
 {
     "compilerOptions": {
         "target": "es5",
+        "lib": [
+            "dom",
+            "es2015",
+            "es2017.object",
+            "es2016.array.include"
+        ],
         "module": "umd",
         "noImplicitAny": false,
         "noImplicitReturns": false,

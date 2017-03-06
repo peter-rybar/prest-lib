@@ -85,7 +85,7 @@ export class HttpResponse {
         return JSON.parse(this._xhr.responseText);
     }
 
-    getXml(): string {
+    getXml(): any {
         return this._xhr.responseXML;
     }
 

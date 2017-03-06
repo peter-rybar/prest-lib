@@ -1,27 +1,51 @@
 // Karma configuration
-// Generated on Wed Jul 20 2016 01:04:53 GMT+0200 (CEST)
+// Generated on Wed Nov 16 2016 10:03:39 GMT+0100 (CET)
 
 module.exports = function (config) {
     config.set({
 
         // base path that will be used to resolve all patterns (eg. files, exclude)
-        basePath: '',
+        basePath: './',
 
 
         // frameworks to use
         // available frameworks: https://npmjs.org/browse/keyword/karma-adapter
-        frameworks: ['jasmine'],
+        frameworks: ['mocha', 'chai'],
 
 
         // list of files / patterns to load in the browser
         files: [
-            'src/**/*.js'
+            './node_modules/requirejs/require.js',
+            './node_modules/karma-requirejs/lib/adapter.js',
+            {pattern: './build/**/*.js', included: false},
+            {pattern: './build/**/*.js.map', included: false, watched: true},
+            {pattern: './src/**/*.ts', included: false, watched: true},
+            'src/test-main.js'
         ],
 
 
         // list of files to exclude
         exclude: [],
 
+
+        // preprocess matching files before serving them to the browser
+        // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
+        preprocessors: {},
+
+        // preprocessors: {
+        //     'src/**/*.ts': ['typescript'],
+        //     'test/**/*.ts': ['typescript']
+        // },
+        //
+        // typescriptPreprocessor: {
+        //     options: {
+        //         sourceMap: true, // generate source maps
+        //         noResolve: false // enforce type resolution
+        //     },
+        //     transformPath: function(path) {
+        //         return path.replace(/\.ts$/, '.js');
+        //     }
+        // }
 
         // test results reporter to use
         // possible values: 'dots', 'progress'
@@ -43,42 +67,29 @@ module.exports = function (config) {
 
 
         // enable / disable watching file and executing tests whenever any file changes
-        autoWatch: false,
-        // autoWatch: true,
+        autoWatch: true,
 
 
         // start these browsers
         // available browser launchers: https://npmjs.org/browse/keyword/karma-launcher
-        browsers: ['Chrome'],
+        browsers: [
+            // 'Chrome'//,
+            'PhantomJS'
+        ],
 
 
         // Continuous Integration mode
         // if true, Karma captures browsers, runs the tests and exits
         singleRun: false,
-        // singleRun: true,
 
         // Concurrency level
         // how many browser should be started simultaneous
         concurrency: Infinity,
 
-
-        // preprocess matching files before serving them to the browser
-        // available preprocessors: https://npmjs.org/browse/keyword/karma-preprocessor
-        preprocessors: {}
-        // preprocessors: {
-        //     'src/**/*.ts': ['typescript'],
-        //     'test/**/*.ts': ['typescript']
-        // },
-        //
-        // typescriptPreprocessor: {
-        //     options: {
-        //         sourceMap: true, // generate source maps
-        //         noResolve: false // enforce type resolution
-        //     },
-        //     transformPath: function(path) {
-        //         return path.replace(/\.ts$/, '.js');
-        //     }
-        // }
-
+        client: {
+            config: {
+                browserConsoleLogOptions: true
+            }
+        }
     })
 };

@@ -2,7 +2,7 @@
  * pREST Signal-Slot pattern module
  */
 
-type SlotCallback<T> = (data?: T) => void;
+export type SlotCallback<T> = (data?: T) => void;
 
 interface Slot<T> {
     callback: SlotCallback<T>;
