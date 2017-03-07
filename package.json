@@ -27,13 +27,13 @@
     "signal", "slot", "encode", "hash", "form", "widgets"
   ],
   "devDependencies": {
-    "babel-polyfill": "^6.13.0",
-    "babel-preset-babili": "0.0.3",
-    "babel-preset-es2015": "^6.14.0",
     "@types/assertion-error": "^1.0.30",
     "@types/chai": "^3.4.34",
     "@types/mocha": "^2.2.33",
     "@types/stats": "^0.16.30",
+    "babel-polyfill": "^6.13.0",
+    "babel-preset-babili": "0.0.3",
+    "babel-preset-es2015": "^6.14.0",
     "chai": "^3.5.0",
     "karma": "^1.3.0",
     "karma-chai": "^0.1.0",

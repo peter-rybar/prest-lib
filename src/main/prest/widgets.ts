@@ -1,6 +1,65 @@
+
 export interface Widget {
     element(): HTMLElement;
 }
+
+// --------------------------------------------------------------------------
+
+export interface XWidget {
+    mount(element: HTMLElement): void;
+}
+
+/*
+export class XWidgets {
+
+    private static _widgets: {[key: string]: any};
+
+    static register(widgetClass: any): XWidget {
+        XWidgets._widgets[] = widgetClass;
+        return (new (XWidgets._widgets[name]))();
+    }
+
+    static getInstance(name: string): XWidget {
+        return (new (XWidgets._widgets[name]))();
+    }
+
+}
+
+class MyClass {}
+
+const className = (<any>new MyClass()).constructor.name;
+// OR var className = (new MyClass() as any).constructor.name;
+console.log(className); // Should output "MyClass"
+*/
+
+/*
+export function mount(element: HTMLElement, widget?: XWidget): void {
+    if (widget) {
+        widget.mount(element);
+        element["widget"] = widget;
+    // } else {
+    //     const xw = XWidgets.getInstance(element.tagName);
+    //     xw.mount(element);
+    //     element["widget"] = xw;
+    }
+}
+
+
+class MyXWidget implements XWidget {
+
+    mount(element: HTMLElement): void {}
+
+}
+
+const mxw = MyXWidget;
+
+mount(document.body, new mxw());
+
+mount(document.body, new MyXWidget());
+*/
+
+
+// --------------------------------------------------------------------------
 
 
 export function element(html: string): HTMLElement {
