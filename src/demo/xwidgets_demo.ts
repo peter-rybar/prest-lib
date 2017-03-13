@@ -8,7 +8,7 @@ class Item {
 class MyXWidget implements XWidget {
 
     private _items: Item[] = [];
-    private _onSelect: (item) => void;
+    private _onSelect: (item: Item) => void;
 
     private _element: HTMLElement;
 

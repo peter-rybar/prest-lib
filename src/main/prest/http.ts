@@ -1,4 +1,4 @@
-function is_array(obj) {
+function is_array(obj: any) {
     return Array.isArray ?
         Array.isArray(obj) :
         (obj == null || obj === undefined || "boolean|number|string|function|xml".indexOf(typeof obj) !== -1 ) ?
@@ -7,7 +7,7 @@ function is_array(obj) {
 }
 
 export function decodeUrlQuery(queryStr: string) {
-    const query = {};
+    const query: any = {};
     if (queryStr) {
         const a = queryStr.substr(1).split("&");
         for (let i = 0, l = a.length; i < l; i++) {
@@ -18,8 +18,8 @@ export function decodeUrlQuery(queryStr: string) {
     return query;
 }
 
-export function encodeUrlQuery(query): string {
-    const key_value_pairs = [];
+export function encodeUrlQuery(query: any): string {
+    const key_value_pairs: any = [];
 
     for (const key in query) {
         if (query.hasOwnProperty(key)) {
@@ -41,7 +41,7 @@ export function encodeUrlQuery(query): string {
         }
     }
 
-    for (let j = 0, pair; pair = key_value_pairs[j++]; ) {
+    for (let j = 0, pair: any; pair = key_value_pairs[j++]; ) {
         key_value_pairs[j - 1] = "" +
             encodeURIComponent(pair[0]) + "=" + encodeURIComponent(pair[1]);
     }
@@ -216,7 +216,7 @@ export class HttpRequest {
 
         if ("onprogress" in xhr) {
             if (this._onProgress) {
-                const onprogress = (e) => {
+                const onprogress = (e: ProgressEvent) => {
                     if (e.lengthComputable) {
                         this._onProgress({loaded: e.loaded, total: e.total});
                     }

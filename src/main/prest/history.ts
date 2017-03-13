@@ -24,7 +24,7 @@ export class History<T> {
         window.history.pushState(state, title, url);
     }
 
-    replaceState(state, title: string, url?: string) {
+    replaceState(state: any, title: string, url?: string) {
         window.history.replaceState(state, title, url);
     }
 

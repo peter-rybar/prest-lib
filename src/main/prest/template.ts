@@ -64,10 +64,10 @@ export function tmpl(templateOrId: string, data?: Object) {
     let
         stringify = JSON.stringify,
         re = /\$\{([\S\s]*?)\}/g,
-        strings = [],
+        strings: any[] = [],
         i = 0,
-        str,
-        m;
+        str: string,
+        m: RegExpExecArray;
     while ((m = re.exec(template))) {
         str = template.slice(i, m.index);
         strings.push(stringify(str), "(" + m[1] + ")");
@@ -80,7 +80,7 @@ export function tmpl(templateOrId: string, data?: Object) {
 }
 
 
-const template_cache = {};
+const template_cache: any = {};
 
 /**
  * Template engine
@@ -95,7 +95,7 @@ export function template(templateOrId: string, data?: any) {
     // Figure out if we're getting a template, or if we need to
     // load the template - and be sure to cache the result.
     // var fn = !/\W/.test(str) ?
-    const fn = !/[^a-zA-Z0-9_-]+/.test(templateOrId) ?
+    const fn: Function = !/[^a-zA-Z0-9_-]+/.test(templateOrId) ?
         template_cache[templateOrId] = template_cache[templateOrId] ||
             template(document.getElementById(templateOrId).innerHTML) :
         // Generate a reusable function that will serve as a template

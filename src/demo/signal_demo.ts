@@ -5,7 +5,7 @@ const s: Signal<string> = new Signal<string>();
 
 console.log("-------------------------------------");
 
-const slotFunction = (data) => {
+const slotFunction = (data: any) => {
     console.log("function data: " + data);
 };
 
@@ -46,7 +46,7 @@ class A {
     sigNum = new Signal<number>();
     sigStr = new Signal<string>();
 
-    slot(data/*:number*/) {
+    slot(data: any /*:number*/) {
         console.log("A.slot() data: '" + this.a + "' " + " " + data);
     }
 }
@@ -60,7 +60,8 @@ class B {
 }
 
 function slot(data: number) {
-    console.log("slot() data: '" + this.a + "' " + " " + data);
+    console.log("slot() data: " + data);
+    // console.log("slot() data: '" + this.a + "' " + " " + data);
 }
 
 const a = new A();

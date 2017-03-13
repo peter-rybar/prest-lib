@@ -9,7 +9,7 @@ export class GalleryWidget implements widgets.Widget {
 
     private _element: HTMLDivElement;
     private _items: Item[] = [];
-    private _onSelect: (item) => void;
+    private _onSelect: (item: Item) => void;
 
     constructor(items: Item[]) {
         this._items = items;
@@ -46,7 +46,7 @@ export class GalleryWidget implements widgets.Widget {
                 <div class="gallery-thumbs"></div>
             `;
 
-        const updateImage = (e) => {
+        const updateImage = (e: Event) => {
             e.stopPropagation();
             const event = e || window.event;
             const target = (event.target || e.srcElement) as HTMLElement;

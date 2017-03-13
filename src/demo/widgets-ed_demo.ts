@@ -9,7 +9,7 @@ class MyWidget implements widgets.Widget {
 
     private _element: HTMLElement;
     private _items: Item[] = [];
-    private _onSelect: (item) => void;
+    private _onSelect: (item: Item) => void;
 
     constructor(items: Item[]) {
         this._items = items;
@@ -35,7 +35,9 @@ class MyWidget implements widgets.Widget {
                 (target: HTMLElement, e: Event) => {
                     if (target.hasAttribute("data-id")) {
                         const id = target.getAttribute("data-id");
-                        this._onSelect && this._onSelect(this._items[id]);
+                        if (this._onSelect) {
+                            this._onSelect(this._items[+id]);
+                        }
                     }
                 });
         }
@@ -46,10 +48,10 @@ class MyWidget implements widgets.Widget {
         if (this._element) {
             this._element.innerHTML = this._items.map((item, i) => {
                 return `
-                        <li data-id="${i}">
-                            <span class="label" data-id="${i}">${item.text}</span>
-                            <small class="count" data-id="${i}">[${item.count}]</small>
-                        </li>`;
+                    <li data-id="${i}">
+                        <span class="label" data-id="${i}">${item.text}</span>
+                        <small class="count" data-id="${i}">[${item.count}]</small>
+                    </li>`;
             }).join("\n");
         }
     }

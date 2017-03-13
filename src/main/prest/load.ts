@@ -1,10 +1,11 @@
+
 export function scriptLib(url: string,
                           namespace: string,
                           callback?: (lib: any) => void): void {
     script(url, () => {
-        const lib = window[namespace];
-        window[namespace] = {};
-        delete window[namespace];
+        const lib = (window as any)[namespace];
+        (window as any)[namespace] = {};
+        delete (window as any)[namespace];
         callback(lib);
     });
 }

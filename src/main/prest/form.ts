@@ -1,14 +1,15 @@
+
 export interface Entry {
     getName(): string;
     getValue(): string;
     setValue(value: string): this;
-    validate(locale?: string): Object;
+    validate(locale?: string): string;
     setValidator(validator: (entry: Entry, locale?: string) => string): this;
     onChange(callback: (entry: Entry) => void): this;
 }
 
 
-export class InputEntry implements Entry {
+export class TextInputEntry implements Entry {
 
     private _element: HTMLInputElement;
     private _validator: (entry: Entry, locale: string) => string;
@@ -45,7 +46,7 @@ export class InputEntry implements Entry {
         return this;
     }
 
-    validate(locale?: string): Object {
+    validate(locale?: string): string {
         if (this._validator) {
             return this._validator(this, locale);
         }
@@ -90,13 +91,52 @@ export class NumberInputEntry implements Entry {
                 this._onChange(this, true);
             }
         });
+        const onMouseWheel = (e: MouseEvent) => {
+            if (this._onChange) {
+                setTimeout(() => {
+                    this._onChange(this, false);
+                }, 0);
+            }
+        };
         this._element.addEventListener("focus", () => {
-            this._element.addEventListener("mousewheel", this._onMouseWheel);
+            this._element.addEventListener("mousewheel", onMouseWheel);
         });
         this._element.addEventListener("blur", () => {
-            this._element.removeEventListener("mousewheel", this._onMouseWheel);
+            this._element.removeEventListener("mousewheel", onMouseWheel);
         });
-        this._element.addEventListener("mousedown", this._onMouseDown);
+        this._element.addEventListener("mousedown", (e: MouseEvent) => {
+            document.body.style.cursor = "row-resize";
+            this._element.style.cursor = "row-resize";
+            const initialY = e.pageY;
+            const value = Number(this.getValue());
+            const min = this._element.min === "" ? null : Number(this._element.min);
+            const max = this._element.max === "" ? null : Number(this._element.max);
+            const num: number = isNaN(value) ? (min === null ? 0 : min) : value;
+
+            const onMouseMove = (e: MouseEvent) => {
+                const diffY = e.pageY - initialY;
+                const newValue = num - diffY * this._step;
+                if (min !== null && newValue < min) {
+                    this.setValue(min.toFixed(this._decimals));
+                } else if (max !== null && newValue > max) {
+                    this.setValue(max.toFixed(this._decimals));
+                } else {
+                    this.setValue(newValue.toFixed(this._decimals));
+                }
+                this._onChange(this, false);
+            };
+
+            const onMouseUp = (e: MouseEvent) => {
+                document.body.style.cursor = "";
+                this._element.style.cursor = "";
+                document.removeEventListener("mousemove", onMouseMove);
+                document.removeEventListener("mouseup", onMouseUp);
+                this._onChange(this, true);
+            };
+
+            document.addEventListener("mousemove", onMouseMove);
+            document.addEventListener("mouseup", onMouseUp);
+        });
         this.setStep(1);
     }
 
@@ -129,7 +169,7 @@ export class NumberInputEntry implements Entry {
         return this;
     }
 
-    validate(locale?: string): Object {
+    validate(locale?: string): string {
         if (this._validator) {
             return this._validator(this, locale);
         }
@@ -145,44 +185,6 @@ export class NumberInputEntry implements Entry {
         this._onChange = callback;
         return this;
     }
-
-    private _onMouseWheel = e => {
-        if (this._onChange) {
-            setTimeout(() => {
-                this._onChange(this, false);
-            }, 0);
-        }
-    };
-
-    private _onMouseDown = e => {
-        const initialY = e.pageY;
-        const value = Number(this.getValue());
-        const min = this._element.min === "" ? null : Number(this._element.min);
-        const max = this._element.max === "" ? null : Number(this._element.max);
-        const num: number = isNaN(value) ? (min === null ? 0 : min) : value;
-
-        const onMouseMove = e => {
-            const diffY = e.pageY - initialY;
-            const newValue = num - diffY * this._step;
-            if (min !== null && newValue < min) {
-                this.setValue(min.toFixed(this._decimals));
-            } else if (max !== null && newValue > max) {
-                this.setValue(max.toFixed(this._decimals));
-            } else {
-                this.setValue(newValue.toFixed(this._decimals));
-            }
-            this._onChange(this, false);
-        };
-
-        const onMouseUp = e => {
-            document.removeEventListener("mousemove", onMouseMove);
-            document.removeEventListener("mouseup", onMouseUp);
-            this._onChange(this, true);
-        };
-
-        document.addEventListener("mousemove", onMouseMove);
-        document.addEventListener("mouseup", onMouseUp);
-    };
 
 }
 
@@ -219,7 +221,7 @@ export class CheckboxEntry implements Entry {
         return this;
     }
 
-    validate(locale?: string): Object {
+    validate(locale?: string): string {
         if (this._validator) {
             return this._validator(this, locale);
         }
@@ -271,7 +273,7 @@ export class SelectEntry implements Entry {
         return this;
     }
 
-    validate(locale?: string): Object {
+    validate(locale?: string): string {
         if (this._validator) {
             return this._validator(this, locale);
         }
@@ -298,7 +300,7 @@ export class RadioEntry implements Entry {
     private _onChange: (entry: Entry) => void;
 
     constructor(elements: HTMLInputElement[] | string[]) {
-        (elements as any).forEach((c) => {
+        (elements as any).forEach((c: HTMLInputElement | string) => {
             if (typeof c === "string") {
                 this._elements.push(document.getElementById(c)  as HTMLInputElement);
             } else {
@@ -336,7 +338,7 @@ export class RadioEntry implements Entry {
         return this;
     }
 
-    validate(locale?: string): Object {
+    validate(locale?: string): string {
         if (this._validator) {
             return this._validator(this, locale);
         }
@@ -416,7 +418,7 @@ export class FileEntry implements Entry {
         return this;
     }
 
-    validate(locale?: string): Object {
+    validate(locale?: string): string {
         if (this._validator) {
             return this._validator(this, locale);
         }
@@ -480,15 +482,15 @@ export class Form {
         return null;
     }
 
-    validate(locale?: string): Object {
-        const errors = {};
+    validate(locale?: string): any {
+        const errors: any = {};
         for (let entry of this._formEntries) {
             errors[entry.getName()] = entry.validate(locale);
         }
         return errors;
     }
 
-    isValid(errors?: Object): boolean {
+    isValid(errors?: any): boolean {
         if (!errors) {
             errors = this.validate();
         }
@@ -500,8 +502,8 @@ export class Form {
         return true;
     }
 
-    getValues(): Object {
-        const values = {};
+    getValues(): any {
+        const values: any = {};
         for (let entry of this._formEntries) {
             values[entry.getName()] = entry.getValue();
         }

@@ -1,11 +1,11 @@
 export class UrlEncodedData {
 
     static encode(data: any, prefix = ""): string {
-        let str;
+        let str: string;
         if (typeof data !== "object") {
             str = data;
         } else {
-            const params = [];
+            const params: string[] = [];
             let size = 0;
             for (let key in data) {
                 if (data.hasOwnProperty(key)) {
@@ -79,9 +79,9 @@ export class Base64 {
 
     private static _keyStr = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
 
-    static encode(e) {
+    static encode(e: string): string {
         let t = "";
-        let n, r, i, s, o, u, a;
+        let n: any, r: any, i: any, s: any, o: any, u: any, a: any;
         let f = 0;
         e = Base64._utf8_encode(e);
         while (f < e.length) {
@@ -102,10 +102,10 @@ export class Base64 {
         return t;
     }
 
-    static decode(e) {
+    static decode(e: string): string {
         let t = "";
-        let n, r, i;
-        let s, o, u, a;
+        let n: any, r: any, i: any;
+        let s: any, o: any, u: any, a: any;
         let f = 0;
         e = e.replace(/[^A-Za-z0-9\+\/\=]/g, "");
         while (f < e.length) {
@@ -128,7 +128,7 @@ export class Base64 {
         return t;
     }
 
-    private static _utf8_encode(e) {
+    private static _utf8_encode(e: string): string {
         e = e.replace(/\r\n/g, "\n");
         let t = "";
         for (let n = 0; n < e.length; n++) {
@@ -147,7 +147,7 @@ export class Base64 {
         return t;
     }
 
-    private static _utf8_decode(e) {
+    private static _utf8_decode(e: string): string {
         let t = "";
         let n = 0;
         let r = 0;

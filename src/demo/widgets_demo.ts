@@ -9,7 +9,7 @@ class MyWidget implements widgets.Widget {
 
     private _element: HTMLElement;
     private _items: Item[] = [];
-    private _onSelect: (item) => void;
+    private _onSelect: (item: Item) => void;
 
     constructor(items: Item[]) {
         this._items = items;
@@ -39,10 +39,10 @@ class MyWidget implements widgets.Widget {
             this._element.innerHTML = "";
             this._items.map((item) => {
                 const e = widgets.element(`
-                        <li>
-                            <span class="label" >${item.text}</span>
-                            <small class="count">[${item.count}]</small>
-                        </li>`);
+                    <li>
+                        <span class="label" >${item.text}</span>
+                        <small class="count">[${item.count}]</small>
+                    </li>`);
                 const self = this;
                 e.onclick = function (event) {
                     event.stopPropagation();

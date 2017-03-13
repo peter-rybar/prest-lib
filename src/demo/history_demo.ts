@@ -31,7 +31,7 @@ const navLinks = document.querySelectorAll(".load-content");
 const titleElement = document.getElementById("title");
 const contentElement = document.getElementById("content");
 
-function displayPage(state) {
+function displayPage(state: any) {
     // Check to make sure that this state object is not null.
     if (state) {
         document.title = state.title;
@@ -51,7 +51,7 @@ h.onChange((pageState) => {
 for (let i = 0, l = navLinks.length; i < l; i++) {
     navLinks[i].addEventListener("click", function (e) {
         e.preventDefault();
-        const pageURL = this.attributes["href"].value;
+        const pageURL = (e.target as any).attributes["href"].value;
         const pageState = pages[pageURL.split(".")[0]];
         displayPage(pageState);
         h.pushState(pageState, pageState.title, pageURL);

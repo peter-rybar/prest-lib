@@ -32,30 +32,36 @@ const showChange = (entry: form.Entry) => {
 };
 
 new form.Form("form")
-    .addEntry(new form.InputEntry("name")
-        .setValue("Peter")
-        .setValidator(stringValidator)
-        .onChange(showChange))
-    .addEntry(new form.NumberInputEntry("age")
-        .setValue("20")
-        .setValidator(numberValidator)
-        .onChange(showChange))
-    .addEntry(new form.SelectEntry("sex")
-        .setValue("M")
-        .setValidator(stringValidator)
-        .onChange(showChange))
-    .addEntry(new form.CheckboxEntry("agree")
-        .setValue(true.toString())
-        .setValidator(stringValidator)
-        .onChange(showChange))
-    .addEntry(new form.RadioEntry(["yes-no-y", "yes-no-n"])
-        .setValue("n")
-        .setValidator(stringValidator)
-        .onChange(showChange))
-    .addEntry(new form.FileEntry("file")
-        .setValue("File")
-        .setValidator(fileValidator)
-        .onChange(showChange))
+    .addEntry(
+        new form.TextInputEntry("name")
+            .setValue("Peter")
+            .setValidator(stringValidator)
+            .onChange(showChange))
+    .addEntry(
+        new form.NumberInputEntry("age")
+            .setValue("20")
+            .setValidator(numberValidator)
+            .onChange(showChange))
+    .addEntry(
+        new form.SelectEntry("sex")
+            .setValue("M")
+            .setValidator(stringValidator)
+            .onChange(showChange))
+    .addEntry(
+        new form.CheckboxEntry("agree")
+            .setValue(true.toString())
+            .setValidator(stringValidator)
+            .onChange(showChange))
+    .addEntry(
+        new form.RadioEntry(["yes-no-y", "yes-no-n"])
+            .setValue("n")
+            .setValidator(stringValidator)
+            .onChange(showChange))
+    .addEntry(
+        new form.FileEntry("file")
+            .setValue("File")
+            .setValidator(fileValidator)
+            .onChange(showChange))
     .onSubmit((form: form.Form) => {
         const errors = form.validate("sk");
         for (const error in errors) {
