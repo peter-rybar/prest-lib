@@ -39,7 +39,11 @@ new form.Form("form")
             .onChange(showChange))
     .addEntry(
         new form.NumberInputEntry("age")
+            .setStep(0.1)
+            .setDecimals(2)
             .setValue("20")
+            .enableMouseWheel()
+            .enableMouseDrag()
             .setValidator(numberValidator)
             .onChange(showChange))
     .addEntry(

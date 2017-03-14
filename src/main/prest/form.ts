@@ -68,19 +68,13 @@ export class TextInputEntry implements Entry {
 
 export class NumberInputEntry implements Entry {
 
-    private static _decimals(num: number): number {
-        const s = num.toString().split(".")[1];
-        return s ? s.length : 0;
-    }
-
     private _element: HTMLInputElement;
+
+    private _decimals: number = 0;
     private _validator: (entry: Entry, locale: string) => string;
     private _onChange: (entry: Entry, final: boolean) => void;
 
-    private _step: number;
-    private _decimals: number;
-
-    constructor(element: HTMLInputElement|string) {
+    constructor(element: HTMLInputElement | string) {
         if (typeof element === "string") {
             this._element = document.getElementById(element) as HTMLInputElement;
         } else {
@@ -91,9 +85,49 @@ export class NumberInputEntry implements Entry {
                 this._onChange(this, true);
             }
         });
+        this.setDecimals(2);
+    }
+
+    getName(): string {
+        return this._element.name;
+    }
+
+    getValue(): string {
+        return this._element.value;
+    }
+
+    setValue(value: string): this {
+        this._element.value = (+value).toFixed(this._decimals);
+        return this;
+    }
+
+    setStep(value: number): this {
+        this._element.step = value.toString();
+        return this;
+    }
+
+    setMin(value: number): this {
+        this._element.min = value.toString();
+        return this;
+    }
+
+    setMax(value: number): this {
+        this._element.max = value.toString();
+        return this;
+    }
+
+    setDecimals(value: number): this {
+        this._decimals = value;
+        return this;
+    }
+
+
+    enableMouseWheel(): this {
         const onMouseWheel = (e: MouseEvent) => {
             if (this._onChange) {
                 setTimeout(() => {
+                    // const value = Number(this._element.value);
+                    // this.setValue(value.toFixed(this._decimals));
                     this._onChange(this, false);
                 }, 0);
             }
@@ -104,6 +138,10 @@ export class NumberInputEntry implements Entry {
         this._element.addEventListener("blur", () => {
             this._element.removeEventListener("mousewheel", onMouseWheel);
         });
+        return this;
+    }
+
+    enableMouseDrag(): this {
         this._element.addEventListener("mousedown", (e: MouseEvent) => {
             document.body.style.cursor = "row-resize";
             this._element.style.cursor = "row-resize";
@@ -111,11 +149,12 @@ export class NumberInputEntry implements Entry {
             const value = Number(this.getValue());
             const min = this._element.min === "" ? null : Number(this._element.min);
             const max = this._element.max === "" ? null : Number(this._element.max);
+            const step = this._element.step === "" ? 1 : Number(this._element.step);
             const num: number = isNaN(value) ? (min === null ? 0 : min) : value;
 
             const onMouseMove = (e: MouseEvent) => {
                 const diffY = e.pageY - initialY;
-                const newValue = num - diffY * this._step;
+                const newValue = num - diffY * step;
                 if (min !== null && newValue < min) {
                     this.setValue(min.toFixed(this._decimals));
                 } else if (max !== null && newValue > max) {
@@ -137,35 +176,6 @@ export class NumberInputEntry implements Entry {
             document.addEventListener("mousemove", onMouseMove);
             document.addEventListener("mouseup", onMouseUp);
         });
-        this.setStep(1);
-    }
-
-    getName(): string {
-        return this._element.name;
-    }
-
-    getValue(): string {
-        return this._element.value;
-    }
-
-    setValue(value: string): this {
-        this._element.value = value;
-        return this;
-    }
-
-    setStep(value: number): this {
-        this._step = value;
-        this._decimals = NumberInputEntry._decimals(this._step);
-        return this;
-    }
-
-    setMin(value: number): this {
-        this._element.min = value.toString();
-        return this;
-    }
-
-    setMax(value: number): this {
-        this._element.max = value.toString();
         return this;
     }
 
@@ -383,7 +393,7 @@ export class FileEntry implements Entry {
     private _validator: (entry: Entry, locale: string) => string;
     private _onChange: (entry: Entry) => void;
 
-    constructor(element: HTMLInputElement|string) {
+    constructor(element: HTMLInputElement | string) {
         if (typeof element === "string") {
             this._element = document.getElementById(element) as HTMLInputElement;
         } else {
