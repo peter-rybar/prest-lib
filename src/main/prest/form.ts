@@ -9,6 +9,63 @@ export interface Entry {
 }
 
 
+export class TextAreaEntry implements Entry {
+
+    private _element: HTMLTextAreaElement;
+    private _validator: (entry: Entry, locale: string) => string;
+    private _onChange: (entry: Entry, final: boolean) => void;
+
+    constructor(element: HTMLTextAreaElement | string) {
+        if (typeof element === "string") {
+            this._element = document.getElementById(element) as HTMLTextAreaElement;
+        } else {
+            this._element = element;
+        }
+        this._element.addEventListener("change", (e) => {
+            if (this._onChange) {
+                this._onChange(this, true);
+            }
+        });
+        this._element.addEventListener("input", (e) => {
+            if (this._onChange) {
+                this._onChange(this, false);
+            }
+        });
+    }
+
+    getName(): string {
+        return this._element.name;
+    }
+
+    getValue(): string {
+        return this._element.value;
+    }
+
+    setValue(value: string): this {
+        this._element.value = value;
+        return this;
+    }
+
+    validate(locale?: string): string {
+        if (this._validator) {
+            return this._validator(this, locale);
+        }
+        return "";
+    }
+
+    setValidator(validator: (entry: Entry, locale?: string) => string): this {
+        this._validator = validator;
+        return this;
+    }
+
+    onChange(callback: (entry: Entry, final: boolean) => void): this {
+        this._onChange = callback;
+        return this;
+    }
+
+}
+
+
 export class TextInputEntry implements Entry {
 
     private _element: HTMLInputElement;
@@ -276,10 +333,36 @@ export class SelectEntry implements Entry {
 
     getValue(): string {
         return this._element.value;
+
+        // const idx = this._element.selectedIndex;
+        // return this._element.options[idx].value;
+
+        // const values: string[] = [];
+        // const opts = this._element.options;
+        // for (let i = 0; i < opts.length; i++) {
+        //     if (opts[i].selected === true) {
+        //         values.push(opts[i].value);
+        //     }
+        // }
+        // return values;
     }
 
     setValue(value: string): this {
         this._element.value = value;
+        return this;
+    }
+
+    setOptions(options: {value: string, text: string}[]): this {
+        const e = this._element;
+        while (e.options.length > 0) {
+            e.remove(0);
+        }
+        options.forEach(opt => {
+            const o = document.createElement("option");
+            o.text = opt.text;
+            o.value = opt.value;
+            e.add(o);
+        });
         return this;
     }
 

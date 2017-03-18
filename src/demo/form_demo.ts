@@ -48,7 +48,11 @@ new form.Form("form")
             .onChange(showChange))
     .addEntry(
         new form.SelectEntry("sex")
-            .setValue("M")
+            // .setOptions([
+            //     { value: "A", text: "text A" },
+            //     { value: "B", text: "text B" }])
+            // .setValue("B")
+            .setValue("F")
             .setValidator(stringValidator)
             .onChange(showChange))
     .addEntry(
@@ -59,6 +63,11 @@ new form.Form("form")
     .addEntry(
         new form.RadioEntry(["yes-no-y", "yes-no-n"])
             .setValue("n")
+            .setValidator(stringValidator)
+            .onChange(showChange))
+    .addEntry(
+        new form.TextAreaEntry("text")
+            .setValue("text text")
             .setValidator(stringValidator)
             .onChange(showChange))
     .addEntry(
