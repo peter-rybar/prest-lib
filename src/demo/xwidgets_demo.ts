@@ -7,10 +7,16 @@ class Item {
 
 class MyXWidget implements XWidget {
 
+    readonly name: string;
+
     private _items: Item[] = [];
     private _onSelect: (item: Item) => void;
 
     private _element: HTMLElement;
+
+    constructor(name?: string) {
+        this.name = name;
+    }
 
     setItems(items: Item[]): this {
         this._items = items;
@@ -39,10 +45,11 @@ class MyXWidget implements XWidget {
         return this;
     }
 
-    mount(el: HTMLElement): void {
+    mount(el: HTMLElement): this {
         this._element = element(`<ol class="xwidget"></ol>`);
         el.appendChild(this._element);
         this._updateItems();
+        return this;
     }
 
     private _updateItems(): void {

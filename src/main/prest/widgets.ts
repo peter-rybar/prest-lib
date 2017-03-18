@@ -6,7 +6,8 @@ export interface Widget {
 // --------------------------------------------------------------------------
 
 export interface XWidget {
-    mount(element: HTMLElement): void;
+    readonly name: string;
+    mount(element: HTMLElement): this;
 }
 
 /*
