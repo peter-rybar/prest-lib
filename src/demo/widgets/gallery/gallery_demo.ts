@@ -11,15 +11,11 @@ for (let i = 2; i < 7; i++) {
 // items = items.concat(items);
 // console.log(items);
 
-const g = new gallery.GalleryWidget(items);
-
-g.onSelect((item) => {
-    console.log("selected:", item);
-    const selected = document.getElementById("selected") as HTMLSpanElement;
-    selected.innerHTML = JSON.stringify(item);
-});
-
-const galleryElement = g.element();
-
-const container = document.getElementById("gallery") as HTMLDivElement;
-container.appendChild(galleryElement);
+new gallery.GalleryWidget()
+    .setItems(items)
+    .onSelect(item => {
+        console.log("selected:", item);
+        const selected = document.getElementById("selected") as HTMLSpanElement;
+        selected.innerHTML = JSON.stringify(item);
+    })
+    .mount(document.getElementById("gallery"));

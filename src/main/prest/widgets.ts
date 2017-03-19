@@ -1,23 +1,17 @@
 
 export interface Widget {
-    element(): HTMLElement;
-}
-
-// --------------------------------------------------------------------------
-
-export interface XWidget {
     readonly name: string;
     mount(element: HTMLElement): this;
     umount(): this;
 }
 
 
-// class XWidgets {
+// class Widgets {
 //
-//     public names: {[key: string]: XWidget[]} = {};
-//     public types: {[key: string]: XWidget[]} = {};
+//     public names: {[key: string]: Widget[]} = {};
+//     public types: {[key: string]: Widget[]} = {};
 //
-//     mount(element: HTMLElement | string, widget: XWidget): this {
+//     mount(element: HTMLElement | string, widget: Widget): this {
 //         let e: HTMLElement;
 //         if (typeof element === "string") {
 //             e = document.getElementById(element);
@@ -47,22 +41,22 @@ export interface XWidget {
 //     }
 // }
 //
-// export const xw = new XWidgets();
+// export const xw = new Widgets();
 
 
-// XWidgets.register("xw-tag", MyXWidget);
+// Widgets.register("xw-tag", MyWidget);
 //
-// XWidgets.mount(
+// Widgets.mount(
 //     document.getElementsByTagName("xw-tag")[0] as HTMLElement,
-//     new MyXWidget());
+//     new MyWidget());
 //
-// XWidgets.mount(
+// Widgets.mount(
 //     document.getElementsByTagName("xw-tag")[0] as HTMLElement);
 
 // xw
 //     .mount(
 //         document.getElementById("xw-1"),
-//         new MyXWidget("my-1")
+//         new MyWidget("my-1")
 //             .setItems([
 //                 new Item("text 1", 1),
 //                 new Item("text 2", 2),
@@ -70,7 +64,7 @@ export interface XWidget {
 //             .onSelect(i => console.log(i)))
 //     .mount(
 //         "xw-2",
-//         new MyXWidget("my-2")
+//         new MyWidget("my-2")
 //             .setItems([
 //                 new Item("text 2", 2),
 //                 new Item("text 3", 3)
@@ -83,21 +77,21 @@ export interface XWidget {
 // Object.keys(xw.types).forEach(t => console.log(t, xw.types[t]));
 
 
-// type XWidgetConstructor =  new () => XWidget;
+// type WidgetConstructor =  new () => Widget;
 //
-// export type XWidgetClass =  Function;
+// export type WidgetClass =  Function;
 //
-// export class XWidgets {
+// export class Widgets {
 //
-//     private static _widgets: {[key: string]: XWidgetClass} = {};
+//     private static _widgets: {[key: string]: WidgetClass} = {};
 //
-//     // static register(xwTagName: string, widgetClass: XWidgetClass): void {
-//     static register(xwTagName: string, widgetClass: XWidgetClass): void {
-//         XWidgets._widgets[xwTagName.toUpperCase()] = widgetClass;
+//     // static register(xwTagName: string, widgetClass: WidgetClass): void {
+//     static register(xwTagName: string, widgetClass: WidgetClass): void {
+//         Widgets._widgets[xwTagName.toUpperCase()] = widgetClass;
 //     }
 //
-//     static create(xwTagName: string): XWidget {
-//         const xwClass = XWidgets._widgets[xwTagName] as XWidgetConstructor;
+//     static create(xwTagName: string): Widget {
+//         const xwClass = Widgets._widgets[xwTagName] as WidgetConstructor;
 //         if (xwClass) {
 //             return new xwClass();
 //         } else {
@@ -105,17 +99,17 @@ export interface XWidget {
 //         }
 //     }
 //
-//     static mount(element: HTMLElement, widget?: XWidget): void {
+//     static mount(element: HTMLElement, widget?: Widget): void {
 //         if (widget) {
 //             widget.mount(element);
 //             (element as any).xw = widget;
 //         } else {
-//             const xw = XWidgets.create(element.tagName);
+//             const xw = Widgets.create(element.tagName);
 //             if (xw) {
 //                 xw.mount(element);
 //                 (element as any).xw = widget;
 //             } else {
-//                 console.warn("no xwidget regiter for", element.tagName);
+//                 console.warn("no Widget regiter for", element.tagName);
 //             }
 //         }
 //     }
@@ -129,7 +123,7 @@ export interface XWidget {
 // console.log(className); // Should output "MyClass"
 
 
-// class MyXWidget implements XWidget {
+// class MyWidget implements Widget {
 //
 //     readonly name: string;
 //
@@ -143,10 +137,10 @@ export interface XWidget {
 //
 // }
 //
-// const mxw = MyXWidget;
+// const mxw = MyWidget;
 //
-// XWidgets.mount(document.body, new mxw());
-// XWidgets.mount(document.body, new MyXWidget());
+// Widgets.mount(document.body, new mxw());
+// Widgets.mount(document.body, new MyWidget());
 
 
 // --------------------------------------------------------------------------

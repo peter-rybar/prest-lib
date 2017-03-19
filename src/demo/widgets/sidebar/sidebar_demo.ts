@@ -1,4 +1,18 @@
 import * as sidebar from "./sidebar";
+import { Widget } from "../../../main/prest/widgets";
+
+class Content implements Widget {
+    name: string;
+    mount(el: HTMLElement): this {
+        const e = document.createElement("p");
+        e.innerHTML = "content text";
+        el.appendChild(e);
+        return this;
+    }
+    umount(): this {
+        return this;
+    }
+}
 
 const s = new sidebar.Sidebar()
     .setTitle("title")
@@ -13,18 +27,8 @@ const s = new sidebar.Sidebar()
     .onSigCancel(() => {
         console.log("cancel clicked");
     })
-    .setContent(
-        {
-            element: function () {
-                const e = document.createElement("p");
-                e.innerHTML = "content text";
-                return e;
-            }
-        }
-    );
-
-const sidebarElement = document.getElementById("sidebar") as HTMLDivElement;
-sidebarElement.appendChild(s.element());
+    .setContent(new Content())
+    .mount(document.getElementById("sidebar"));
 
 
 document.getElementById("btn").addEventListener("click", () => {

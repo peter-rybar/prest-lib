@@ -16,18 +16,20 @@ export interface Notif {
 
 export class NotifWidget implements widgets.Widget {
 
+    readonly name: string;
+
     private _element: HTMLElement;
     private _notif: Notif;
 
-    constructor(notif: Notif) {
-        this.setNotif(notif);
+    constructor(name?: string) {
+        this.name = name;
     }
 
     getNotif(): Notif {
         return this._notif;
     }
 
-    setNotif(notif: Notif) {
+    setNotif(notif: Notif): this {
         this._notif = notif;
         return this;
     }
@@ -49,34 +51,56 @@ export class NotifWidget implements widgets.Widget {
         return this._element;
     }
 
+    mount(element: HTMLElement): this {
+        element.appendChild(this.element());
+        return this;
+    }
+
+    umount(): this {
+        this._element.parentElement.removeChild(this._element);
+        return this;
+    }
+
 }
 
 
 export class NotifsWidget implements widgets.Widget {
 
+    readonly name: string;
+
     private _element: HTMLElement;
     private _notifWidgets: NotifWidget[] = [];
+
+    constructor(name?: string) {
+        this.name = name;
+    }
 
     getNotifWidgets(): NotifWidget[] {
         return this._notifWidgets;
     }
 
-    addNotif(notif: Notif) {
-        const n = new NotifWidget(notif);
+    addNotif(notif: Notif): this {
+        const n = new NotifWidget().setNotif(notif);
         this._notifWidgets.push(n);
         this._element.appendChild(n.element());
         return this;
     }
 
-    empty() {
+    empty(): void {
         this._element.innerHTML = "";
         this._notifWidgets = [];
     }
 
-    element(): HTMLElement {
+    mount(element: HTMLElement): this {
         const e = widgets.element(`<div class="notifications"></div>`);
         this._element = e;
-        return e;
+        element.appendChild(e);
+        return this;
+    }
+
+    umount(): this {
+        this._element.parentElement.removeChild(this._element);
+        return this;
     }
 
 }

@@ -7,16 +7,24 @@ export class Item {
 
 export class GalleryWidget implements widgets.Widget {
 
+    readonly name: string;
+
     private _element: HTMLDivElement;
     private _items: Item[] = [];
     private _onSelect: (item: Item) => void;
 
-    constructor(items: Item[]) {
-        this._items = items;
+    constructor(name?: string) {
+        this.name = name;
     }
 
-    onSelect(callback: (item: Item) => void) {
+    setItems(items: Item[]): this {
+        this._items = items;
+        return this;
+    }
+
+    onSelect(callback: (item: Item) => void): this {
         this._onSelect = callback;
+        return this;
     }
 
     element(): HTMLElement {
@@ -65,7 +73,18 @@ export class GalleryWidget implements widgets.Widget {
         thumbs.onmouseover = updateImage;
 
         this._render();
+
         return div;
+    }
+
+    mount(element: HTMLElement): this {
+        element.appendChild(this.element());
+        return this;
+    }
+
+    umount(): this {
+        this._element.parentElement.removeChild(this._element);
+        return this;
     }
 
     private _render(): void {

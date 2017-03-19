@@ -3,7 +3,8 @@ import {Widget, element} from "../../../main/prest/widgets";
 
 export class Sidebar implements Widget {
 
-    private _name: string;
+    readonly name: string;
+
     private _element: HTMLElement;
 
     private _title: string;
@@ -17,7 +18,7 @@ export class Sidebar implements Widget {
     sigCancel = new Signal<Sidebar>();
 
     constructor(name: string = "") {
-        this._name = name;
+        this.name = name;
     }
 
     setTitle(title: string): Sidebar {
@@ -84,17 +85,26 @@ export class Sidebar implements Widget {
         this.sigCancel.emit(this);
     }
 
+    mount(element: HTMLElement): this {
+        element.appendChild(this.element());
+        return this;
+    }
+
+    umount(): this {
+        this._element.parentElement.removeChild(this._element);
+        return this;
+    }
+
     element(): HTMLElement {
         if (!this._element) {
             const e = element(`
-                    <div class="sidebar ${this._name}" style="display: none" tabindex="0">
+                    <div class="sidebar ${this.name}" style="display: none" tabindex="0">
                         <div class="sidebar-header">
                             <h2>${this._title || ""}</h2>
                             <span class="sidebar-cancel" tabindex="1">×</span>
                         </div>
                         <div class="sidebar-content"></div>
-                    </div>
-                `);
+                    </div>`);
             this._element = e;
             const b = e.getElementsByClassName("sidebar-cancel")[0];
             b.addEventListener("click", (e) => {
@@ -123,7 +133,7 @@ export class Sidebar implements Widget {
             const e = this._element.getElementsByClassName("sidebar-content")[0] as HTMLDivElement;
             e.innerHTML = "";
             if (this._content) {
-                e.appendChild(this._content.element());
+                this._content.mount(e);
             }
         }
     }

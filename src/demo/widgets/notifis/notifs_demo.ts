@@ -1,8 +1,7 @@
 import * as notifs from "./notifs";
 
-const notifsWidget = new notifs.NotifsWidget();
-
-document.getElementById("notifs").appendChild(notifsWidget.element());
+const notifsWidget = new notifs.NotifsWidget()
+    .mount(document.getElementById("notifs"));
 
 document.getElementById("add").onclick = function () {
     notifsWidget.addNotif({
