@@ -1,7 +1,11 @@
 import * as widgets from "../../../main/prest/widgets";
 
+
 export class Item {
-    constructor(public title: string, public url: string, public thumb: string) {
+    constructor(
+        public title: string,
+        public url: string,
+        public thumb: string) {
     }
 }
 
@@ -28,9 +32,10 @@ export class GalleryWidget implements widgets.Widget {
     }
 
     element(): HTMLElement {
-        const div = document.createElement("div");
-        this._element = div;
-        div.innerHTML = `
+        if (!this._element) {
+            const div = document.createElement("div");
+            this._element = div;
+            div.innerHTML = `
                 <style>
                     .gallery-image img {
                         width: 550px;
@@ -38,43 +43,40 @@ export class GalleryWidget implements widgets.Widget {
                         border: solid 1px #ccc;
                         padding: 5px;
                     }
-            
                     .gallery-thumbs img {
                         width: 99px;
                         height: 100px;
                         border: solid 1px #ccc;
                         padding: 4px;
                     }
-            
                     .gallery-thumbs img:hover {
                         border-color: #FF9900;
                     }
                 </style>
                 <p class="gallery-image"></p>
-                <div class="gallery-thumbs"></div>
-            `;
+                <div class="gallery-thumbs"></div>`;
 
-        const updateImage = (e: Event) => {
-            e.stopPropagation();
-            const event = e || window.event;
-            const target = (event.target || e.srcElement) as HTMLElement;
-            if (target.nodeName === "IMG") {
-                const a = target.parentNode as HTMLAnchorElement;
-                const i = div.getElementsByClassName("gallery-image")[0]
-                    .getElementsByTagName("img")[0] as HTMLImageElement;
-                i.alt = a.title;
-                i.src = a.href;
-            }
-            return false;
-        };
+            const updateImage = (e: Event) => {
+                e.preventDefault();
+                const event = e || window.event;
+                const target = (event.target || e.srcElement) as HTMLElement;
+                if (target.nodeName === "IMG") {
+                    const a = target.parentNode as HTMLAnchorElement;
+                    const i = div.getElementsByClassName("gallery-image")[0]
+                        .getElementsByTagName("img")[0] as HTMLImageElement;
+                    i.alt = a.title;
+                    i.src = a.href;
+                }
+                return false;
+            };
 
-        const thumbs = div.getElementsByClassName("gallery-thumbs")[0] as HTMLDivElement;
-        thumbs.onclick = updateImage;
-        thumbs.onmouseover = updateImage;
+            const thumbs = div.getElementsByClassName("gallery-thumbs")[0] as HTMLDivElement;
+            thumbs.addEventListener("click", updateImage);
+            thumbs.addEventListener("mouseover", updateImage);
 
-        this._render();
-
-        return div;
+            this._render();
+        }
+        return this._element;
     }
 
     mount(element: HTMLElement): this {
@@ -94,7 +96,7 @@ export class GalleryWidget implements widgets.Widget {
             e.innerHTML = `<img src="${item.url}" alt="${item.title}">`;
         }
         const t = this._element.getElementsByClassName("gallery-thumbs")[0];
-        t.innerHTML = this._items.map((item) => {
+        t.innerHTML = this._items.map(item => {
             return `<a href="${item.url}" title="${item.title}"><img src="${item.thumb}"></a>`;
         }).join(" ");
     }
