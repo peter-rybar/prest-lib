@@ -1,7 +1,9 @@
 import { XWidget, element } from "../main/prest/widgets";
 
 class Item {
-    constructor(public text: string, public count: number) {
+    constructor(
+        public text: string,
+        public count: number) {
     }
 }
 
@@ -52,18 +54,25 @@ class MyXWidget implements XWidget {
         return this;
     }
 
+    umount(): this {
+        this._element.parentElement.removeChild(this._element);
+        return this;
+    }
+
     private _updateItems(): void {
         if (this._element) {
             this._element.innerHTML = "";
             this._items.map(item => {
                 const li = element(`
-                        <li>
-                            <span class="label" >${item.text}</span>
-                            <small class="count">[${item.count}]</small>
-                        </li>`);
+                    <li>
+                        <span class="label" >${item.text}</span>
+                        <small class="count">[${item.count}]</small>
+                    </li>`);
                 li.addEventListener("click", e => {
                     e.stopPropagation();
-                    this._onSelect(item);
+                    if (this._onSelect) {
+                        this._onSelect(item);
+                    }
                 });
                 this._element.appendChild(li);
             });
@@ -72,19 +81,18 @@ class MyXWidget implements XWidget {
 
 }
 
-const myXWidget = new MyXWidget().setItems(
-    [
-        new Item("text 1", 1),
-        new Item("text 2", 2),
-        new Item("text 3", 3)
-    ]);
-
-myXWidget.onSelect(item => {
-    console.log("selected:", item);
-    const selected = document.getElementById("selected") as HTMLSpanElement;
-    selected.innerHTML = JSON.stringify(item);
-    const l = myXWidget.getItems().length;
-    myXWidget.addItem(new Item("text " + (l + 1), l + 1));
-});
-
-myXWidget.mount(document.getElementById("container"));
+const myXWidget = new MyXWidget()
+    .setItems(
+        [
+            new Item("text 1", 1),
+            new Item("text 2", 2),
+            new Item("text 3", 3)
+        ])
+    .onSelect(item => {
+        console.log("selected:", item);
+        const selected = document.getElementById("selected") as HTMLSpanElement;
+        selected.innerHTML = JSON.stringify(item);
+        const l = myXWidget.getItems().length;
+        myXWidget.addItem(new Item("text " + (l + 1), l + 1));
+    })
+    .mount(document.getElementById("container"));
