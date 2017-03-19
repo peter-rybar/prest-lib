@@ -8,56 +8,145 @@ export interface Widget {
 export interface XWidget {
     readonly name: string;
     mount(element: HTMLElement): this;
-}
-
-/*
-export class XWidgets {
-
-    private static _widgets: {[key: string]: any};
-
-    static register(widgetClass: any): XWidget {
-        XWidgets._widgets[] = widgetClass;
-        return (new (XWidgets._widgets[name]))();
-    }
-
-    static getInstance(name: string): XWidget {
-        return (new (XWidgets._widgets[name]))();
-    }
-
-}
-
-class MyClass {}
-
-const className = (<any>new MyClass()).constructor.name;
-// OR var className = (new MyClass() as any).constructor.name;
-console.log(className); // Should output "MyClass"
-*/
-
-/*
-export function mount(element: HTMLElement, widget?: XWidget): void {
-    if (widget) {
-        widget.mount(element);
-        element["widget"] = widget;
-    // } else {
-    //     const xw = XWidgets.getInstance(element.tagName);
-    //     xw.mount(element);
-    //     element["widget"] = xw;
-    }
+    umount(): this;
 }
 
 
-class MyXWidget implements XWidget {
+// class XWidgets {
+//
+//     public names: {[key: string]: XWidget[]} = {};
+//     public types: {[key: string]: XWidget[]} = {};
+//
+//     mount(element: HTMLElement | string, widget: XWidget): this {
+//         let e: HTMLElement;
+//         if (typeof element === "string") {
+//             e = document.getElementById(element);
+//         } else {
+//             e = element;
+//         }
+//
+//         widget.mount(e);
+//
+//         const type = widget.constructor.name;
+//         if (!this.types[type]) {
+//             this.types[type] = [];
+//         }
+//         this.types[type].push(widget);
+//
+//         const name = widget.name;
+//         if (name) {
+//             if (!this.names[name]) {
+//                 this.names[name] = [];
+//             }
+//             this.names[name].push(widget);
+//         }
+//
+//         (e as any).xw = widget;
+//
+//         return this;
+//     }
+// }
+//
+// export const xw = new XWidgets();
 
-    mount(element: HTMLElement): void {}
 
-}
+// XWidgets.register("xw-tag", MyXWidget);
+//
+// XWidgets.mount(
+//     document.getElementsByTagName("xw-tag")[0] as HTMLElement,
+//     new MyXWidget());
+//
+// XWidgets.mount(
+//     document.getElementsByTagName("xw-tag")[0] as HTMLElement);
 
-const mxw = MyXWidget;
+// xw
+//     .mount(
+//         document.getElementById("xw-1"),
+//         new MyXWidget("my-1")
+//             .setItems([
+//                 new Item("text 1", 1),
+//                 new Item("text 2", 2),
+//             ])
+//             .onSelect(i => console.log(i)))
+//     .mount(
+//         "xw-2",
+//         new MyXWidget("my-2")
+//             .setItems([
+//                 new Item("text 2", 2),
+//                 new Item("text 3", 3)
+//             ])
+//             .onSelect(i => console.log(i)));
+//
+// console.log(xw.names, xw.types);
+//
+// Object.keys(xw.names).forEach(n => console.log(n, xw.names[n]));
+// Object.keys(xw.types).forEach(t => console.log(t, xw.types[t]));
 
-mount(document.body, new mxw());
 
-mount(document.body, new MyXWidget());
-*/
+// type XWidgetConstructor =  new () => XWidget;
+//
+// export type XWidgetClass =  Function;
+//
+// export class XWidgets {
+//
+//     private static _widgets: {[key: string]: XWidgetClass} = {};
+//
+//     // static register(xwTagName: string, widgetClass: XWidgetClass): void {
+//     static register(xwTagName: string, widgetClass: XWidgetClass): void {
+//         XWidgets._widgets[xwTagName.toUpperCase()] = widgetClass;
+//     }
+//
+//     static create(xwTagName: string): XWidget {
+//         const xwClass = XWidgets._widgets[xwTagName] as XWidgetConstructor;
+//         if (xwClass) {
+//             return new xwClass();
+//         } else {
+//             return null;
+//         }
+//     }
+//
+//     static mount(element: HTMLElement, widget?: XWidget): void {
+//         if (widget) {
+//             widget.mount(element);
+//             (element as any).xw = widget;
+//         } else {
+//             const xw = XWidgets.create(element.tagName);
+//             if (xw) {
+//                 xw.mount(element);
+//                 (element as any).xw = widget;
+//             } else {
+//                 console.warn("no xwidget regiter for", element.tagName);
+//             }
+//         }
+//     }
+//
+// }
+//
+// class MyClass {
+// }
+//
+// const className = (new MyClass() as any).constructor.name;
+// console.log(className); // Should output "MyClass"
+
+
+// class MyXWidget implements XWidget {
+//
+//     readonly name: string;
+//
+//     constructor(name?: string) {
+//         this.name = name;
+//     }
+//
+//     mount(element: HTMLElement): this {
+//         return this;
+//     }
+//
+// }
+//
+// const mxw = MyXWidget;
+//
+// XWidgets.mount(document.body, new mxw());
+// XWidgets.mount(document.body, new MyXWidget());
 
 
 // --------------------------------------------------------------------------
