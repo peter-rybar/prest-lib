@@ -208,15 +208,18 @@ export function empty(element: HTMLElement) {
 
 
 if (!Element.prototype.matches) {
-    const ep: any = Element.prototype;
-    if (ep.webkitMatchesSelector) // Chrome <34, SF<7.1, iOS<8
-        ep.matches = ep.webkitMatchesSelector;
-    if (ep.msMatchesSelector) // IE9/10/11 & Edge
-        ep.matches = ep.msMatchesSelector;
-    if (ep.mozMatchesSelector) // FF<34
-        ep.matches = ep.mozMatchesSelector;
-    if (ep.oMatchesSelector) // Opera
-        ep.matches = ep.oMatchesSelector;
+    Element.prototype.matches =
+        (Element.prototype as any).matchesSelector ||
+        (Element.prototype as any).mozMatchesSelector ||
+        (Element.prototype as any).msMatchesSelector ||
+        (Element.prototype as any).oMatchesSelector ||
+        (Element.prototype as any).webkitMatchesSelector ||
+        function(this: any, s: string) {
+            const matches = (this.document || this.ownerDocument).querySelectorAll(s);
+            let i = matches.length;
+            while (--i >= 0 && matches.item(i) !== this) {}
+            return i > -1;
+        };
 }
 
 export function addEventListener(element: HTMLElement,
