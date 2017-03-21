@@ -6,8 +6,8 @@ function is_array(obj: any) {
             (typeof obj.length === "number" && !(obj.propertyIsEnumerable("length")));
 }
 
-export function decodeUrlQuery(queryStr: string) {
-    const query: any = {};
+export function decodeUrlQuery(queryStr: string): { [key: string]: string } {
+    const query: { [key: string]: string } = {};
     if (queryStr) {
         const a = queryStr.substr(1).split("&");
         for (let i = 0, l = a.length; i < l; i++) {
