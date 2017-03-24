@@ -1,5 +1,5 @@
 /**
- * pREST Signal-Slot pattern module
+ * Signal-Slot pattern module
  */
 
 export type SlotCallback<T> = (data?: T) => void;
@@ -36,6 +36,10 @@ export class Signal<T> implements Sig<T> {
 
     onDisconnect(onDisconnect: (connNo: number) => void): void {
         this._onDisconnect = onDisconnect;
+    }
+
+    connNo(): number {
+        return this._slots.length;
     }
 
     // ES5
