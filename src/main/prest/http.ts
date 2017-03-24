@@ -96,11 +96,14 @@ export interface HttpProgress {
     total: number;
 }
 
+export type Method = "GET" | "POST" | "PUT" | "DELETE" |
+        "HEAD" | "CONNECT" | "OPTIONS" | "TRACE" | "PATCH";
+
 export class HttpRequest {
 
     private _url: string;
     private _query: Object;
-    private _method: string = "GET";
+    private _method: Method = "GET";
     private _headers: {[key: string]: string} = {};
     private _timeout: number;
 
@@ -145,7 +148,7 @@ export class HttpRequest {
         return this;
     }
 
-    method(method: string): this {
+    method(method: Method): this {
         this._method = method;
         return this;
     }
