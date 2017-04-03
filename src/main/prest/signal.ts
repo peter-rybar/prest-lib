@@ -10,8 +10,14 @@ interface Slot<T> {
 }
 
 export interface Sig<T> {
+    onConnect(onConnect: (connNo: number) => void): void;
+    onDisconnect(onDisconnect: (connNo: number) => void): void;
+    connNo(): number;
     connect(callback: SlotCallback<T>, object?: any): void;
     disconnect(callback: SlotCallback<T>, object?: any): void;
+    disconnectAll(): void;
+    freeze(): void;
+    unfreeze(): void;
 }
 
 /**
