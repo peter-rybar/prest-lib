@@ -3,7 +3,7 @@ import replace from 'rollup-plugin-replace'
 // import babel   from 'rollup-plugin-babel'
 // import es2015 from 'babel-preset-es2015-rollup';
 import uglify from 'rollup-plugin-uglify';
-import {minify} from 'uglify-js';
+import { minify } from 'uglify-js';
 
 const pkg = require('./package.json');
 

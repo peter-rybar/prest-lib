@@ -195,12 +195,11 @@ export class HttpRequest {
         return this;
     }
 
-    send(data?: any, contentType?: string): this {
+    send(data?: any, contentType?: string): void {
         if (contentType) {
             this._headers["Content-Type"] = contentType;
         }
         this._send(data, this._headers);
-        return this;
     }
 
     private _send(data?: any, headers?: {[key: string]: string}): void {
