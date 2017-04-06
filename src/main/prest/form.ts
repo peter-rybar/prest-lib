@@ -21,12 +21,12 @@ export class TextAreaEntry implements Entry {
         } else {
             this._element = element;
         }
-        this._element.addEventListener("change", (e) => {
+        this._element.addEventListener("change", () => {
             if (this._onChange) {
                 this._onChange(this, true);
             }
         });
-        this._element.addEventListener("input", (e) => {
+        this._element.addEventListener("input", () => {
             if (this._onChange) {
                 this._onChange(this, false);
             }
@@ -78,12 +78,12 @@ export class TextInputEntry implements Entry {
         } else {
             this._element = element;
         }
-        this._element.addEventListener("change", (e) => {
+        this._element.addEventListener("change", () => {
             if (this._onChange) {
                 this._onChange(this, true);
             }
         });
-        this._element.addEventListener("input", (e) => {
+        this._element.addEventListener("input", () => {
             if (this._onChange) {
                 this._onChange(this, false);
             }
@@ -128,6 +128,7 @@ export class NumberInputEntry implements Entry {
     private _element: HTMLInputElement;
 
     private _decimals: number = 0;
+    private _dragSensitivity: number = 1.0;
     private _validator: (entry: Entry, locale: string) => string;
     private _onChange: (entry: Entry, final: boolean) => void;
 
@@ -137,7 +138,7 @@ export class NumberInputEntry implements Entry {
         } else {
             this._element = element;
         }
-        this._element.addEventListener("change", (e) => {
+        this._element.addEventListener("change", () => {
             if (this._onChange) {
                 this._onChange(this, true);
             }
@@ -154,33 +155,49 @@ export class NumberInputEntry implements Entry {
     }
 
     setValue(value: string): this {
-        this._element.value = (+value).toFixed(this._decimals);
+        if (!isNaN(+value)) {
+            this._element.value = (+value).toFixed(this._decimals);
+        }
         return this;
     }
 
     setStep(value: number): this {
-        this._element.step = value.toString();
+        if (!isNaN(value)) {
+            this._element.step = "" + value;
+        }
         return this;
     }
 
     setMin(value: number): this {
-        this._element.min = value.toString();
+        if (!isNaN(value)) {
+            this._element.min = "" + value;
+        }
         return this;
     }
 
     setMax(value: number): this {
-        this._element.max = value.toString();
+        if (!isNaN(value)) {
+            this._element.max = "" + value;
+        }
         return this;
     }
 
     setDecimals(value: number): this {
-        this._decimals = value;
+        if (!isNaN(value)) {
+            this._decimals = value;
+        }
         return this;
     }
 
+    setDragSensitivity(value: number): this {
+        if (!isNaN(value)) {
+            this._dragSensitivity = value;
+        }
+        return this;
+    }
 
     enableMouseWheel(): this {
-        const onMouseWheel = (e: MouseEvent) => {
+        const onMouseWheel = () => {
             if (this._onChange) {
                 setTimeout(() => {
                     // const value = Number(this._element.value);
@@ -210,7 +227,7 @@ export class NumberInputEntry implements Entry {
             const num: number = isNaN(value) ? (min === null ? 0 : min) : value;
 
             const onMouseMove = (e: MouseEvent) => {
-                const diffY = e.pageY - initialY;
+                const diffY = (e.pageY - initialY) * this._dragSensitivity;
                 const newValue = num - diffY * step;
                 if (min !== null && newValue < min) {
                     this.setValue(min.toFixed(this._decimals));
@@ -222,7 +239,7 @@ export class NumberInputEntry implements Entry {
                 this._onChange(this, false);
             };
 
-            const onMouseUp = (e: MouseEvent) => {
+            const onMouseUp = () => {
                 document.body.style.cursor = "";
                 this._element.style.cursor = "";
                 document.removeEventListener("mousemove", onMouseMove);
@@ -268,7 +285,7 @@ export class CheckboxEntry implements Entry {
         } else {
             this._element = element;
         }
-        this._element.addEventListener("change", (e) => {
+        this._element.addEventListener("change", () => {
             if (this._onChange) {
                 this._onChange(this);
             }
@@ -280,7 +297,7 @@ export class CheckboxEntry implements Entry {
     }
 
     getValue(): string {
-        return this._element.checked.toString();
+        return "" + this._element.checked;
     }
 
     setValue(value: string): this {
@@ -320,7 +337,7 @@ export class SelectEntry implements Entry {
         } else {
             this._element = element;
         }
-        this._element.addEventListener("change", (e) => {
+        this._element.addEventListener("change", () => {
             if (this._onChange) {
                 this._onChange(this);
             }
@@ -393,16 +410,16 @@ export class RadioEntry implements Entry {
     private _onChange: (entry: Entry) => void;
 
     constructor(elements: HTMLInputElement[] | string[]) {
-        (elements as any).forEach((c: HTMLInputElement | string) => {
-            if (typeof c === "string") {
-                this._elements.push(document.getElementById(c)  as HTMLInputElement);
+        (elements as any).forEach((e: HTMLInputElement | string) => {
+            if (typeof e === "string") {
+                this._elements.push(document.getElementById(e) as HTMLInputElement);
             } else {
-                this._elements.push(c);
+                this._elements.push(e);
             }
         });
-        this._elements.forEach((c) => {
-            c.addEventListener("change", (e) => {
-                if (this._onChange && c.checked) {
+        this._elements.forEach(e => {
+            e.addEventListener("change", () => {
+                if (this._onChange && e.checked) {
                     this._onChange(this);
                 }
             });
@@ -482,7 +499,7 @@ export class FileEntry implements Entry {
         } else {
             this._element = element;
         }
-        this._element.addEventListener("change", (e) => {
+        this._element.addEventListener("change", () => {
             if (this._onChange) {
                 this._onChange(this);
             }
@@ -494,12 +511,12 @@ export class FileEntry implements Entry {
     }
 
     getValue(): string {
-        return this._element.files.length ?
-        this._element.files[0].name + " (" +
-        this._element.files[0].type + ", " +
-        this._element.files[0].size + ")"
-            :
-            "";
+        const f = this._element.files;
+        if (f.length) {
+            return f[0].name + " (" + f[0].type + ", " + f[0].size + ")";
+        } else {
+            return "";
+        }
     }
 
     getFile(): File {
