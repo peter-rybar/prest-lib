@@ -80,7 +80,7 @@ export function html(html: string): HTMLElement {
     // }
 }
 
-export function jsonml(markup: Array<any>) : HTMLElement {
+export function jsonml(markup: Array<any>): HTMLElement {
     let e: HTMLElement;
     markup.forEach((m, i) => {
         if (i === 0) {

@@ -285,6 +285,9 @@ export class HttpRequest {
                 if ((typeof data === "string") || (data instanceof FormData)) {
                     xhr.send(data);
                 } else {
+                    if (!this._headers["Content-Type"]) {
+                        xhr.setRequestHeader("Content-Type", "application/json");
+                    }
                     xhr.send(JSON.stringify(data));
                 }
             } else {

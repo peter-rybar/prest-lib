@@ -4,7 +4,7 @@ export class Hash<T> {
 
     private _encoder = (data: T) => JSON.stringify(data);
 
-    private _decoder = (data: string) => JSON.parse(data);
+    private _decoder = (data: string) => data === "" ? JSON.parse(data) : undefined;
 
     /**
      * Listen on URL hash fragment changes
