@@ -1,4 +1,5 @@
 import * as form from "../main/prest/form";
+import { select } from "../main/prest/dom";
 
 const stringValidator = (entry: form.Entry, locale: string) => {
     switch (locale) {
@@ -28,7 +29,7 @@ const fileValidator = (entry: form.FileEntry, locale: string) => {
 };
 
 const showChange = (entry: form.Entry) => {
-    document.getElementById("change").innerHTML = entry.getValue();
+    select("#change").innerHTML = entry.getValue();
 };
 
 new form.Form("form")
@@ -79,12 +80,12 @@ new form.Form("form")
         const errors = form.validate("sk");
         for (const error in errors) {
             if (errors.hasOwnProperty(error)) {
-                document.getElementById(error + "-err").innerHTML = errors[error];
+                select("#" + error + "-err").innerHTML = errors[error];
             }
         }
         if (form.isValid(errors)) {
-            document.getElementById("values").innerHTML = JSON.stringify(form.getValues());
+            select("#values").innerHTML = JSON.stringify(form.getValues());
         } else {
-            document.getElementById("values").innerHTML = "";
+            select("#values").innerHTML = "";
         }
     });

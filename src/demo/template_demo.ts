@@ -1,7 +1,8 @@
 import {template, tmpl} from "../main/prest/template";
+import { select } from "../main/prest/dom";
 
 
-const results = document.getElementById("results");
+const results = select("#results");
 
 const data: any = {};
 data.from_user = "from_user";
@@ -32,12 +33,12 @@ results.innerHTML += template("user-tmpl", {"users": xusers});
 
 // simple template
 
-document.getElementById("container").innerHTML += tmpl("test1 ${1 + 2} test2 ${3 + 4}", {});
-document.getElementById("container").innerHTML += "<br/>";
-document.getElementById("container").innerHTML += tmpl("Hello ${name}!", {name: "Andrea"});
-document.getElementById("container").innerHTML += "<br/>";
+select("#container").innerHTML += tmpl("test1 ${1 + 2} test2 ${3 + 4}", {});
+select("#container").innerHTML += "<br/>";
+select("#container").innerHTML += tmpl("Hello ${name}!", {name: "Andrea"});
+select("#container").innerHTML += "<br/>";
 
 const helloTmpl = tmpl("hello-tmpl");
-document.getElementById("container").innerHTML += helloTmpl({name: "Andrea"});
-document.getElementById("container").innerHTML += "<br/>";
-document.getElementById("container").innerHTML += helloTmpl({name: "Peter"});
+select("#container").innerHTML += helloTmpl({name: "Andrea"});
+select("#container").innerHTML += "<br/>";
+select("#container").innerHTML += helloTmpl({name: "Peter"});

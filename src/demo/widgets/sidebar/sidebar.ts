@@ -1,5 +1,5 @@
-import {Signal} from "../../../main/prest/signal";
-import {Widget, element} from "../../../main/prest/widgets";
+import { Signal } from "../../../main/prest/signal";
+import { html, select, Widget } from "../../../main/prest/dom";
 
 export class Sidebar implements Widget {
 
@@ -24,7 +24,7 @@ export class Sidebar implements Widget {
     setTitle(title: string): Sidebar {
         this._title = title;
         if (this._element) {
-            const e = this._element.getElementsByTagName("h3")[0] as HTMLHeadingElement;
+            const e = select("h3", this._element) as HTMLHeadingElement;
             e.innerHTML = this._title || "";
         }
         return this;
@@ -97,7 +97,7 @@ export class Sidebar implements Widget {
 
     element(): HTMLElement {
         if (!this._element) {
-            const e = element(`
+            const e = html(`
                     <div class="sidebar ${this.name}" style="display: none" tabindex="0">
                         <div class="sidebar-header">
                             <h2>${this._title || ""}</h2>
@@ -106,8 +106,8 @@ export class Sidebar implements Widget {
                         <div class="sidebar-content"></div>
                     </div>`);
             this._element = e;
-            const b = e.getElementsByClassName("sidebar-cancel")[0];
-            b.addEventListener("click", (e) => {
+            const b = select(".sidebar-cancel", e);
+            b.addEventListener("click", () => {
                 this.close();
                 this.sigCancel.emit(this);
             });
@@ -130,7 +130,7 @@ export class Sidebar implements Widget {
 
     private _insertContent() {
         if (this._element) {
-            const e = this._element.getElementsByClassName("sidebar-content")[0] as HTMLDivElement;
+            const e = select(".sidebar-content", this._element) as HTMLDivElement;
             e.innerHTML = "";
             if (this._content) {
                 this._content.mount(e);

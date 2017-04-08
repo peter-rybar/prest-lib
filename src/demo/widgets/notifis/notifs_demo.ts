@@ -1,16 +1,17 @@
 import * as notifs from "./notifs";
+import { select } from "../../../main/prest/dom";
 
 const notifsWidget = new notifs.NotifsWidget()
-    .mount(document.getElementById("notifs"));
+    .mount(select("#notifs"));
 
-document.getElementById("add").onclick = function () {
+select("#add").onclick = function () {
     notifsWidget.addNotif({
         type: notifs.TYPE_INFO,
         title: "title",
         text: "text text"
     });
 };
-document.getElementById("empty").onclick = function () {
+select("#empty").onclick = function () {
     notifsWidget.empty();
 };
 

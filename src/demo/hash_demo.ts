@@ -1,8 +1,9 @@
 import * as hash from "../main/prest/hash";
 import * as encode from "../main/prest/encode";
+import { select } from "../main/prest/dom";
 
 
-const oe = document.getElementById("output");
+const oe = select("#output");
 oe.innerHTML = "test";
 
 const h: hash.Hash<any> = new hash.Hash<any>();
@@ -22,7 +23,6 @@ h.onChange((data) => {
 });
 h.write({aaa: "aaa"});
 
-const he: HTMLElement = document.getElementById("hash");
-he.onclick = (e: MouseEvent) => {
+select("#hash").onclick = (e: MouseEvent) => {
     h.write({aaa: new Date().getTime()});
 };

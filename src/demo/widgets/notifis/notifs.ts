@@ -1,4 +1,4 @@
-import * as widgets from "../../../main/prest/widgets";
+import { html, Widget } from "../../../main/prest/dom";
 
 
 export const TYPE_SUCCESS = "success";
@@ -14,7 +14,7 @@ export interface Notif {
 }
 
 
-export class NotifWidget implements widgets.Widget {
+export class NotifWidget implements Widget {
 
     readonly name: string;
 
@@ -37,7 +37,7 @@ export class NotifWidget implements widgets.Widget {
     element(): HTMLElement {
         if (!this._element) {
             const notification = this._notif;
-            this._element = widgets.element(`
+            this._element = html(`
                     <div class="alert alert-dismissible alert-${notification.type}"
                          role="${notification.type}">
                         <button type="button" class="close" data-dismiss="alert" aria-label="Close">
@@ -64,7 +64,7 @@ export class NotifWidget implements widgets.Widget {
 }
 
 
-export class NotifsWidget implements widgets.Widget {
+export class NotifsWidget implements Widget {
 
     readonly name: string;
 
@@ -92,7 +92,7 @@ export class NotifsWidget implements widgets.Widget {
     }
 
     mount(element: HTMLElement): this {
-        const e = widgets.element(`<div class="notifications"></div>`);
+        const e = html(`<div class="notifications"></div>`);
         this._element = e;
         element.appendChild(e);
         return this;

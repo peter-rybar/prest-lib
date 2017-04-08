@@ -1,12 +1,10 @@
 import * as sidebar from "./sidebar";
-import { Widget } from "../../../main/prest/widgets";
+import { html, select, Widget } from "../../../main/prest/dom";
 
 class Content implements Widget {
     name: string;
     mount(el: HTMLElement): this {
-        const e = document.createElement("p");
-        e.innerHTML = "content text";
-        el.appendChild(e);
+        el.appendChild(html(`<p>content text</p>`));
         return this;
     }
     umount(): this {
@@ -28,10 +26,10 @@ const s = new sidebar.Sidebar()
         console.log("cancel clicked");
     })
     .setContent(new Content())
-    .mount(document.getElementById("sidebar"));
+    .mount(select("#sidebar"));
 
 
-document.getElementById("btn").addEventListener("click", () => {
+select("#btn").addEventListener("click", () => {
     s.open();
     // setTimeout(() => s.cancel(), 3000);
 });

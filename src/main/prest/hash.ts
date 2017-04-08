@@ -2,13 +2,9 @@ export class Hash<T> {
 
     private _listenIntervalId: any;
 
-    private _encoder = (data: T) => {
-        return JSON.stringify(data);
-    };
+    private _encoder = (data: T) => JSON.stringify(data);
 
-    private _decoder = (data: string) => {
-        return JSON.parse(data);
-    };
+    private _decoder = (data: string) => JSON.parse(data);
 
     /**
      * Listen on URL hash fragment changes

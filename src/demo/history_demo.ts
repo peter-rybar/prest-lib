@@ -1,4 +1,5 @@
 import * as history from "../main/prest/history";
+import { select } from "../main/prest/dom";
 
 interface PageState {
     title: string;
@@ -28,8 +29,8 @@ const pages: { [key: string]: PageState; } = {
 
 // Get references to the page elements.
 const navLinks = document.querySelectorAll(".load-content");
-const titleElement = document.getElementById("title");
-const contentElement = document.getElementById("content");
+const titleElement = select("#title");
+const contentElement = select("#content");
 
 function displayPage(state: any) {
     // Check to make sure that this state object is not null.

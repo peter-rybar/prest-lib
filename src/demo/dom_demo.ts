@@ -1,4 +1,4 @@
-import { Widget, element } from "../main/prest/widgets";
+import { html, remove, select, jsonml, Widget } from "../main/prest/dom";
 
 class Item {
     constructor(
@@ -48,7 +48,7 @@ class MyWidget implements Widget {
     }
 
     mount(el: HTMLElement): this {
-        this._element = element(`<ol class="Widget"></ol>`);
+        this._element = html(`<ol class="Widget"></ol>`);
         el.appendChild(this._element);
         this._updateItems();
         // event delegation
@@ -65,7 +65,7 @@ class MyWidget implements Widget {
     }
 
     umount(): this {
-        this._element.parentElement.removeChild(this._element);
+        remove(this._element);
         return this;
     }
 
@@ -73,12 +73,16 @@ class MyWidget implements Widget {
         if (this._element) {
             this._element.innerHTML = "";
             this._items.map(item => {
-                const li = element(`
-                    <li>
-                        <span class="label" >${item.text}</span>
-                        <small class="count">[${item.count}]</small>
-                    </li>`);
-                li.addEventListener("click", e => {
+                // const li = html(`
+                //     <li>
+                //         <span class="label" >${item.text}</span>
+                //         <small class="count">[${item.count}]</small>
+                //     </li>`);
+                const li = jsonml(
+                    ["li",
+                        ["span.label", item.text], " ",
+                        ["small.count", `[${item.count}]`]]);
+                li.addEventListener("click", (e: Event) => {
                     e.stopPropagation();
                     if (this._onSelect) {
                         this._onSelect(item);
@@ -108,9 +112,9 @@ const myWidget = new MyWidget()
         ])
     .onSelect(item => {
         console.log("selected:", item);
-        const selected = document.getElementById("selected") as HTMLSpanElement;
+        const selected = select("#selected") as HTMLSpanElement;
         selected.innerHTML = JSON.stringify(item);
         const l = myWidget.getItems().length;
         myWidget.addItem(new Item("text " + (l + 1), l + 1));
     })
-    .mount(document.getElementById("container"));
+    .mount(select("#container"));
