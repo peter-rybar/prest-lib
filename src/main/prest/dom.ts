@@ -86,7 +86,13 @@ export function jsonml(markup: Array<any>): HTMLElement {
         if (i === 0) {
             m.split(".").forEach((x: string, i: number) => {
                 if (i === 0) {
-                    e = document.createElement(x);
+                    x.split("#").forEach((x: string, i: number) => {
+                        if (i === 0) {
+                            e = document.createElement(x);
+                        } else {
+                            e.setAttribute("id", x);
+                        }
+                    });
                 } else {
                     e.classList.add(x);
                 }

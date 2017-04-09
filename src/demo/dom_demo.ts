@@ -118,3 +118,15 @@ const myWidget = new MyWidget()
         myWidget.addItem(new Item("text " + (l + 1), l + 1));
     })
     .mount(select("#container"));
+
+const e = jsonml(
+    ["a#y.c1.c2",
+        {
+            href: "localhost",
+            click: function (e: Event) { e.preventDefault(); console.log(e); },
+            "data-x": "data"
+        },
+        "link"
+    ]);
+document.body.appendChild(e);
+console.log(e);
