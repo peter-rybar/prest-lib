@@ -1,4 +1,18 @@
-import {HttpRequest, HttpResponse, HttpProgress} from "../main/prest/http";
+import {HttpRequest} from "../main/prest/http";
+
+new HttpRequest()
+    .get("http_demo.json")
+    .onProgress(progress => {
+        console.log("progress: ", progress);
+    })
+    .onResponse(response => {
+        console.log("response: " + response.getContentType(), response.getBody());
+    })
+    .onError(error => {
+        console.log("response error: ", error);
+    })
+    .noCache()
+    .send();
 
 new HttpRequest()
     .get("https://maps.googleapis.com/maps/api/geocode/json", {
@@ -7,13 +21,13 @@ new HttpRequest()
         xxx: ["yyy", "zzz"]
     })
     // .timeout(10)
-    .onProgress((progress: HttpProgress) => {
+    .onProgress(progress => {
         console.log("response progress: ", progress);
     })
-    .onResponse((response: HttpResponse) => {
+    .onResponse(response => {
         console.log("response: " + response.getContentType(), response.getJson());
     })
-    .onError((error) => {
+    .onError(error => {
         console.log("response error: ", error);
     })
     .noCache()
@@ -22,14 +36,14 @@ new HttpRequest()
     .send();
 
 // new HttpRequest()
-//     .get("bigfile.data")
-//     .onProgress((progress) => {
+//     .get("http_demp.bigfile")
+//     .onProgress(progress => {
 //         console.log("progress: ", progress);
 //     })
-//     .onResponse((response: HttpResponse) => {
+//     .onResponse(response => {
 //         console.log("response: " + response.getContentType(), response);
 //     })
-//     .onError((error) => {
+//     .onError(error => {
 //         console.log("response error: ", error);
 //     })
 //     .noCache()
