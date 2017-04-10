@@ -78,16 +78,24 @@ class MyWidget implements Widget {
                 //         <span class="label" >${item.text}</span>
                 //         <small class="count">[${item.count}]</small>
                 //     </li>`);
+                // li.addEventListener("click", (e: Event) => {
+                //     e.stopPropagation();
+                //     if (this._onSelect) {
+                //         this._onSelect(item);
+                //     }
+                // });
                 const li = jsonml(
                     ["li",
+                        {
+                            click: (e: Event) => {
+                                e.stopPropagation();
+                                if (this._onSelect) {
+                                    this._onSelect(item);
+                                }
+                            }
+                        },
                         ["span.label", item.text], " ",
                         ["small.count", `[${item.count}]`]]);
-                li.addEventListener("click", (e: Event) => {
-                    e.stopPropagation();
-                    if (this._onSelect) {
-                        this._onSelect(item);
-                    }
-                });
                 this._element.appendChild(li);
             });
             // event delegation
@@ -123,10 +131,16 @@ const e = jsonml(
     ["a#y.c1.c2",
         {
             href: "localhost",
-            click: function (e: Event) { e.preventDefault(); console.log(e); },
+            click: function (e: Event) {
+                e.preventDefault();
+                console.log(e);
+            },
             "data-x": "data"
         },
-        "link"
+        ["strong",
+            "link"
+        ],
+        " text"
     ]);
 document.body.appendChild(e);
 console.log(e);
