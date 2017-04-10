@@ -98,7 +98,6 @@ export function jsonml(markup: Array<any>): HTMLElement {
                 }
             });
         } else {
-            console.log(m);
             if (m) {
                 switch (m.constructor) {
                     case Object:
@@ -121,8 +120,18 @@ export function jsonml(markup: Array<any>): HTMLElement {
                     case Array:
                         e.appendChild(jsonml(m));
                         break;
-                    default:
+                    case String:
                         e.appendChild(document.createTextNode(m));
+                        // const d = document.createElement("div");
+                        // d.innerHTML = m;
+                        // e.appendChild(d.childNodes[0]);
+                        break;
+                    default:
+                        if (m.nodeType === 1) { // Node
+                            e.appendChild(m);
+                        } else {
+                            e.appendChild(document.createTextNode("" + m));
+                        }
                 }
             }
         }
