@@ -135,7 +135,7 @@ const e = jsonml(
                 e.preventDefault();
                 console.log(e);
             },
-            "data-x": "data"
+            data: { x: "x", y: "y" }
         },
         ["strong",
             "link"

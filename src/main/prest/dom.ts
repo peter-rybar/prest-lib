@@ -106,6 +106,12 @@ export function jsonml(markup: Array<any>): HTMLElement {
                             if (m.hasOwnProperty(a)) {
                                 if (typeof m[a] === "function") {
                                     e.addEventListener(a, m[a]);
+                                } else if (a === "data") {
+                                    for (const d in m[a]) {
+                                        if (m[a].hasOwnProperty(d)) {
+                                            e.dataset[d] = m[a][d];
+                                        }
+                                    }
                                 } else {
                                     e.setAttribute(a, m[a]);
                                 }
