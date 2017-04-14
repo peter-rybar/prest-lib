@@ -59,6 +59,7 @@ export class Signal<T> implements Sig<T> {
     connect(callback: (data?: T) => void): void;
     connect(callback: (data?: T) => void, object?: Object): void;
     connect(callback: (data?: any) => void, object?: Object): void {
+        if (typeof callback !== "function") return;
         if (object) {
             this._slots.push({ callback: callback, object: object });
         } else {
@@ -73,6 +74,7 @@ export class Signal<T> implements Sig<T> {
      * Disconnects slot
      */
     disconnect(callback: (data?: T) => void, object?: Object): void {
+        if (typeof callback !== "function") return;
         this._slots = this._slots.filter(slot => {
             return (object === undefined) ?
                 (slot.callback !== callback) :
