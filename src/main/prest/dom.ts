@@ -14,6 +14,14 @@ export function select(selector: string, element?: HTMLElement): HTMLElement {
     return e.querySelector(selector) as HTMLElement;
 }
 
+export function append(element: HTMLElement, ...elements: HTMLElement[]): void {
+    elements.forEach(e => element.appendChild(e));
+}
+
+export function replace(oldElement: HTMLElement, newElement: HTMLElement): void {
+    oldElement.parentElement.replaceChild(newElement, oldElement);
+}
+
 export function remove(element: HTMLElement): void {
     element.parentElement.removeChild(element);
 }
@@ -88,7 +96,7 @@ export function jsonml(markup: Array<any>): HTMLElement {
                 if (i === 0) {
                     x.split("#").forEach((x: string, i: number) => {
                         if (i === 0) {
-                            e = document.createElement(x);
+                            e = document.createElement(x ? x : "div");
                         } else {
                             e.setAttribute("id", x);
                         }

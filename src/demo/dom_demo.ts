@@ -140,7 +140,9 @@ const e = jsonml(
         ["strong",
             "link"
         ],
-        " text"
+        " text",
+        ["#x.y", "div"],
+        ["", "empty"]
     ]);
 document.body.appendChild(e);
 console.log(e);
