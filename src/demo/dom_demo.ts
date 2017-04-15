@@ -135,14 +135,31 @@ const e = jsonml(
                 e.preventDefault();
                 console.log(e);
             },
-            data: { x: "x", y: "y" }
+            data: { x: "x", y: "y" },
+            classes: ["c3", "c4"]
         },
-        ["strong",
-            "link"
-        ],
+        ["strong", "link"],
         " text",
         ["#x.y", "div"],
         ["", "empty"]
     ]);
+// const e1 = jsonml(
+//     ["a#y.c1.c2",
+//         {
+//             href: "localhost",
+//             click: function (e: Event) {
+//                 e.preventDefault();
+//                 console.log(e);
+//             },
+//             data: { x: "x", y: "y" }
+//         },
+//         ["strong",
+//             "link"
+//         ],
+//         " text",
+//         ["#x.y", "div"],
+//         ["#x.y", { classes: ["z", "w"] }, "div"],
+//         ["", "empty"]
+//     ]);
 document.body.appendChild(e);
 console.log(e);

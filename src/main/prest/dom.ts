@@ -88,7 +88,22 @@ export function html(html: string): HTMLElement {
     // }
 }
 
-export function jsonml(markup: Array<any>): HTMLElement {
+interface JsonMlX {
+    open(name: string): void;
+    attr(name: string,
+         value: string | string[] | Function | {[name: string]: string}): void;
+    // open(name: string,
+    //             classes: string[],
+    //             data: {[name: string]: string},
+    //             attrs: {[name: string]: string},
+    //             listeners: Function[]
+    // ): void;
+    text(value: string): void;
+    child(value: Node): void;
+    close(): void;
+}
+
+export function jsonml(markup: Array<any>, jsonmlx?: JsonMlX): HTMLElement {
     let e: HTMLElement;
     markup.forEach((m, i) => {
         if (i === 0) {
@@ -96,12 +111,15 @@ export function jsonml(markup: Array<any>): HTMLElement {
                 if (i === 0) {
                     x.split("#").forEach((x: string, i: number) => {
                         if (i === 0) {
+                            jsonmlx && jsonmlx.open(x ? x : "div");
                             e = document.createElement(x ? x : "div");
                         } else {
+                            jsonmlx && jsonmlx.attr("id", x);
                             e.setAttribute("id", x);
                         }
                     });
                 } else {
+                    jsonmlx && jsonmlx.attr("class", [x]);
                     e.classList.add(x);
                 }
             });
@@ -112,23 +130,32 @@ export function jsonml(markup: Array<any>): HTMLElement {
                         for (const a in m) {
                             if (m.hasOwnProperty(a)) {
                                 if (typeof m[a] === "function") {
+                                    jsonmlx && jsonmlx.attr(a, m[a]);
                                     e.addEventListener(a, m[a]);
                                 } else if (a === "data") {
+                                    jsonmlx && jsonmlx.attr(a, m[a]);
                                     for (const d in m[a]) {
                                         if (m[a].hasOwnProperty(d)) {
                                             e.dataset[d] = m[a][d];
                                         }
                                     }
+                                } else if (a === "classes") {
+                                    jsonmlx && jsonmlx.attr(a, m[a]);
+                                    e.classList.add(...m[a]);
                                 } else {
+                                    jsonmlx && jsonmlx.attr(a, m[a]);
                                     e.setAttribute(a, m[a]);
                                 }
                             }
                         }
                         break;
                     case Array:
-                        e.appendChild(jsonml(m));
+                        const el = jsonml(m);
+                        jsonmlx && jsonmlx.child(m);
+                        e.appendChild(el);
                         break;
                     case String:
+                        jsonmlx && jsonmlx.text(m);
                         e.appendChild(document.createTextNode(m));
                         // const d = document.createElement("div");
                         // d.innerHTML = m;
@@ -136,14 +163,17 @@ export function jsonml(markup: Array<any>): HTMLElement {
                         break;
                     default:
                         if (m.nodeType === 1) { // Node
+                            jsonmlx && jsonmlx.child(m);
                             e.appendChild(m);
                         } else {
+                            jsonmlx && jsonmlx.text("" + m);
                             e.appendChild(document.createTextNode("" + m));
                         }
                 }
             }
         }
     });
+    jsonmlx && jsonmlx.close();
     return e;
 }
 
