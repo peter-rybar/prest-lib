@@ -105,34 +105,43 @@ export function jsonml(markup: Array<any>): HTMLElement {
                     e.classList.add(x);
                 }
             });
+        } else if (i === 1 && m.constructor === Object) {
+            for (const a in m) {
+                if (m.hasOwnProperty(a)) {
+                    switch (a) {
+                        case "data":
+                            for (const d in m[a]) {
+                                if (m[a].hasOwnProperty(d)) {
+                                    if (m[a][d].constructor === String) {
+                                        e.dataset[d] = m[a][d];
+                                    } else {
+                                        e.dataset[d] = JSON.stringify(m[a][d]);
+                                    }
+                                }
+                            }
+                            break;
+                        case "classes":
+                            e.classList.add(...m[a]);
+                            break;
+                        case "styles":
+                            for (const d in m[a]) {
+                                if (m[a].hasOwnProperty(d)) {
+                                    e.style.setProperty(d, m[a][d]);
+                                }
+                            }
+                            break;
+                        default:
+                            if (typeof m[a] === "function") {
+                                e.addEventListener(a, m[a]);
+                            } else {
+                                e.setAttribute(a, m[a]);
+                            }
+                    }
+                }
+            }
         } else {
             if (m) {
                 switch (m.constructor) {
-                    case Object:
-                        for (const a in m) {
-                            if (m.hasOwnProperty(a)) {
-                                if (typeof m[a] === "function") {
-                                    e.addEventListener(a, m[a]);
-                                } else if (a === "data") {
-                                    for (const d in m[a]) {
-                                        if (m[a].hasOwnProperty(d)) {
-                                            e.dataset[d] = m[a][d];
-                                        }
-                                    }
-                                } else if (a === "classes") {
-                                    e.classList.add(...m[a]);
-                                } else if (a === "styles") {
-                                    for (const d in m[a]) {
-                                        if (m[a].hasOwnProperty(d)) {
-                                            e.style.setProperty(d, m[a][d]);
-                                        }
-                                    }
-                                } else {
-                                    e.setAttribute(a, m[a]);
-                                }
-                            }
-                        }
-                        break;
                     case Array:
                         const el = jsonml(m);
                         e.appendChild(el);

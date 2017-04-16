@@ -135,7 +135,7 @@ const e = jsonml(
                 e.preventDefault();
                 console.log(e);
             },
-            data: { x: "x", y: "y" },
+            data: { x: "x", y: "y", o: {a: "a"} },
             classes: ["c3"],
             styles: { color: "green" }
         },
