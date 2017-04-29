@@ -36,6 +36,8 @@ function applyAttrsObj(attrsObj: any) {
 export type JsonML = (string | any[] | {[key: string]: any} | Widget)[];
 
 function jsonml2idom(markup: JsonML) {
+    if (!markup) return;
+
     const head = markup[0] as string;
     const attrsObj = markup[1] as any;
     const hasAttrs = attrsObj && attrsObj.constructor === Object;
