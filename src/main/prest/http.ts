@@ -311,6 +311,22 @@ export class HttpRequest {
 
 }
 
+export const http = {
+    get: function (url: string, query?: Object): HttpRequest {
+        return new HttpRequest().method("GET").url(url, query);
+    },
+    post(url: string, query?: Object): HttpRequest {
+        return new HttpRequest().method("POST").url(url, query);
+    },
+    put(url: string, query?: Object): HttpRequest {
+        return new HttpRequest().method("PUT").url(url, query);
+    },
+    del(url: string, query?: Object): HttpRequest {
+        return new HttpRequest().method("DELETE").url(url, query);
+    }
+};
+
+
 /*
 export class HttpRequest {
 
