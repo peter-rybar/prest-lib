@@ -1,5 +1,5 @@
 import { remove, select, Widget } from "../main/prest/dom";
-import { patch } from "../main/prest/jsonmlidom";
+import { patchAll } from "../main/prest/jsonmlidom";
 
 
 class Item {
@@ -62,46 +62,44 @@ class MyWidget implements Widget {
 
     private _update(): void {
         if (this._element) {
-            patch(this._element,
-                ["div",
-                    ["form", {
-                        onsubmit: (e: Event) => {
-                            e.preventDefault();
-                            const form = (e.target as HTMLFormElement);
-                            const input = (select("input", form) as HTMLInputElement);
-                            console.log("submit", input.value);
-                            this.addItem(new Item(input.value, this._items.length));
-                            input.value = "";
-                        }},
-                        ["input", {
-                            type: "text", name: "text",
-                            oninput: (e: Event) => {
-                                console.log("input", (e.target as HTMLInputElement).value);
-                            },
-                            onchange: (e: Event) => {
-                                console.log("change", (e.target as HTMLInputElement).value);
-                            }}
-                        ],
-                        ["input", { type: "submit", value: "add"}]
+            patchAll(this._element, [
+                ["form", {
+                    onsubmit: (e: Event) => {
+                        e.preventDefault();
+                        const form = (e.target as HTMLFormElement);
+                        const input = (select("input", form) as HTMLInputElement);
+                        console.log("submit", input.value);
+                        this.addItem(new Item(input.value, this._items.length));
+                        input.value = "";
+                    }},
+                    ["input", {
+                        type: "text", name: "text",
+                        oninput: (e: Event) => {
+                            console.log("input", (e.target as HTMLInputElement).value);
+                        },
+                        onchange: (e: Event) => {
+                            console.log("change", (e.target as HTMLInputElement).value);
+                        }}
                     ],
-                    ["ol",
-                        ...this._items.map(item => {
-                            return (
-                                ["li", {
-                                    onclick: (e: Event) => {
-                                        e.stopPropagation();
-                                        if (this._onSelect) {
-                                            this._onSelect(item);
-                                        }
-                                    }},
-                                    ["span.label", item.text], " ",
-                                    ["small.count", `[${item.count}]`]
-                                ]
-                            );
-                        })
-                    ]
+                    ["input", { type: "submit", value: "add"}]
+                ],
+                ["ol",
+                    ...this._items.map(item => {
+                        return (
+                            ["li", {
+                                onclick: (e: Event) => {
+                                    e.stopPropagation();
+                                    if (this._onSelect) {
+                                        this._onSelect(item);
+                                    }
+                                }},
+                                ["span.label", item.text], " ",
+                                ["small.count", `[${item.count}]`]
+                            ]
+                        );
+                    })
                 ]
-            );
+            ]);
         }
     }
 
