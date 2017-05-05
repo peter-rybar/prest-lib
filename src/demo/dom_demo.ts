@@ -1,4 +1,4 @@
-import { html, remove, select, jsonml, Widget } from "../main/prest/dom";
+import { html, remove, select, Widget } from "../main/prest/dom";
 
 class Item {
     constructor(
@@ -73,29 +73,17 @@ class MyWidget implements Widget {
         if (this._element) {
             this._element.innerHTML = "";
             this._items.map(item => {
-                // const li = html(`
-                //     <li>
-                //         <span class="label" >${item.text}</span>
-                //         <small class="count">[${item.count}]</small>
-                //     </li>`);
-                // li.addEventListener("click", (e: Event) => {
-                //     e.stopPropagation();
-                //     if (this._onSelect) {
-                //         this._onSelect(item);
-                //     }
-                // });
-                const li = jsonml(
-                    ["li",
-                        {
-                            click: (e: Event) => {
-                                e.stopPropagation();
-                                if (this._onSelect) {
-                                    this._onSelect(item);
-                                }
-                            }
-                        },
-                        ["span.label", item.text], " ",
-                        ["small.count", `[${item.count}]`]]);
+                const li = html(`
+                    <li>
+                        <span class="label" >${item.text}</span>
+                        <small class="count">[${item.count}]</small>
+                    </li>`);
+                li.addEventListener("click", (e: Event) => {
+                    e.stopPropagation();
+                    if (this._onSelect) {
+                        this._onSelect(item);
+                    }
+                });
                 this._element.appendChild(li);
             });
             // event delegation
@@ -126,23 +114,3 @@ const myWidget = new MyWidget()
         myWidget.addItem(new Item("text " + (l + 1), l + 1));
     })
     .mount(select("#container"));
-
-const e = jsonml(
-    ["a#b.c1.c2",
-        {
-            href: "localhost",
-            click: function (e: Event) {
-                e.preventDefault();
-                console.log(e);
-            },
-            data: { x: "x", y: "y", o: {a: "a"} },
-            classes: ["c3"],
-            styles: { color: "green" }
-        },
-        ["strong", "link"],
-        " text",
-        ["#x.y", "div"],
-        ["", "empty"]
-    ]);
-document.body.appendChild(e);
-console.log(e);
