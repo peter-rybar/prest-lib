@@ -1,5 +1,5 @@
-import { remove, select, Widget } from "../main/prest/dom";
-import { patchAll } from "../main/prest/jsonmlidom";
+import { remove, select, Widget, selectAll } from "../main/prest/dom";
+import { patchAll, jsonml2html, jsonml2dom } from "../main/prest/jsonml";
 
 
 class Item {
@@ -64,20 +64,23 @@ class MyWidget implements Widget {
         if (this._element) {
             patchAll(this._element, [
                 ["form", {
-                    onsubmit: (e: Event) => {
+                    submit: (e: Event) => {
                         e.preventDefault();
-                        const form = (e.target as HTMLFormElement);
-                        const input = (select("input", form) as HTMLInputElement);
+                        // const form = (e.target as HTMLFormElement);
+                        // const input = (select("input", form) as HTMLInputElement);
+                        const input = (select("input", this._element) as HTMLInputElement);
                         console.log("submit", input.value);
-                        this.addItem(new Item(input.value, this._items.length));
-                        input.value = "";
+                        if (input.value) {
+                            this.addItem(new Item(input.value, this._items.length));
+                            input.value = "";
+                        }
                     }},
                     ["input", {
                         type: "text", name: "text",
-                        oninput: (e: Event) => {
+                        input: (e: Event) => {
                             console.log("input", (e.target as HTMLInputElement).value);
                         },
-                        onchange: (e: Event) => {
+                        change: (e: Event) => {
                             console.log("change", (e.target as HTMLInputElement).value);
                         }}
                     ],
@@ -87,7 +90,7 @@ class MyWidget implements Widget {
                     ...this._items.map(item => {
                         return (
                             ["li", {
-                                onclick: (e: Event) => {
+                                click: (e: Event) => {
                                     e.stopPropagation();
                                     if (this._onSelect) {
                                         this._onSelect(item);
@@ -116,3 +119,40 @@ new MyWidget()
         selected.innerHTML = JSON.stringify(item);
     })
     .mount(select("#container"));
+
+
+// renderers test
+
+const jml = [
+    "a#b.c1.c2",
+    {
+        _ref: "ref-root",
+        _key: "key",
+        _skip: false,
+        href: "localhost",
+        click: function (e: Event) {
+            e.preventDefault();
+            console.log(e);
+        },
+        data: { x: "x", y: "y", o: {a: "a"} },
+        classes: ["c3"],
+        styles: { color: "green", borderTop: "1px solid red" }
+    },
+    ["#x.y~ref-div", "div", (e: HTMLElement) => console.log("fnc div", e)],
+    ["strong", "link"],
+    " text",
+    ["~ref-empty", "empty"],
+    (e: HTMLElement) => console.log("fnc anchor", e)
+];
+
+const h = jsonml2html(jml);
+console.log(h);
+
+const h1 = jsonml2html(jml, true);
+console.log(h1);
+
+const e = jsonml2dom(jml);
+console.log(e);
+document.body.appendChild(e);
+
+console.log("refs", selectAll("[ref]", e));
