@@ -27,10 +27,9 @@ export function remove(element: HTMLElement): void {
 }
 
 export function empty(element: HTMLElement) {
-    element.innerHTML = "";
-    // while (element.firstChild /*.hasChildNodes()*/) {
-    //     element.removeChild(element.firstChild);
-    // }
+    while (element.firstChild /*.hasChildNodes()*/) {
+        element.removeChild(element.firstChild);
+    }
 }
 
 
