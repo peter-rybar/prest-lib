@@ -17,13 +17,13 @@ export interface JsonML extends Array<string | Attrs | JsonMLFnc | JsonML | Widg
 
 
 export interface JsonMLHandler {
-    open(tag: string, attrs: any): boolean;
-    close(tag: string): void;
-    text(text: string): void;
-    fnc(fnc: JsonMLFnc): void;
+    open(tag: string, attrs: any, widget?: Widget): boolean;
+    close(tag: string, widget?: Widget): void;
+    text(text: string, widget?: Widget): void;
+    fnc(fnc: JsonMLFnc, widget?: Widget): void;
 }
 
-export function jsonml(markup: JsonML, handler: JsonMLHandler): void {
+export function jsonml(markup: JsonML, handler: JsonMLHandler, widget?: Widget): void {
     if (!markup) {
         return;
     }
@@ -58,7 +58,7 @@ export function jsonml(markup: JsonML, handler: JsonMLHandler): void {
         attrs._ref = ref;
     }
 
-    const skip = handler.open(tag, attrs);
+    const skip = handler.open(tag, attrs, widget);
 
     if (!skip) {
         for (let i = childIdx, l = markup.length; i < l; i++) {
@@ -68,26 +68,26 @@ export function jsonml(markup: JsonML, handler: JsonMLHandler): void {
             }
             switch (node.constructor) {
                 case Array:
-                    jsonml(node, handler);
+                    jsonml(node, handler, widget);
                     break;
                 case Function:
-                    handler.fnc(node);
+                    handler.fnc(node, widget);
                     break;
                 case String:
-                    handler.text(node);
+                    handler.text(node, widget);
                     break;
                 default:
                     if (node instanceof Widget) {
                         const w = node as Widget;
-                        jsonml(w.renderJsonML(), handler);
+                        jsonml(w.renderJsonML(), handler, w);
                     } else {
-                        handler.text("" + node);
+                        handler.text("" + node, widget);
                     }
             }
         }
     }
 
-    handler.close(tag);
+    handler.close(tag, widget);
 }
 
 
@@ -99,22 +99,19 @@ class JsonmlHtmlHandler implements JsonMLHandler {
     public depth: number = 0;
     public indent: string = "    ";
 
-    open(tag: string, attrs: Attrs): boolean {
+    open(tag: string, attrs: Attrs, widget?: Widget): boolean {
         const props: any[] = [];
         let id: string;
-        let ref: string;
         let classes: string[];
         for (const a in attrs) {
             if (attrs.hasOwnProperty(a)) {
                 switch (a) {
+                    case "_ref":
                     case "_key":
                     case "_skip":
                         break;
                     case "_id":
                         id = attrs[a];
-                        break;
-                    case "_ref":
-                        ref = attrs[a];
                         break;
                     case "_classes":
                         if (!classes) {
@@ -160,9 +157,6 @@ class JsonmlHtmlHandler implements JsonMLHandler {
             this.html +=  this.indent.repeat(this.depth);
             this.depth++;
         }
-        if (ref) {
-            props.unshift(["ref", ref]);
-        }
         if (classes) {
             props.unshift(["class", classes.join(" ")]);
         }
@@ -177,7 +171,7 @@ class JsonmlHtmlHandler implements JsonMLHandler {
         return false;
     }
 
-    close(tag: string): void {
+    close(tag: string, widget?: Widget): void {
         if (this.pretty) {
             this.depth--;
             this.html +=  this.indent.repeat(this.depth);
@@ -188,7 +182,7 @@ class JsonmlHtmlHandler implements JsonMLHandler {
         }
     }
 
-    text(text: string): void {
+    text(text: string, widget?: Widget): void {
         if (this.pretty) {
             this.html +=  this.indent.repeat(this.depth);
         }
@@ -198,7 +192,7 @@ class JsonmlHtmlHandler implements JsonMLHandler {
         }
     }
 
-    fnc(fnc: JsonMLFnc): void {
+    fnc(fnc: JsonMLFnc, widget?: Widget): void {
     }
 
 }
@@ -217,7 +211,7 @@ class JsonmlDomHandler implements JsonMLHandler {
 
     private _current: HTMLElement;
 
-    open(tag: string, attrs: Attrs): boolean {
+    open(tag: string, attrs: Attrs, widget?: Widget): boolean {
         const e = document.createElement(tag);
         let classes: string[];
         for (const a in attrs) {
@@ -230,7 +224,9 @@ class JsonmlDomHandler implements JsonMLHandler {
                         e.setAttribute("id", attrs[a]);
                         break;
                     case "_ref":
-                        e.setAttribute("ref", attrs[a]);
+                        if (widget) {
+                            widget.refs[attrs[a]] = e;
+                        }
                         break;
                     case "_classes":
                         if (!classes) {
@@ -284,25 +280,25 @@ class JsonmlDomHandler implements JsonMLHandler {
         return attrs._skip ? true : false;
     }
 
-    close(tag: string): void {
+    close(tag: string, widget?: Widget): void {
         if (this._current !== this.element) {
             this._current = this._current.parentElement;
         }
     }
 
-    text(text: string): void {
+    text(text: string, widget?: Widget): void {
         this._current.appendChild(document.createTextNode(text));
     }
 
-    fnc(fnc: JsonMLFnc): void {
+    fnc(fnc: JsonMLFnc, widget?: Widget): void {
         fnc(this._current);
     }
 
 }
 
-export function jsonml2dom(markup: JsonML): HTMLElement {
+export function jsonml2dom(markup: JsonML, widget?: Widget): HTMLElement {
     const handler = new JsonmlDomHandler();
-    jsonml(markup, handler);
+    jsonml(markup, handler, widget);
     return handler.element;
 }
 
@@ -311,7 +307,7 @@ declare var IncrementalDOM: any;
 
 class JsonmlIDomHandler implements JsonMLHandler {
 
-    open(tag: string, attrs: Attrs): boolean {
+    open(tag: string, attrs: Attrs, widget?: Widget): boolean {
         const props: any = [];
         let id: string;
         let ref: string;
@@ -363,11 +359,7 @@ class JsonmlIDomHandler implements JsonMLHandler {
                 }
             }
         }
-        if (ref) {
-            props.unshift("ref", ref);
-        }
         if (classes) {
-            console.log("----------------------", classes);
             props.unshift("class", classes.join(" "));
         }
         if (id) {
@@ -377,48 +369,53 @@ class JsonmlIDomHandler implements JsonMLHandler {
         if (attrs._skip) {
             IncrementalDOM.skip();
         }
+        if (widget && ref) {
+            widget.refs[ref] = IncrementalDOM.currentElement();
+        }
         return attrs._skip ? true : false;
     }
 
-    close(tag: string): void {
+    close(tag: string, widget?: Widget): void {
         IncrementalDOM.elementClose(tag);
     }
 
-    text(text: string): void {
+    text(text: string, widget?: Widget): void {
         IncrementalDOM.text(text);
     }
 
-    fnc(fnc: JsonMLFnc): void {
+    fnc(fnc: JsonMLFnc, widget?: Widget): void {
         fnc(IncrementalDOM.currentElement());
     }
 
 }
 
-export function jsonml2idom(markup: JsonML): void {
-    jsonml(markup, new JsonmlIDomHandler());
+export function jsonml2idom(markup: JsonML, widget?: Widget): void {
+    jsonml(markup, new JsonmlIDomHandler(), widget);
 }
 
 
 export type JsonMLs = Array<JsonML | Widget>;
 
-export function jsonmls2idom(jsonmls: JsonMLs) {
+export function jsonmls2idom(jsonmls: JsonMLs, widget?: Widget) {
     for (const jsonml of jsonmls) {
         if (jsonml instanceof Widget) {
             const w = jsonml as Widget;
-            jsonml2idom(w.renderJsonML());
+            jsonml2idom(w.renderJsonML(), w);
         } else {
-            jsonml2idom(jsonml);
+            jsonml2idom(jsonml, widget);
         }
     }
 }
 
 
-export function patch(node: Node, jsonml: JsonML) {
-    IncrementalDOM.patch(node, jsonml2idom, jsonml);
+export function patch(node: Node, jsonml: JsonML,  widget?: Widget) {
+    IncrementalDOM.patch(node,
+        (data: JsonML) => jsonml2idom(data, widget), jsonml);
 }
 
-export function patchAll(node: Node, jsonmls: JsonMLs) {
-    IncrementalDOM.patch(node, jsonmls2idom, jsonmls);
+export function patchAll(node: Node, jsonmls: JsonMLs,  widget?: Widget) {
+    IncrementalDOM.patch(node,
+        (data: JsonMLs) => jsonmls2idom(data, widget), jsonmls);
 }
 
 
@@ -436,12 +433,12 @@ export abstract class Widget implements DomWidget {
     readonly dom: HTMLElement;
     readonly refs: { [key: string]: HTMLElement } = {};
 
-    abstract render(patch: boolean): JsonMLs;
+    abstract render(): JsonMLs;
 
     update(node?: Node): this {
         const e = node || this.dom;
         if (e) {
-            patchAll(e, this.render(!!e));
+            patchAll(e, this.render(), this);
         } else {
             console.warn("no element for id: ", this.id);
         }
@@ -462,7 +459,7 @@ export abstract class Widget implements DomWidget {
                     if ((this as any).domAttach) {
                         (this as any).domAttach();
                     }
-                    const observer = new MutationObserver(mutations => {
+                    new MutationObserver(mutations => {
                         mutations.forEach(mutation => {
                             const removed = mutation.removedNodes as any;
                             for (const r of removed) {
@@ -474,17 +471,8 @@ export abstract class Widget implements DomWidget {
                                 }
                             }
                         });
-                    });
-                    observer.observe(e.parentElement, { childList: true });
+                    }).observe(e.parentElement, { childList: true });
                 }
-                // collect dom refs
-                const qsa = e.querySelectorAll("[ref]");
-                const refs: { [key: string]: HTMLElement } = {};
-                for (let i = 0; i < qsa.length; i++) {
-                    const el = qsa[i] as HTMLElement;
-                    refs[el.getAttribute("ref")] = el;
-                }
-                (this as any).refs = refs;
             }
         ];
     }

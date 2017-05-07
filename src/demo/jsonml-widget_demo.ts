@@ -12,10 +12,9 @@ class Hello extends Widget {
 
     render(): JsonMLs {
         return [
-            ["input~i", { id: this.id + "-input", type: "text", value: this.name,
+            ["input~i", { type: "text", value: this.name,
                 input: (e: Event) => {
                     // const i = e.target as HTMLInputElement;
-                    // const i = select("[ref=i]", this.dom) as  HTMLInputElement;
                     const i = this.refs["i"] as  HTMLInputElement;
                     this.name = i.value;
                     this.update();
