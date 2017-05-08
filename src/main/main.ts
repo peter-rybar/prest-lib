@@ -4,8 +4,10 @@ import * as form from "./prest/form";
 import * as hash from "./prest/hash";
 import * as history from "./prest/history";
 import * as http from "./prest/http";
+import * as jsonml from "./prest/jsonml";
 import * as load from "./prest/load";
 import * as signal from "./prest/signal";
+import * as template from "./prest/template";
 
 export {
     dom,
@@ -14,6 +16,8 @@ export {
     hash,
     history,
     http,
+    jsonml,
     load,
-    signal
+    signal,
+    template
 };

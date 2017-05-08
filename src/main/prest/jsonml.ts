@@ -419,7 +419,7 @@ export function patchAll(node: Node, jsonmls: JsonMLs,  widget?: Widget) {
 }
 
 
-interface DomWidget {
+export interface DomWidget {
     domAttach?(): void;
     domDetach?(): void;
 }
@@ -435,8 +435,14 @@ export abstract class Widget implements DomWidget {
 
     abstract render(): JsonMLs;
 
-    update(node?: Node): this {
-        const e = node || this.dom;
+    mount(element: HTMLElement): this {
+        (this as any).dom = element;
+        this.update();
+        return this;
+    }
+
+    update(): this {
+        const e = this.dom;
         if (e) {
             patchAll(e, this.render(), this);
         } else {

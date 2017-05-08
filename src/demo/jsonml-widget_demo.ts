@@ -3,24 +3,29 @@ import { Widget, JsonMLs, jsonml2html } from "../main/prest/jsonml";
 
 class Hello extends Widget {
 
-    public name: string;
+    private _name: string;
 
     constructor(name: string) {
         super();
-        this.name = name;
+        this._name = name;
+    }
+
+    setName(name: string): this {
+        this._name = name;
+        return this;
     }
 
     render(): JsonMLs {
         return [
-            ["input~i", { type: "text", value: this.name,
+            ["input~i", { type: "text", value: this._name,
                 input: (e: Event) => {
                     // const i = e.target as HTMLInputElement;
                     const i = this.refs["i"] as  HTMLInputElement;
-                    this.name = i.value;
+                    this._name = i.value;
                     this.update();
                 } }
             ],
-            ["p", "Hello ", ["strong", this.name], " !"]
+            ["p", "Hello ", ["strong", this._name], " !"]
         ];
     }
 }
@@ -75,35 +80,38 @@ class Timer extends Widget {
 
 class App extends Widget {
 
-    public title: string;
+    private _title: string;
 
-    private _hello: Hello;
-    private _timer: Timer;
+    readonly hello: Hello;
+    readonly timer: Timer;
 
     constructor(title: string) {
         super();
-        this.title = title;
-        this._hello = new Hello("peter");
-        this._timer = new Timer();
+        this._title = title;
+        this.hello = new Hello("peter");
+        this.timer = new Timer();
+    }
+
+    setTitle(title: string): this {
+        this._title = title;
+        return this;
     }
 
     render(): JsonMLs {
         return [
-            ["h1", this.title],
-            this._hello,
+            ["h1", this._title],
+            this.hello,
             ["hr"],
-            this._timer
+            this.timer
         ];
     }
 
 }
 
 
-const app = new App("MyApp").update(document.getElementById("app"));
+const app = new App("MyApp").mount(document.getElementById("app"));
+(self as any).app = app;
 
 // app html
 const html = jsonml2html(app.renderJsonML(), true);
 console.log(html);
-
-// app data
-// console.log(JSON.stringify(app, null, 4));
