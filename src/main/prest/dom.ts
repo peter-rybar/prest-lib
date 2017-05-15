@@ -127,6 +127,7 @@ export function removeEventListener(element: HTMLElement,
     element.removeEventListener(event, listener, useCapture);
 }
 
+
 export interface Widget {
     mount(element: HTMLElement): this;
     umount(): this;

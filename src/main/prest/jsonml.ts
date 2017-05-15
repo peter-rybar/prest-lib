@@ -101,28 +101,21 @@ class JsonmlHtmlHandler implements JsonMLHandler {
 
     open(tag: string, attrs: Attrs, widget?: Widget): boolean {
         const props: any[] = [];
-        let id: string;
-        let classes: string[];
+        let id: string = attrs._id;
+        let classes: string[] = attrs._classes ? attrs._classes : [];
         for (const a in attrs) {
             if (attrs.hasOwnProperty(a)) {
                 switch (a) {
+                    case "_id":
+                    case "_classes":
                     case "_ref":
                     case "_key":
                     case "_skip":
                         break;
-                    case "_id":
+                    case "id":
                         id = attrs[a];
                         break;
-                    case "_classes":
-                        if (!classes) {
-                            classes = [];
-                        }
-                        classes = classes.concat(attrs[a]);
-                        break;
                     case "classes":
-                        if (!classes) {
-                            classes = [];
-                        }
                         classes = classes.concat(attrs[a]);
                         break;
                     case "data":
@@ -157,7 +150,7 @@ class JsonmlHtmlHandler implements JsonMLHandler {
             this.html +=  this.indent.repeat(this.depth);
             this.depth++;
         }
-        if (classes) {
+        if (classes.length) {
             props.unshift(["class", classes.join(" ")]);
         }
         if (id) {
@@ -213,31 +206,21 @@ class JsonmlDomHandler implements JsonMLHandler {
 
     open(tag: string, attrs: Attrs, widget?: Widget): boolean {
         const e = document.createElement(tag);
-        let classes: string[];
+        let id: string = attrs._id;
+        let classes: string[] = attrs._classes ? attrs._classes : [];
         for (const a in attrs) {
             if (attrs.hasOwnProperty(a)) {
                 switch (a) {
+                    case "_id":
+                    case "_classes":
+                    case "_ref":
                     case "_key":
                     case "_skip":
                         break;
-                    case "_id":
-                        e.setAttribute("id", attrs[a]);
-                        break;
-                    case "_ref":
-                        if (widget) {
-                            widget.refs[attrs[a]] = e;
-                        }
-                        break;
-                    case "_classes":
-                        if (!classes) {
-                            classes = [];
-                        }
-                        classes = classes.concat(attrs[a]);
+                    case "id":
+                        id = attrs[a];
                         break;
                     case "classes":
-                        if (!classes) {
-                            classes = [];
-                        }
                         classes = classes.concat(attrs[a]);
                         break;
                     case "data":
@@ -267,7 +250,10 @@ class JsonmlDomHandler implements JsonMLHandler {
                 }
             }
         }
-        if (classes) {
+        if (id) {
+            e.setAttribute("id", id);
+        }
+        if (classes.length) {
             e.classList.add(...classes);
         }
         if (this._current) {
@@ -309,31 +295,22 @@ class JsonmlIDomHandler implements JsonMLHandler {
 
     open(tag: string, attrs: Attrs, widget?: Widget): boolean {
         const props: any = [];
-        let id: string;
-        let ref: string;
-        let classes: string[];
+        let id: string = attrs._id;
+        let classes: string[] = attrs._classes ? attrs._classes : [];
+        let ref: string = attrs._ref;
         for (const a in attrs) {
             if (attrs.hasOwnProperty(a)) {
                 switch (a) {
+                    case "_id":
+                    case "_classes":
+                    case "_ref":
                     case "_key":
                     case "_skip":
                         break;
-                    case "_id":
+                    case "id":
                         id = attrs[a];
                         break;
-                    case "_ref":
-                        ref = attrs[a];
-                        break;
-                    case "_classes":
-                        if (!classes) {
-                            classes = [];
-                        }
-                        classes = classes.concat(attrs[a]);
-                        break;
                     case "classes":
-                        if (!classes) {
-                            classes = [];
-                        }
                         classes = classes.concat(attrs[a]);
                         break;
                     case "data":
@@ -359,7 +336,7 @@ class JsonmlIDomHandler implements JsonMLHandler {
                 }
             }
         }
-        if (classes) {
+        if (classes.length) {
             props.unshift("class", classes.join(" "));
         }
         if (id) {
@@ -445,8 +422,6 @@ export abstract class Widget implements DomWidget {
         const e = this.dom;
         if (e) {
             patchAll(e, this.render(), this);
-        } else {
-            console.warn("no element for id: ", this.id);
         }
         return this;
     }
