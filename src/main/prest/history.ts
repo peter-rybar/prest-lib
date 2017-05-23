@@ -1,14 +1,14 @@
 export class History<T> {
 
-    back(distance?: any) {
+    back(distance?: number): void {
         window.history.back(distance);
     }
 
-    forward(distance?: any) {
+    forward(distance?: number): void {
         window.history.forward(distance);
     }
 
-    go(delta?: any) {
+    go(delta?: number): void {
         window.history.go(delta);
     }
 
@@ -16,22 +16,23 @@ export class History<T> {
         return window.history.length;
     }
 
-    state(): any {
-        return window.history.state;
+    state(): T {
+        return window.history.state as T;
     }
 
-    pushState(state: T, title: string, url?: string) {
+    pushState(state: T, title: string, url?: string): void {
         window.history.pushState(state, title, url);
     }
 
-    replaceState(state: any, title: string, url?: string) {
+    replaceState(state: T, title: string, url?: string): void {
         window.history.replaceState(state, title, url);
     }
 
-    onChange(callback: (state: T) => void) {
+    onChange(callback: (state: T) => void): this {
         window.addEventListener("popstate", function (e: PopStateEvent) {
             callback(e.state);
         });
+        return this;
     }
 
 }
