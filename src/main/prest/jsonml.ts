@@ -366,14 +366,14 @@ class JsonmlIDomHandler implements JsonMLHandler {
 
 }
 
-export function jsonml2idom(markup: JsonML, widget?: Widget): void {
+function jsonml2idom(markup: JsonML, widget?: Widget): void {
     jsonml(markup, new JsonmlIDomHandler(), widget);
 }
 
 
 export type JsonMLs = Array<JsonML | Widget>;
 
-export function jsonmls2idom(jsonmls: JsonMLs, widget?: Widget) {
+function jsonmls2idom(jsonmls: JsonMLs, widget?: Widget): void {
     for (const jsonml of jsonmls) {
         if (jsonml instanceof Widget) {
             const w = jsonml as Widget;
@@ -385,12 +385,12 @@ export function jsonmls2idom(jsonmls: JsonMLs, widget?: Widget) {
 }
 
 
-export function patch(node: Node, jsonml: JsonML,  widget?: Widget) {
+export function patch(node: Node, jsonml: JsonML,  widget?: Widget): void {
     IncrementalDOM.patch(node,
         (data: JsonML) => jsonml2idom(data, widget), jsonml);
 }
 
-export function patchAll(node: Node, jsonmls: JsonMLs,  widget?: Widget) {
+export function patchAll(node: Node, jsonmls: JsonMLs,  widget?: Widget): void {
     IncrementalDOM.patch(node,
         (data: JsonMLs) => jsonmls2idom(data, widget), jsonmls);
 }
@@ -405,16 +405,28 @@ export abstract class Widget implements DomWidget {
 
     private static __count = 0;
 
-    readonly type = this.constructor.name;
-    readonly id = this.constructor.name + "-" + Widget.__count++;
+    readonly type = "Widget"; // this.constructor.name;
+    readonly id = this.type + "-" + Widget.__count++;
     readonly dom: HTMLElement;
     readonly refs: { [key: string]: HTMLElement } = {};
 
     abstract render(): JsonMLs;
 
-    mount(element: HTMLElement): this {
-        (this as any).dom = element;
-        this.update();
+    mount(e: HTMLElement): this {
+        if (!this.dom) {
+            (this as any).dom = e;
+            const jsonMLs = (this as any).render();
+            patchAll(e, jsonMLs, this);
+            if ((this as any).domAttach) {
+                (this as any).domAttach();
+            }
+            onDetach(e, () => {
+                (this as any).dom = undefined;
+                if ((this as any).domDetach) {
+                    (this as any).domDetach();
+                }
+            });
+        }
         return this;
     }
 
@@ -428,11 +440,7 @@ export abstract class Widget implements DomWidget {
 
     renderJsonML(): JsonML {
         const jsonMLs = (this as any).render();
-        return [
-            this.constructor.name, {
-                _id: this.id,
-                _key: this.id
-            },
+        return [this.type, { _id: this.id, _key: this.id },
             ...jsonMLs,
             (e: HTMLElement) => {
                 if (!this.dom) {
@@ -440,24 +448,32 @@ export abstract class Widget implements DomWidget {
                     if ((this as any).domAttach) {
                         (this as any).domAttach();
                     }
-                    new MutationObserver(mutations => {
-                        mutations.forEach(mutation => {
-                            const removed = mutation.removedNodes as any;
-                            for (const r of removed) {
-                                if (r.id === this.id) {
-                                    (this as any).dom = undefined;
-                                    if ((this as any).domDetach) {
-                                        (this as any).domDetach();
-                                    }
-                                }
-                            }
-                        });
-                    }).observe(e.parentElement, { childList: true });
+                    onDetach(e, () => {
+                        (this as any).dom = undefined;
+                        if ((this as any).domDetach) {
+                            (this as any).domDetach();
+                        }
+                    });
                 }
             }
         ];
     }
 
+}
+
+function onDetach(e: HTMLElement, callback: () => void) {
+    new MutationObserver(mutations => {
+        mutations.forEach(mutation => {
+            const removed = mutation.removedNodes as any;
+            for (const r of removed) {
+                console.log(r, r === e);
+                if (r === e) {
+                    callback();
+                }
+            }
+        });
+    }).observe(e.parentElement, { childList: true });
+    // }).observe(e.parentElement, { childList: true, subtree: true });
 }
 
 

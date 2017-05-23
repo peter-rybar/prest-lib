@@ -15,6 +15,14 @@ class Hello extends Widget {
         return this;
     }
 
+    domAttach() {
+        console.log("domAttach", this.type, this.id);
+    }
+
+    domDetach() {
+        console.log("domDetach", this.type, this.id);
+    }
+
     render(): JsonMLs {
         return [
             ["input~i", { type: "text", value: this._name,
@@ -56,10 +64,12 @@ class Timer extends Widget {
     }
 
     domAttach() {
+        console.log("domAttach", this.type, this.id);
         this.toggle(true);
     }
 
     domDetach() {
+        console.log("domDetach", this.type, this.id);
         this.toggle(false);
     }
 
@@ -67,8 +77,7 @@ class Timer extends Widget {
         return [
             ["p", { style: this._interval ? "" : "color: lightgray;" },
                 "Time: ", new Date().toLocaleTimeString(), " ",
-                ["button",
-                    { click: (e: Event) => this.toggle() },
+                ["button", { click: (e: Event) => this.toggle() },
                     this._interval ? "Stop" : "Start"
                 ]
             ]
@@ -95,6 +104,14 @@ class App extends Widget {
     setTitle(title: string): this {
         this._title = title;
         return this;
+    }
+
+    domAttach() {
+        console.log("domAttach", this.type, this.id);
+    }
+
+    domDetach() {
+        console.log("domDetach", this.type, this.id);
     }
 
     render(): JsonMLs {
