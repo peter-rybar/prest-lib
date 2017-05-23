@@ -154,7 +154,16 @@ export class HttpRequest {
     }
 
     headers(headers: {[key: string]: string}): this {
-        this._headers = headers;
+        for (const key in headers) {
+            if (headers.hasOwnProperty(key)) {
+                this._headers[key] = headers[key];
+            }
+        }
+        return this;
+    }
+
+    auth(login: string, password: string): this {
+        this._headers["Authorization"] = "Basic " + btoa(login + ":" + password);
         return this;
     }
 
