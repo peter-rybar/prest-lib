@@ -1,4 +1,3 @@
-
 export interface Attrs {
     _id?: string;
     _classes?: string[];
@@ -13,7 +12,8 @@ export interface Attrs {
 
 export type JsonMLFnc = (e?: HTMLElement) => void;
 
-export interface JsonML extends Array<string | Attrs | JsonMLFnc | JsonML | Widget> {}
+export interface JsonML extends Array<string | Attrs | JsonMLFnc | JsonML | Widget> {
+}
 
 
 export interface JsonMLHandler {
@@ -147,7 +147,7 @@ class JsonmlHtmlHandler implements JsonMLHandler {
             }
         }
         if (this.pretty) {
-            this.html +=  this.indent.repeat(this.depth);
+            this.html += this.indent.repeat(this.depth);
             this.depth++;
         }
         if (classes.length) {
@@ -167,7 +167,7 @@ class JsonmlHtmlHandler implements JsonMLHandler {
     close(tag: string, widget?: Widget): void {
         if (this.pretty) {
             this.depth--;
-            this.html +=  this.indent.repeat(this.depth);
+            this.html += this.indent.repeat(this.depth);
         }
         this.html += "</" + tag + ">";
         if (this.pretty) {
@@ -177,7 +177,7 @@ class JsonmlHtmlHandler implements JsonMLHandler {
 
     text(text: string, widget?: Widget): void {
         if (this.pretty) {
-            this.html +=  this.indent.repeat(this.depth);
+            this.html += this.indent.repeat(this.depth);
         }
         this.html += text;
         if (this.pretty) {
@@ -385,12 +385,12 @@ function jsonmls2idom(jsonmls: JsonMLs, widget?: Widget): void {
 }
 
 
-export function patch(node: Node, jsonml: JsonML,  widget?: Widget): void {
+export function patch(node: Node, jsonml: JsonML, widget?: Widget): void {
     IncrementalDOM.patch(node,
         (data: JsonML) => jsonml2idom(data, widget), jsonml);
 }
 
-export function patchAll(node: Node, jsonmls: JsonMLs,  widget?: Widget): void {
+export function patchAll(node: Node, jsonmls: JsonMLs, widget?: Widget): void {
     IncrementalDOM.patch(node,
         (data: JsonMLs) => jsonmls2idom(data, widget), jsonmls);
 }
