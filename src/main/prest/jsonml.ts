@@ -410,6 +410,8 @@ export abstract class Widget implements DomWidget {
     readonly dom: HTMLElement;
     readonly refs: { [key: string]: HTMLElement } = {};
 
+    private _updateSched: number;
+
     abstract render(): JsonMLs;
 
     mount(e: HTMLElement): this {
@@ -432,8 +434,11 @@ export abstract class Widget implements DomWidget {
 
     update(): this {
         const e = this.dom;
-        if (e) {
-            patchAll(e, this.render(), this);
+        if (e && !this._updateSched) {
+            this._updateSched = setTimeout(() => {
+                patchAll(e, this.render(), this);
+                this._updateSched = null;
+            }, 0);
         }
         return this;
     }

@@ -12,6 +12,7 @@ class Hello extends Widget {
 
     setName(name: string): this {
         this._name = name;
+        this.update();
         return this;
     }
 
