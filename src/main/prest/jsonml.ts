@@ -412,6 +412,12 @@ export abstract class Widget implements DomWidget {
 
     private _updateSched: number;
 
+    constructor(type: string = "") {
+        if (type) {
+            this.type = type;
+        }
+    }
+
     abstract render(): JsonMLs;
 
     mount(e: HTMLElement): this {
@@ -422,12 +428,23 @@ export abstract class Widget implements DomWidget {
             if ((this as any).domAttach) {
                 (this as any).domAttach();
             }
-            onDetach(e, () => {
-                (this as any).dom = undefined;
-                if ((this as any).domDetach) {
-                    (this as any).domDetach();
-                }
-            });
+            // onDetach(e, () => {
+            //     (this as any).dom = undefined;
+            //     if ((this as any).domDetach) {
+            //         (this as any).domDetach();
+            //     }
+            // });
+        }
+        return this;
+    }
+
+    umount(): this {
+        if (this.dom) {
+            if ((this as any).domDetach) {
+                (this as any).domDetach();
+            }
+            this.dom.parentElement.removeChild(this.dom);
+            (this as any).dom = undefined;
         }
         return this;
     }
@@ -453,12 +470,12 @@ export abstract class Widget implements DomWidget {
                     if ((this as any).domAttach) {
                         (this as any).domAttach();
                     }
-                    onDetach(e, () => {
-                        (this as any).dom = undefined;
-                        if ((this as any).domDetach) {
-                            (this as any).domDetach();
-                        }
-                    });
+                    // onDetach(e, () => {
+                    //     (this as any).dom = undefined;
+                    //     if ((this as any).domDetach) {
+                    //         (this as any).domDetach();
+                    //     }
+                    // });
                 }
             }
         ];
@@ -466,20 +483,20 @@ export abstract class Widget implements DomWidget {
 
 }
 
-function onDetach(e: HTMLElement, callback: () => void) {
-    new MutationObserver(mutations => {
-        mutations.forEach(mutation => {
-            const removed = mutation.removedNodes as any;
-            for (const r of removed) {
-                console.log(r, r === e);
-                if (r === e) {
-                    callback();
-                }
-            }
-        });
-    }).observe(e.parentElement, { childList: true });
-    // }).observe(e.parentElement, { childList: true, subtree: true });
-}
+// function onDetach(e: HTMLElement, callback: () => void) {
+//     new MutationObserver(mutations => {
+//         mutations.forEach(mutation => {
+//             const removed = mutation.removedNodes as any;
+//             for (const r of removed) {
+//                 console.log(r, r === e);
+//                 if (r === e) {
+//                     callback();
+//                 }
+//             }
+//         });
+//     }).observe(e.parentElement, { childList: true });
+//     // }).observe(e.parentElement, { childList: true, subtree: true });
+// }
 
 
 // const observer = new MutationObserver(mutations => {

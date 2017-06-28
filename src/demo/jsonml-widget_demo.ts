@@ -6,7 +6,7 @@ class Hello extends Widget {
     private _name: string;
 
     constructor(name: string) {
-        super();
+        super("Hello");
         this._name = name;
     }
 
@@ -45,7 +45,7 @@ class Timer extends Widget {
     private _interval: number;
 
     constructor() {
-        super();
+        super("Timer");
     }
 
     toggle(on?: boolean): void {
