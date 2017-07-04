@@ -405,8 +405,8 @@ export abstract class Widget implements DomWidget {
 
     private static __count = 0;
 
-    readonly type = "Widget"; // this.constructor.name;
-    readonly id = this.type + "-" + Widget.__count++;
+    readonly type: string = "Widget"; // this.constructor.name;
+    readonly id: string = this.type + "-" + Widget.__count++;
     readonly dom: HTMLElement;
     readonly refs: { [key: string]: HTMLElement } = {};
 
