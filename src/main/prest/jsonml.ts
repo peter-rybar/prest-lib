@@ -12,18 +12,26 @@ export interface Attrs {
 
 export type JsonMLFnc = (e?: HTMLElement) => void;
 
-export interface JsonML extends Array<string | Attrs | JsonMLFnc | JsonML | Widget> {
+export type JsonMLCtx = any;
+
+export interface JsonML extends Array<string | Attrs | JsonML | JsonMLFnc | JsonMLCtx> {
+    // 0: string;
+    // 1?: Attrs | JsonML | JsonMLFnc | JsonMLCtx;
+}
+
+export interface JsonMLs extends Array<JsonML | string | JsonMLCtx> {
 }
 
 
 export interface JsonMLHandler {
-    open(tag: string, attrs: any, widget?: Widget): boolean;
-    close(tag: string, widget?: Widget): void;
-    text(text: string, widget?: Widget): void;
-    fnc(fnc: JsonMLFnc, widget?: Widget): void;
+    open(tag: string, attrs: Attrs, ctx?: JsonMLCtx): boolean;
+    close(tag: string, ctx?: JsonMLCtx): void;
+    text(text: string, ctx?: JsonMLCtx): void;
+    fnc(fnc: JsonMLFnc, ctx?: JsonMLCtx): void;
+    obj(obj: any, ctx?: JsonMLCtx): void;
 }
 
-export function jsonml(markup: JsonML, handler: JsonMLHandler, widget?: Widget): void {
+export function jsonml(markup: JsonML, handler: JsonMLHandler, ctx?: JsonMLCtx): void {
     if (!markup) {
         return;
     }
@@ -58,7 +66,7 @@ export function jsonml(markup: JsonML, handler: JsonMLHandler, widget?: Widget):
         attrs._ref = ref;
     }
 
-    const skip = handler.open(tag, attrs, widget);
+    const skip = handler.open(tag, attrs, ctx);
 
     if (!skip) {
         for (let i = childIdx, l = markup.length; i < l; i++) {
@@ -68,26 +76,21 @@ export function jsonml(markup: JsonML, handler: JsonMLHandler, widget?: Widget):
             }
             switch (node.constructor) {
                 case Array:
-                    jsonml(node, handler, widget);
+                    jsonml(node, handler, ctx);
                     break;
                 case Function:
-                    handler.fnc(node, widget);
+                    handler.fnc(node, ctx);
                     break;
                 case String:
-                    handler.text(node, widget);
+                    handler.text(node, ctx);
                     break;
                 default:
-                    if (node instanceof Widget) {
-                        const w = node as Widget;
-                        jsonml(w.renderJsonML(), handler, w);
-                    } else {
-                        handler.text("" + node, widget);
-                    }
+                    handler.obj(node, ctx);
             }
         }
     }
 
-    handler.close(tag, widget);
+    handler.close(tag, ctx);
 }
 
 
@@ -97,9 +100,9 @@ class JsonmlHtmlHandler implements JsonMLHandler {
 
     public pretty: boolean = false;
     public depth: number = 0;
-    public indent: string = "    ";
+    public indent: string = "\t";
 
-    open(tag: string, attrs: Attrs, widget?: Widget): boolean {
+    open(tag: string, attrs: Attrs, ctx?: JsonMLCtx): boolean {
         const props: any[] = [];
         let id: string = attrs._id;
         let classes: string[] = attrs._classes ? attrs._classes : [];
@@ -164,7 +167,7 @@ class JsonmlHtmlHandler implements JsonMLHandler {
         return false;
     }
 
-    close(tag: string, widget?: Widget): void {
+    close(tag: string, ctx?: JsonMLCtx): void {
         if (this.pretty) {
             this.depth--;
             this.html += this._indent(this.depth);
@@ -175,7 +178,7 @@ class JsonmlHtmlHandler implements JsonMLHandler {
         }
     }
 
-    text(text: string, widget?: Widget): void {
+    text(text: string, ctx?: JsonMLCtx): void {
         if (this.pretty) {
             this.html += this._indent(this.depth);
         }
@@ -185,7 +188,16 @@ class JsonmlHtmlHandler implements JsonMLHandler {
         }
     }
 
-    fnc(fnc: JsonMLFnc, widget?: Widget): void {
+    fnc(fnc: JsonMLFnc, ctx?: JsonMLCtx): void {
+    }
+
+    obj(obj: any, ctx?: JsonMLCtx): void {
+        if (obj instanceof Widget) {
+            const w = obj as Widget;
+            jsonml(w.renderJsonML(), this, w);
+        } else {
+            this.text("" + obj, ctx);
+        }
     }
 
     private _indent(count: number): string {
@@ -212,7 +224,7 @@ class JsonmlDomHandler implements JsonMLHandler {
 
     private _current: HTMLElement;
 
-    open(tag: string, attrs: Attrs, widget?: Widget): boolean {
+    open(tag: string, attrs: Attrs, ctx?: JsonMLCtx): boolean {
         const e = document.createElement(tag);
         let id: string = attrs._id;
         let classes: string[] = attrs._classes ? attrs._classes : [];
@@ -274,25 +286,34 @@ class JsonmlDomHandler implements JsonMLHandler {
         return attrs._skip ? true : false;
     }
 
-    close(tag: string, widget?: Widget): void {
+    close(tag: string, ctx?: JsonMLCtx): void {
         if (this._current !== this.element) {
             this._current = this._current.parentElement;
         }
     }
 
-    text(text: string, widget?: Widget): void {
+    text(text: string, ctx?: JsonMLCtx): void {
         this._current.appendChild(document.createTextNode(text));
     }
 
-    fnc(fnc: JsonMLFnc, widget?: Widget): void {
+    fnc(fnc: JsonMLFnc, ctx?: JsonMLCtx): void {
         fnc(this._current);
+    }
+
+    obj(obj: any, ctx?: JsonMLCtx): void {
+        if (obj instanceof Widget) {
+            const w = obj as Widget;
+            jsonml(w.renderJsonML(), this, w);
+        } else {
+            this.text("" + obj, ctx);
+        }
     }
 
 }
 
-export function jsonml2dom(markup: JsonML, widget?: Widget): HTMLElement {
+export function jsonml2dom(markup: JsonML, ctx?: JsonMLCtx): HTMLElement {
     const handler = new JsonmlDomHandler();
-    jsonml(markup, handler, widget);
+    jsonml(markup, handler, ctx);
     return handler.element;
 }
 
@@ -301,7 +322,7 @@ declare var IncrementalDOM: any;
 
 class JsonmlIDomHandler implements JsonMLHandler {
 
-    open(tag: string, attrs: Attrs, widget?: Widget): boolean {
+    open(tag: string, attrs: Attrs, ctx?: JsonMLCtx): boolean {
         const props: any = [];
         let id: string = attrs._id;
         let classes: string[] = attrs._classes ? attrs._classes : [];
@@ -354,53 +375,62 @@ class JsonmlIDomHandler implements JsonMLHandler {
         if (attrs._skip) {
             IncrementalDOM.skip();
         }
-        if (widget && ref) {
-            widget.refs[ref] = IncrementalDOM.currentElement();
+        if (ctx && ref) {
+            ctx.refs[ref] = IncrementalDOM.currentElement();
         }
         return attrs._skip ? true : false;
     }
 
-    close(tag: string, widget?: Widget): void {
+    close(tag: string, ctx?: JsonMLCtx): void {
         IncrementalDOM.elementClose(tag);
     }
 
-    text(text: string, widget?: Widget): void {
+    text(text: string, ctx?: JsonMLCtx): void {
         IncrementalDOM.text(text);
     }
 
-    fnc(fnc: JsonMLFnc, widget?: Widget): void {
+    fnc(fnc: JsonMLFnc, ctx?: JsonMLCtx): void {
         fnc(IncrementalDOM.currentElement());
+    }
+
+    obj(obj: any, ctx?: JsonMLCtx): void {
+        if (obj instanceof Widget) {
+            const w = obj as Widget;
+            jsonml(w.renderJsonML(), this, w);
+        } else {
+            this.text("" + obj, ctx);
+        }
     }
 
 }
 
-function jsonml2idom(markup: JsonML, widget?: Widget): void {
-    jsonml(markup, new JsonmlIDomHandler(), widget);
+function jsonml2idom(markup: JsonML, ctx?: JsonMLCtx): void {
+    jsonml(markup, new JsonmlIDomHandler(), ctx);
 }
 
 
-export type JsonMLs = Array<JsonML | Widget>;
-
-function jsonmls2idom(jsonmls: JsonMLs, widget?: Widget): void {
+function jsonmls2idom(jsonmls: JsonMLs, ctx?: JsonMLCtx): void {
     for (const jsonml of jsonmls) {
         if (jsonml instanceof Widget) {
             const w = jsonml as Widget;
             jsonml2idom(w.renderJsonML(), w);
+        } else if (jsonml.constructor === String) {
+            IncrementalDOM.text(jsonml);
         } else {
-            jsonml2idom(jsonml, widget);
+            jsonml2idom(jsonml as JsonML, ctx);
         }
     }
 }
 
 
-export function patch(node: Node, jsonml: JsonML, widget?: Widget): void {
+export function patch(node: Node, jsonml: JsonML, ctx?: JsonMLCtx): void {
     IncrementalDOM.patch(node,
-        (data: JsonML) => jsonml2idom(data, widget), jsonml);
+        (data: JsonML) => jsonml2idom(data, ctx), jsonml);
 }
 
-export function patchAll(node: Node, jsonmls: JsonMLs, widget?: Widget): void {
+export function patchAll(node: Node, jsonmls: JsonMLs, ctx?: JsonMLCtx): void {
     IncrementalDOM.patch(node,
-        (data: JsonMLs) => jsonmls2idom(data, widget), jsonmls);
+        (data: JsonMLs) => jsonmls2idom(data, ctx), jsonmls);
 }
 
 

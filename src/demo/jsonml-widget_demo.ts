@@ -96,7 +96,7 @@ class App extends Widget {
     readonly timer: Timer;
 
     constructor(title: string) {
-        super();
+        super("App");
         this._title = title;
         this.hello = new Hello("peter");
         this.timer = new Timer();
