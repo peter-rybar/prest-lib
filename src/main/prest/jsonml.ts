@@ -167,7 +167,7 @@ class JsonmlHtmlHandler implements JsonMLHandler {
     close(tag: string, widget?: Widget): void {
         if (this.pretty) {
             this.depth--;
-            this.html += this.indent.repeat(this.depth);
+            this.html += this._indent(this.depth);
         }
         this.html += "</" + tag + ">";
         if (this.pretty) {
@@ -177,7 +177,7 @@ class JsonmlHtmlHandler implements JsonMLHandler {
 
     text(text: string, widget?: Widget): void {
         if (this.pretty) {
-            this.html += this.indent.repeat(this.depth);
+            this.html += this._indent(this.depth);
         }
         this.html += text;
         if (this.pretty) {
@@ -186,6 +186,14 @@ class JsonmlHtmlHandler implements JsonMLHandler {
     }
 
     fnc(fnc: JsonMLFnc, widget?: Widget): void {
+    }
+
+    private _indent(count: number): string {
+        let indent = "";
+        for (let i = 0; i < count; i++) {
+            indent += this.indent;
+        }
+        return indent;
     }
 
 }
