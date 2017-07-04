@@ -147,7 +147,7 @@ class JsonmlHtmlHandler implements JsonMLHandler {
             }
         }
         if (this.pretty) {
-            this.html += this.indent.repeat(this.depth);
+            this.html += this._indent(this.depth);
             this.depth++;
         }
         if (classes.length) {
