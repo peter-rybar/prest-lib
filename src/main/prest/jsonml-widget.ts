@@ -1,5 +1,5 @@
 
-import { JsonMLObj, JsonMLs, JsonML, patchAll } from "./jsonml";
+import { JsonMLObj, JsonMLs, JsonML, jsonmlPatchAll } from "./jsonml";
 
 
 export interface DomWidget {
@@ -30,7 +30,7 @@ export abstract class Widget implements JsonMLObj, DomWidget {
         if (!this.dom) {
             (this as any).dom = e;
             const jsonMLs = (this as any).render();
-            patchAll(e, jsonMLs, this);
+            jsonmlPatchAll(e, jsonMLs, this);
             if ((this as any).domAttach) {
                 (this as any).domAttach();
             }
@@ -59,7 +59,7 @@ export abstract class Widget implements JsonMLObj, DomWidget {
         const e = this.dom;
         if (e && !this._updateSched) {
             this._updateSched = setTimeout(() => {
-                patchAll(e, this.render(), this);
+                jsonmlPatchAll(e, this.render(), this);
                 this._updateSched = null;
             }, 0);
         }

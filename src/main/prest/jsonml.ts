@@ -433,12 +433,12 @@ function jsonmls2idom(jsonmls: JsonMLs, ctx?: any): void {
 }
 
 
-export function patch(node: Node, jsonml: JsonML, ctx?: any): void {
+export function jsonmlPatch(node: Node, jsonml: JsonML, ctx?: any): void {
     IncrementalDOM.patch(node,
         (data: JsonML) => jsonml2idom(data, ctx), jsonml);
 }
 
-export function patchAll(node: Node, jsonmls: JsonMLs, ctx?: any): void {
+export function jsonmlPatchAll(node: Node, jsonmls: JsonMLs, ctx?: any): void {
     IncrementalDOM.patch(node,
         (data: JsonMLs) => jsonmls2idom(data, ctx), jsonmls);
 }

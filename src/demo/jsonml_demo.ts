@@ -1,5 +1,5 @@
 import { remove, select, Widget, selectAll } from "../main/prest/dom";
-import { patchAll, jsonml2html, jsonml2dom } from "../main/prest/jsonml";
+import { jsonmlPatchAll, jsonml2html, jsonml2dom } from "../main/prest/jsonml";
 
 
 class Item {
@@ -62,7 +62,7 @@ class MyWidget implements Widget {
 
     private _update(): void {
         if (this._element) {
-            patchAll(this._element, [
+            jsonmlPatchAll(this._element, [
                 ["form", {
                     submit: (e: Event) => {
                         e.preventDefault();
