@@ -1,4 +1,6 @@
-import { Widget, JsonMLs, jsonml2html } from "../main/prest/jsonml";
+
+import { JsonMLs, jsonml2html } from "../main/prest/jsonml";
+import { Widget } from "../main/prest/jsonml-widget";
 
 
 class Hello extends Widget {
@@ -131,5 +133,5 @@ const app = new App("MyApp").mount(document.getElementById("app"));
 (self as any).app = app;
 
 // app html
-const html = jsonml2html(app.renderJsonML(), true);
+const html = jsonml2html(app.toJsonML(), true);
 console.log(html);

@@ -12,26 +12,28 @@ export interface Attrs {
 
 export type JsonMLFnc = (e?: HTMLElement) => void;
 
-export type JsonMLCtx = any;
-
-export interface JsonML extends Array<string | Attrs | JsonML | JsonMLFnc | JsonMLCtx> {
-    // 0: string;
-    // 1?: Attrs | JsonML | JsonMLFnc | JsonMLCtx;
+export interface JsonMLObj {
+    toJsonML?(): JsonML;
 }
 
-export interface JsonMLs extends Array<JsonML | string | JsonMLCtx> {
+export interface JsonML extends Array<string | Attrs | JsonML | JsonMLFnc | JsonMLObj> {
+    // 0: string;
+    // 1?: Attrs | JsonML | JsonMLFnc | JsonMObj;
+}
+
+export interface JsonMLs extends Array<JsonML | string | JsonMLObj> {
 }
 
 
 export interface JsonMLHandler {
-    open(tag: string, attrs: Attrs, ctx?: JsonMLCtx): boolean;
-    close(tag: string, ctx?: JsonMLCtx): void;
-    text(text: string, ctx?: JsonMLCtx): void;
-    fnc(fnc: JsonMLFnc, ctx?: JsonMLCtx): void;
-    obj(obj: any, ctx?: JsonMLCtx): void;
+    open(tag: string, attrs: Attrs, children: number, ctx?: any): boolean;
+    close(tag: string, children: number, ctx?: any): void;
+    text(text: string, ctx?: any): void;
+    fnc(fnc: JsonMLFnc, ctx?: any): void;
+    obj(obj: JsonMLObj, ctx?: any): void;
 }
 
-export function jsonml(markup: JsonML, handler: JsonMLHandler, ctx?: JsonMLCtx): void {
+export function jsonml(markup: JsonML, handler: JsonMLHandler, ctx?: any): void {
     if (!markup) {
         return;
     }
@@ -40,6 +42,13 @@ export function jsonml(markup: JsonML, handler: JsonMLHandler, ctx?: JsonMLCtx):
     const attrsObj = markup[1] as any;
     const hasAttrs = attrsObj && attrsObj.constructor === Object;
     const childIdx = hasAttrs ? 2 : 1;
+
+    let children = 0;
+    for (let i = childIdx; i < markup.length; i++) {
+        if (markup[i].constructor !== Function) {
+            children++;
+        }
+    }
 
     const refSplit = head.split("~");
     const ref = refSplit[1];
@@ -66,7 +75,7 @@ export function jsonml(markup: JsonML, handler: JsonMLHandler, ctx?: JsonMLCtx):
         attrs._ref = ref;
     }
 
-    const skip = handler.open(tag, attrs, ctx);
+    const skip = handler.open(tag, attrs, children, ctx);
 
     if (!skip) {
         for (let i = childIdx, l = markup.length; i < l; i++) {
@@ -90,7 +99,7 @@ export function jsonml(markup: JsonML, handler: JsonMLHandler, ctx?: JsonMLCtx):
         }
     }
 
-    handler.close(tag, ctx);
+    handler.close(tag, children, ctx);
 }
 
 
@@ -102,7 +111,7 @@ class JsonmlHtmlHandler implements JsonMLHandler {
     public depth: number = 0;
     public indent: string = "\t";
 
-    open(tag: string, attrs: Attrs, ctx?: JsonMLCtx): boolean {
+    open(tag: string, attrs: Attrs, children: number, ctx?: any): boolean {
         const props: any[] = [];
         let id: string = attrs._id;
         let classes: string[] = attrs._classes ? attrs._classes : [];
@@ -160,25 +169,29 @@ class JsonmlHtmlHandler implements JsonMLHandler {
             props.unshift(["id", id]);
         }
         const args = props.map(p => `${p[0]}="${p[1]}"`).join(" ");
-        this.html += "<" + tag + (args ? " " + args : "") + ">";
+        this.html += "<" + tag + (args ? " " + args : "") + (children ? ">" : "/>");
         if (this.pretty) {
             this.html += "\n";
         }
         return false;
     }
 
-    close(tag: string, ctx?: JsonMLCtx): void {
+    close(tag: string, children: number, ctx?: any): void {
         if (this.pretty) {
             this.depth--;
-            this.html += this._indent(this.depth);
+            if (children) {
+                this.html += this._indent(this.depth);
+            }
         }
-        this.html += "</" + tag + ">";
-        if (this.pretty) {
-            this.html += "\n";
+        if (children) {
+            this.html += "</" + tag + ">";
+            if (this.pretty) {
+                this.html += "\n";
+            }
         }
     }
 
-    text(text: string, ctx?: JsonMLCtx): void {
+    text(text: string, ctx?: any): void {
         if (this.pretty) {
             this.html += this._indent(this.depth);
         }
@@ -188,13 +201,12 @@ class JsonmlHtmlHandler implements JsonMLHandler {
         }
     }
 
-    fnc(fnc: JsonMLFnc, ctx?: JsonMLCtx): void {
+    fnc(fnc: JsonMLFnc, ctx?: any): void {
     }
 
-    obj(obj: any, ctx?: JsonMLCtx): void {
-        if (obj instanceof Widget) {
-            const w = obj as Widget;
-            jsonml(w.renderJsonML(), this, w);
+    obj(obj: JsonMLObj, ctx?: any): void {
+        if ("toJsonML" in obj) {
+            jsonml(obj.toJsonML(), this, obj);
         } else {
             this.text("" + obj, ctx);
         }
@@ -224,7 +236,7 @@ class JsonmlDomHandler implements JsonMLHandler {
 
     private _current: HTMLElement;
 
-    open(tag: string, attrs: Attrs, ctx?: JsonMLCtx): boolean {
+    open(tag: string, attrs: Attrs, children: number, ctx?: any): boolean {
         const e = document.createElement(tag);
         let id: string = attrs._id;
         let classes: string[] = attrs._classes ? attrs._classes : [];
@@ -286,24 +298,23 @@ class JsonmlDomHandler implements JsonMLHandler {
         return attrs._skip ? true : false;
     }
 
-    close(tag: string, ctx?: JsonMLCtx): void {
+    close(tag: string, children: number, ctx?: any): void {
         if (this._current !== this.element) {
             this._current = this._current.parentElement;
         }
     }
 
-    text(text: string, ctx?: JsonMLCtx): void {
+    text(text: string, ctx?: any): void {
         this._current.appendChild(document.createTextNode(text));
     }
 
-    fnc(fnc: JsonMLFnc, ctx?: JsonMLCtx): void {
+    fnc(fnc: JsonMLFnc, ctx?: any): void {
         fnc(this._current);
     }
 
-    obj(obj: any, ctx?: JsonMLCtx): void {
-        if (obj instanceof Widget) {
-            const w = obj as Widget;
-            jsonml(w.renderJsonML(), this, w);
+    obj(obj: JsonMLObj, ctx?: any): void {
+        if ("toJsonML" in obj) {
+            jsonml(obj.toJsonML(), this, obj);
         } else {
             this.text("" + obj, ctx);
         }
@@ -311,7 +322,7 @@ class JsonmlDomHandler implements JsonMLHandler {
 
 }
 
-export function jsonml2dom(markup: JsonML, ctx?: JsonMLCtx): HTMLElement {
+export function jsonml2dom(markup: JsonML, ctx?: any): HTMLElement {
     const handler = new JsonmlDomHandler();
     jsonml(markup, handler, ctx);
     return handler.element;
@@ -322,7 +333,7 @@ declare var IncrementalDOM: any;
 
 class JsonmlIDomHandler implements JsonMLHandler {
 
-    open(tag: string, attrs: Attrs, ctx?: JsonMLCtx): boolean {
+    open(tag: string, attrs: Attrs, children: number, ctx?: any): boolean {
         const props: any = [];
         let id: string = attrs._id;
         let classes: string[] = attrs._classes ? attrs._classes : [];
@@ -381,22 +392,21 @@ class JsonmlIDomHandler implements JsonMLHandler {
         return attrs._skip ? true : false;
     }
 
-    close(tag: string, ctx?: JsonMLCtx): void {
+    close(tag: string, children: number, ctx?: any): void {
         IncrementalDOM.elementClose(tag);
     }
 
-    text(text: string, ctx?: JsonMLCtx): void {
+    text(text: string, ctx?: any): void {
         IncrementalDOM.text(text);
     }
 
-    fnc(fnc: JsonMLFnc, ctx?: JsonMLCtx): void {
+    fnc(fnc: JsonMLFnc, ctx?: any): void {
         fnc(IncrementalDOM.currentElement());
     }
 
-    obj(obj: any, ctx?: JsonMLCtx): void {
-        if (obj instanceof Widget) {
-            const w = obj as Widget;
-            jsonml(w.renderJsonML(), this, w);
+    obj(obj: JsonMLObj, ctx?: any): void {
+        if ("toJsonML" in obj) {
+            jsonml(obj.toJsonML(), this, obj);
         } else {
             this.text("" + obj, ctx);
         }
@@ -404,16 +414,16 @@ class JsonmlIDomHandler implements JsonMLHandler {
 
 }
 
-function jsonml2idom(markup: JsonML, ctx?: JsonMLCtx): void {
+function jsonml2idom(markup: JsonML, ctx?: any): void {
     jsonml(markup, new JsonmlIDomHandler(), ctx);
 }
 
 
-function jsonmls2idom(jsonmls: JsonMLs, ctx?: JsonMLCtx): void {
+function jsonmls2idom(jsonmls: JsonMLs, ctx?: any): void {
     for (const jsonml of jsonmls) {
-        if (jsonml instanceof Widget) {
-            const w = jsonml as Widget;
-            jsonml2idom(w.renderJsonML(), w);
+        if ("toJsonML" in (jsonml as any)) {
+            const obj = jsonml as JsonMLObj;
+            jsonml2idom(obj.toJsonML(), obj);
         } else if (jsonml.constructor === String) {
             IncrementalDOM.text(jsonml);
         } else {
@@ -423,144 +433,12 @@ function jsonmls2idom(jsonmls: JsonMLs, ctx?: JsonMLCtx): void {
 }
 
 
-export function patch(node: Node, jsonml: JsonML, ctx?: JsonMLCtx): void {
+export function patch(node: Node, jsonml: JsonML, ctx?: any): void {
     IncrementalDOM.patch(node,
         (data: JsonML) => jsonml2idom(data, ctx), jsonml);
 }
 
-export function patchAll(node: Node, jsonmls: JsonMLs, ctx?: JsonMLCtx): void {
+export function patchAll(node: Node, jsonmls: JsonMLs, ctx?: any): void {
     IncrementalDOM.patch(node,
         (data: JsonMLs) => jsonmls2idom(data, ctx), jsonmls);
 }
-
-
-export interface DomWidget {
-    domAttach?(): void;
-    domDetach?(): void;
-}
-
-export abstract class Widget implements DomWidget {
-
-    private static __count = 0;
-
-    readonly type: string = "Widget"; // this.constructor.name;
-    readonly id: string = this.type + "-" + Widget.__count++;
-    readonly dom: HTMLElement;
-    readonly refs: { [key: string]: HTMLElement } = {};
-
-    private _updateSched: number;
-
-    constructor(type: string = "") {
-        if (type) {
-            this.type = type;
-        }
-    }
-
-    abstract render(): JsonMLs;
-
-    mount(e: HTMLElement): this {
-        if (!this.dom) {
-            (this as any).dom = e;
-            const jsonMLs = (this as any).render();
-            patchAll(e, jsonMLs, this);
-            if ((this as any).domAttach) {
-                (this as any).domAttach();
-            }
-            // onDetach(e, () => {
-            //     (this as any).dom = undefined;
-            //     if ((this as any).domDetach) {
-            //         (this as any).domDetach();
-            //     }
-            // });
-        }
-        return this;
-    }
-
-    umount(): this {
-        if (this.dom) {
-            if ((this as any).domDetach) {
-                (this as any).domDetach();
-            }
-            this.dom.parentElement.removeChild(this.dom);
-            (this as any).dom = undefined;
-        }
-        return this;
-    }
-
-    update(): this {
-        const e = this.dom;
-        if (e && !this._updateSched) {
-            this._updateSched = setTimeout(() => {
-                patchAll(e, this.render(), this);
-                this._updateSched = null;
-            }, 0);
-        }
-        return this;
-    }
-
-    renderJsonML(): JsonML {
-        const jsonMLs = (this as any).render();
-        return [this.type, { _id: this.id, _key: this.id },
-            ...jsonMLs,
-            (e: HTMLElement) => {
-                if (!this.dom) {
-                    (this as any).dom = e;
-                    if ((this as any).domAttach) {
-                        (this as any).domAttach();
-                    }
-                    // onDetach(e, () => {
-                    //     (this as any).dom = undefined;
-                    //     if ((this as any).domDetach) {
-                    //         (this as any).domDetach();
-                    //     }
-                    // });
-                }
-            }
-        ];
-    }
-
-}
-
-// function onDetach(e: HTMLElement, callback: () => void) {
-//     new MutationObserver(mutations => {
-//         mutations.forEach(mutation => {
-//             const removed = mutation.removedNodes as any;
-//             for (const r of removed) {
-//                 console.log(r, r === e);
-//                 if (r === e) {
-//                     callback();
-//                 }
-//             }
-//         });
-//     }).observe(e.parentElement, { childList: true });
-//     // }).observe(e.parentElement, { childList: true, subtree: true });
-// }
-
-
-// const observer = new MutationObserver(mutations => {
-//     mutations.forEach(mutation => {
-//         // console.log(mutation.type);
-//         // console.log(mutation.target);
-//         // console.log("add", mutation.addedNodes);
-//         // console.log("rm", mutation.removedNodes);
-//         const added = mutation.addedNodes as any;
-//         for (const a of added) {
-//             console.log("added", a);
-//         }
-//         const removed = mutation.removedNodes as any;
-//         for (const r of removed) {
-//             console.log("removed", r);
-//         }
-//     });
-// });
-// const config = {
-//     childList: true,
-//     // attributes: true,
-//     // characterData: true,
-//     // subtree: true,
-//     // attributeOldValue: true,
-//     // characterDataOldValue: true,
-//     attributeFilter: [] as string[]
-// };
-// observer.observe(document.getElementById("app"), config);
-// // observer.disconnect();
