@@ -1,3 +1,4 @@
+
 export interface Attrs {
     _id?: string;
     _classes?: string[];
@@ -158,10 +159,6 @@ class JsonmlHtmlHandler implements JsonMLHandler {
                 }
             }
         }
-        if (this.pretty) {
-            this.html += this._indent(this.depth);
-            this.depth++;
-        }
         if (classes.length) {
             props.unshift(["class", classes.join(" ")]);
         }
@@ -169,7 +166,12 @@ class JsonmlHtmlHandler implements JsonMLHandler {
             props.unshift(["id", id]);
         }
         const args = props.map(p => `${p[0]}="${p[1]}"`).join(" ");
-        this.html += "<" + tag + (args ? " " + args : "") + (children ? ">" : "/>");
+        if (this.pretty) {
+            this.html += this._indent(this.depth);
+            this.depth++;
+        }
+        const pairTag = (children || tag === "script");
+        this.html += "<" + tag + (args ? " " + args : "") + (pairTag ? ">" : "/>");
         if (this.pretty) {
             this.html += "\n";
         }
@@ -177,13 +179,14 @@ class JsonmlHtmlHandler implements JsonMLHandler {
     }
 
     close(tag: string, children: number, ctx?: any): void {
+        const pairTag = (children || tag === "script");
         if (this.pretty) {
             this.depth--;
-            if (children) {
+            if (pairTag) {
                 this.html += this._indent(this.depth);
             }
         }
-        if (children) {
+        if (pairTag) {
             this.html += "</" + tag + ">";
             if (this.pretty) {
                 this.html += "\n";
