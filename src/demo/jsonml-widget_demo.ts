@@ -1,5 +1,5 @@
 
-import { JsonMLs, jsonml2html } from "../main/prest/jsonml";
+import { JsonMLs, jsonmls2htmls } from "../main/prest/jsonml";
 import { Widget } from "../main/prest/jsonml-widget";
 
 
@@ -133,5 +133,5 @@ const app = new App("MyApp").mount(document.getElementById("app"));
 (self as any).app = app;
 
 // app html
-const html = jsonml2html(app.toJsonML(), true);
+const html = jsonmls2htmls(["app html", app.toJsonML()], true).join("");
 console.log(html);

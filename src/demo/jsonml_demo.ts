@@ -1,5 +1,6 @@
+
 import { remove, select, Widget, selectAll } from "../main/prest/dom";
-import { jsonmlPatchAll, jsonml2html, jsonml2dom } from "../main/prest/jsonml";
+import { jsonmls2idomPatch, jsonml2html, jsonml2dom } from "../main/prest/jsonml";
 
 
 class Item {
@@ -62,7 +63,7 @@ class MyWidget implements Widget {
 
     private _update(): void {
         if (this._element) {
-            jsonmlPatchAll(this._element, [
+            jsonmls2idomPatch(this._element, [
                 ["form", {
                     submit: (e: Event) => {
                         e.preventDefault();
@@ -145,11 +146,9 @@ const jml = [
     (e: HTMLElement) => console.log("fnc anchor", e)
 ];
 
-const h = jsonml2html(jml);
-console.log(h);
+jsonml2html(jml, html => console.log(html));
 
-const h1 = jsonml2html(jml, true);
-console.log(h1);
+jsonml2html(jml, html => console.log(html), true);
 
 const e = jsonml2dom(jml);
 console.log(e);

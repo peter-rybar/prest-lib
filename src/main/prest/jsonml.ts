@@ -34,19 +34,19 @@ export interface JsonMLHandler {
     obj(obj: JsonMLObj, ctx?: any): void;
 }
 
-export function jsonml(markup: JsonML, handler: JsonMLHandler, ctx?: any): void {
-    if (!markup) {
+export function jsonml(jsonML: JsonML, handler: JsonMLHandler, ctx?: any): void {
+    if (!jsonML) {
         return;
     }
 
-    const head = markup[0] as string;
-    const attrsObj = markup[1] as any;
+    const head = jsonML[0] as string;
+    const attrsObj = jsonML[1] as any;
     const hasAttrs = attrsObj && attrsObj.constructor === Object;
     const childIdx = hasAttrs ? 2 : 1;
 
     let children = 0;
-    for (let i = childIdx; i < markup.length; i++) {
-        if (markup[i].constructor !== Function) {
+    for (let i = childIdx; i < jsonML.length; i++) {
+        if (jsonML[i].constructor !== Function) {
             children++;
         }
     }
@@ -79,23 +79,23 @@ export function jsonml(markup: JsonML, handler: JsonMLHandler, ctx?: any): void 
     const skip = handler.open(tag, attrs, children, ctx);
 
     if (!skip) {
-        for (let i = childIdx, l = markup.length; i < l; i++) {
-            const node = markup[i] as any;
-            if (node === undefined) {
+        for (let i = childIdx, l = jsonML.length; i < l; i++) {
+            const jml = jsonML[i] as any;
+            if (jml === undefined) {
                 continue;
             }
-            switch (node.constructor) {
+            switch (jml.constructor) {
                 case Array:
-                    jsonml(node, handler, ctx);
+                    jsonml(jml, handler, ctx);
                     break;
                 case Function:
-                    handler.fnc(node, ctx);
+                    handler.fnc(jml, ctx);
                     break;
                 case String:
-                    handler.text(node, ctx);
+                    handler.text(jml, ctx);
                     break;
                 default:
-                    handler.obj(node, ctx);
+                    handler.obj(jml, ctx);
             }
         }
     }
@@ -106,11 +106,18 @@ export function jsonml(markup: JsonML, handler: JsonMLHandler, ctx?: any): void 
 
 class JsonmlHtmlHandler implements JsonMLHandler {
 
-    public html: string = "";
+    private _onHtml: (html: string) => void;
+    private _pretty: boolean;
+    private _indent: string;
+    private _depth: number = 0;
 
-    public pretty: boolean = false;
-    public depth: number = 0;
-    public indent: string = "\t";
+    constructor(onHtml: (html: string) => void,
+                pretty: boolean = false,
+                indent: string = "\t") {
+        this._onHtml = onHtml;
+        this._pretty = pretty;
+        this._indent = indent;
+    }
 
     open(tag: string, attrs: Attrs, children: number, ctx?: any): boolean {
         const props: any[] = [];
@@ -166,42 +173,48 @@ class JsonmlHtmlHandler implements JsonMLHandler {
             props.unshift(["id", id]);
         }
         const args = props.map(p => `${p[0]}="${p[1]}"`).join(" ");
-        if (this.pretty) {
-            this.html += this._indent(this.depth);
-            this.depth++;
+        let html = "";
+        if (this._pretty) {
+            html += this._mkIndent(this._depth);
+            this._depth++;
         }
         const pairTag = (children || tag === "script");
-        this.html += "<" + tag + (args ? " " + args : "") + (pairTag ? ">" : "/>");
-        if (this.pretty) {
-            this.html += "\n";
+        html += "<" + tag + (args ? " " + args : "") + (pairTag ? ">" : "/>");
+        if (this._pretty) {
+            html += "\n";
         }
+        this._onHtml(html);
         return false;
     }
 
     close(tag: string, children: number, ctx?: any): void {
+        let html = "";
         const pairTag = (children || tag === "script");
-        if (this.pretty) {
-            this.depth--;
+        if (this._pretty) {
+            this._depth--;
             if (pairTag) {
-                this.html += this._indent(this.depth);
+                html += this._mkIndent(this._depth);
             }
         }
         if (pairTag) {
-            this.html += "</" + tag + ">";
-            if (this.pretty) {
-                this.html += "\n";
+            html += "</" + tag + ">";
+            if (this._pretty) {
+                html += "\n";
             }
+            this._onHtml(html);
         }
     }
 
     text(text: string, ctx?: any): void {
-        if (this.pretty) {
-            this.html += this._indent(this.depth);
+        let html = "";
+        if (this._pretty) {
+            html += this._mkIndent(this._depth);
         }
-        this.html += text;
-        if (this.pretty) {
-            this.html += "\n";
+        html += text;
+        if (this._pretty) {
+            html += "\n";
         }
+        this._onHtml(html);
     }
 
     fnc(fnc: JsonMLFnc, ctx?: any): void {
@@ -215,21 +228,44 @@ class JsonmlHtmlHandler implements JsonMLHandler {
         }
     }
 
-    private _indent(count: number): string {
+    private _mkIndent(count: number): string {
         let indent = "";
         for (let i = 0; i < count; i++) {
-            indent += this.indent;
+            indent += this._indent;
         }
         return indent;
     }
 
 }
 
-export function jsonml2html(markup: JsonML, pretty = false): string {
-    const handler = new JsonmlHtmlHandler();
-    handler.pretty = pretty;
-    jsonml(markup, handler);
-    return handler.html;
+export function jsonml2html(jsonML: JsonML, onHtml: (html: string) => void, pretty = false): void {
+    const handler = new JsonmlHtmlHandler(onHtml, pretty);
+    jsonml(jsonML, handler);
+}
+
+export function jsonmls2html(jsonMLs: JsonMLs, onHtml: (html: string) => void, pretty = false): void {
+    for (const jml of jsonMLs) {
+        if (jml.constructor === String) {
+            onHtml(jml + "\n");
+        } else if ("toJsonML" in (jml as any)) {
+            const obj = jml as JsonMLObj;
+            jsonml2html(obj.toJsonML(), onHtml, pretty);
+        } else {
+            jsonml2html(jml as JsonML, onHtml, pretty);
+        }
+    }
+}
+
+export function jsonml2htmls(jsonML: JsonML, pretty = false): string[] {
+    const htmls: string[] = [];
+    jsonml2html(jsonML, html => htmls.push(html), pretty);
+    return htmls;
+}
+
+export function jsonmls2htmls(jsonMLs: JsonMLs, pretty = false): string[] {
+    const htmls: string[] = [];
+    jsonmls2html(jsonMLs, html => htmls.push(html), true);
+    return htmls;
 }
 
 
@@ -325,10 +361,25 @@ class JsonmlDomHandler implements JsonMLHandler {
 
 }
 
-export function jsonml2dom(markup: JsonML, ctx?: any): HTMLElement {
+export function jsonml2dom(jsonML: JsonML, ctx?: any): HTMLElement {
     const handler = new JsonmlDomHandler();
-    jsonml(markup, handler, ctx);
+    jsonml(jsonML, handler, ctx);
     return handler.element;
+}
+
+export function jsonmls2dom(jsonMLs: JsonMLs, ctx?: any): Node[] {
+    const elems: Node[] = [];
+    for (const jsonML of jsonMLs) {
+        if (jsonML.constructor === String) {
+            elems.push(document.createTextNode(jsonML as string));
+        } else if ("toJsonML" in (jsonML as any)) {
+            const obj = jsonML as JsonMLObj;
+            elems.push(jsonml2dom(obj.toJsonML(), obj));
+        } else {
+            elems.push(jsonml2dom(jsonML as JsonML, ctx));
+        }
+    }
+    return elems;
 }
 
 
@@ -417,31 +468,31 @@ class JsonmlIDomHandler implements JsonMLHandler {
 
 }
 
-function jsonml2idom(markup: JsonML, ctx?: any): void {
-    jsonml(markup, new JsonmlIDomHandler(), ctx);
+function jsonml2idom(jsonML: JsonML, ctx?: any): void {
+    jsonml(jsonML, new JsonmlIDomHandler(), ctx);
 }
 
 
-function jsonmls2idom(jsonmls: JsonMLs, ctx?: any): void {
-    for (const jsonml of jsonmls) {
-        if ("toJsonML" in (jsonml as any)) {
-            const obj = jsonml as JsonMLObj;
+function jsonmls2idom(jsonMLs: JsonMLs, ctx?: any): void {
+    for (const jsonML of jsonMLs) {
+        if (jsonML.constructor === String) {
+            IncrementalDOM.text(jsonML);
+        } else if ("toJsonML" in (jsonML as any)) {
+            const obj = jsonML as JsonMLObj;
             jsonml2idom(obj.toJsonML(), obj);
-        } else if (jsonml.constructor === String) {
-            IncrementalDOM.text(jsonml);
         } else {
-            jsonml2idom(jsonml as JsonML, ctx);
+            jsonml2idom(jsonML as JsonML, ctx);
         }
     }
 }
 
 
-export function jsonmlPatch(node: Node, jsonml: JsonML, ctx?: any): void {
+export function jsonml2idomPatch(node: Node, jsonML: JsonML, ctx?: any): void {
     IncrementalDOM.patch(node,
-        (data: JsonML) => jsonml2idom(data, ctx), jsonml);
+        (data: JsonML) => jsonml2idom(data, ctx), jsonML);
 }
 
-export function jsonmlPatchAll(node: Node, jsonmls: JsonMLs, ctx?: any): void {
+export function jsonmls2idomPatch(node: Node, jsonMLs: JsonMLs, ctx?: any): void {
     IncrementalDOM.patch(node,
-        (data: JsonMLs) => jsonmls2idom(data, ctx), jsonmls);
+        (data: JsonMLs) => jsonmls2idom(data, ctx), jsonMLs);
 }
