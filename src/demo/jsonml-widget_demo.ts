@@ -1,14 +1,15 @@
 
 import { JsonMLs, jsonmls2htmls } from "../main/prest/jsonml";
 import { Widget } from "../main/prest/jsonml-widget";
+import { Signal } from "../main/prest/signal";
 
 
-class Hello extends Widget {
+class HelloWidget extends Widget {
 
     private _name: string;
 
     constructor(name: string) {
-        super("Hello");
+        super("HelloWidget");
         this._name = name;
     }
 
@@ -42,12 +43,12 @@ class Hello extends Widget {
 }
 
 
-class Timer extends Widget {
+class TimerWidget extends Widget {
 
     private _interval: number;
 
     constructor() {
-        super("Timer");
+        super("TimerWidget");
     }
 
     toggle(on?: boolean): void {
@@ -90,18 +91,150 @@ class Timer extends Widget {
 }
 
 
+interface FormData {
+    name: string;
+    age: number;
+}
+
+interface FormErrors {
+    name: string;
+    age: string;
+}
+
+class FormWidget extends Widget {
+
+    private _title: string;
+    private _data: FormData = { name: undefined, age: undefined };
+    private _errors: FormErrors = { name: "", age: "" };
+
+    readonly sigData = new Signal<FormData>();
+
+    constructor() {
+        super("FormWidget");
+    }
+
+    getTitle(): string {
+        return this._title;
+    }
+
+    setTitle(title: string): this {
+        this._title = title;
+        this.update();
+        return this;
+    }
+
+    getData(): FormData {
+        return this._data;
+    }
+
+    setData(data: FormData): this {
+        this._data = data;
+        this.update();
+        return this;
+    }
+
+    domAttach() {
+        console.log("domAttach", this.type, this.id);
+    }
+
+    domDetach() {
+        console.log("domDetach", this.type, this.id);
+    }
+
+    render(): JsonMLs {
+        return [
+            ["h2", "Form"],
+            ["form", {
+                submit: (e: Event) => {
+                    e.preventDefault();
+                    console.log("submit", this._data);
+                    this._validateName((this.refs["name"] as HTMLInputElement).value);
+                    this._validateAge((this.refs["age"] as HTMLInputElement).value);
+                    if (this._errors.name || this._errors.age) {
+                        this.update();
+                    } else {
+                        this.sigData.emit(this._data);
+                    }
+                } },
+                ["p",
+                    ["label", "Name ",
+                        ["input~name", {
+                            type: "text", size: 10, maxlength: 10,
+                            input: (e: Event) => {
+                                const i = e.target as HTMLInputElement;
+                                // const i = this.refs["name"] as  HTMLInputElement;
+                                console.log("name", i.value);
+                                this._validateName(i.value);
+                                this.update();
+                            } }
+                        ]
+                    ], " ",
+                    ["em.error", this._errors.name]
+                ],
+                ["p",
+                    ["label", "Age ",
+                        ["input~age", {
+                            type: "number", min: "1", max: "120",
+                            input: (e: Event) => {
+                                const i = e.target as HTMLInputElement;
+                                // const i = this.refs["age"] as  HTMLInputElement;
+                                console.log("age", i.value);
+                                this._validateAge(i.value);
+                                this.update();
+                            } }
+                        ]
+                    ], " ",
+                    ["em.error", this._errors.age]
+                ],
+                ["p",
+                    ["input~submit", { type: "submit", value: "Submit" }]
+                ]
+            ]
+        ];
+    }
+
+    private _validateName(name: string) {
+        if (name) {
+            this._data.name = name;
+            this._errors.name = "";
+        } else {
+            this._data.name = undefined;
+            this._errors.name = "Name required";
+        }
+    }
+
+    private _validateAge(age: string) {
+        if (age) {
+            if (isNaN(+age)) {
+                this._data.age = undefined;
+                this._errors.age = "Invalid age number";
+            } else {
+                this._data.age = +age;
+                this._errors.age = "";
+            }
+        } else {
+            this._data.age = undefined;
+            this._errors.age = "Age required";
+        }
+    }
+}
+
+
 class App extends Widget {
 
     private _title: string;
 
-    readonly hello: Hello;
-    readonly timer: Timer;
+    readonly helloWidget: HelloWidget;
+    readonly timerWidget: TimerWidget;
+    readonly formWidget: FormWidget;
 
     constructor(title: string) {
         super("App");
         this._title = title;
-        this.hello = new Hello("peter");
-        this.timer = new Timer();
+        this.helloWidget = new HelloWidget("peter");
+        this.timerWidget = new TimerWidget();
+        this.formWidget = new FormWidget();
+        this.formWidget.sigData.connect(data => console.log("sig data", data));
     }
 
     setTitle(title: string): this {
@@ -120,9 +253,11 @@ class App extends Widget {
     render(): JsonMLs {
         return [
             ["h1", this._title],
-            this.hello,
+            this.helloWidget,
             ["hr"],
-            this.timer
+            this.timerWidget,
+            ["hr"],
+            this.formWidget
         ];
     }
 
