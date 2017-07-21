@@ -154,6 +154,7 @@ class FormWidget extends Widget {
                         this.update();
                     } else {
                         this.sigData.emit(this._data);
+                        this.refs["data"].innerText = JSON.stringify(this._data, null, 4);
                     }
                 } },
                 ["p",
@@ -189,7 +190,8 @@ class FormWidget extends Widget {
                 ["p",
                     ["input~submit", { type: "submit", value: "Submit" }]
                 ]
-            ]
+            ],
+            ["pre~data"]
         ];
     }
 
