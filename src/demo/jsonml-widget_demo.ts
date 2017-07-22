@@ -19,12 +19,12 @@ class HelloWidget extends Widget {
         return this;
     }
 
-    domAttach() {
-        console.log("domAttach", this.type, this.id);
+    onMount() {
+        console.log("onMount", this.type, this.id);
     }
 
-    domDetach() {
-        console.log("domDetach", this.type, this.id);
+    onUmount() {
+        console.log("onUmount", this.type, this.id);
     }
 
     render(): JsonMLs {
@@ -67,13 +67,13 @@ class TimerWidget extends Widget {
         this.update();
     }
 
-    domAttach() {
-        console.log("domAttach", this.type, this.id);
+    onMount() {
+        console.log("onMount", this.type, this.id);
         this.toggle(true);
     }
 
-    domDetach() {
-        console.log("domDetach", this.type, this.id);
+    onUmount() {
+        console.log("onUmount", this.type, this.id);
         this.toggle(false);
     }
 
@@ -133,12 +133,12 @@ class FormWidget extends Widget {
         return this;
     }
 
-    domAttach() {
-        console.log("domAttach", this.type, this.id);
+    onMount() {
+        console.log("onMount", this.type, this.id);
     }
 
-    domDetach() {
-        console.log("domDetach", this.type, this.id);
+    onUmount() {
+        console.log("onUmount", this.type, this.id);
     }
 
     render(): JsonMLs {
@@ -244,12 +244,12 @@ class App extends Widget {
         return this;
     }
 
-    domAttach() {
-        console.log("domAttach", this.type, this.id);
+    onMount() {
+        console.log("onMount", this.type, this.id);
     }
 
-    domDetach() {
-        console.log("domDetach", this.type, this.id);
+    onUmount() {
+        console.log("onUmount", this.type, this.id);
     }
 
     render(): JsonMLs {
