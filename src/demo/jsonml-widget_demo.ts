@@ -29,13 +29,16 @@ class HelloWidget extends Widget {
 
     render(): JsonMLs {
         return [
-            ["input~i", { type: "text", value: this._name,
-                input: (e: Event) => {
-                    // const i = e.target as HTMLInputElement;
-                    const i = this.refs["i"] as  HTMLInputElement;
-                    this._name = i.value;
-                    this.update();
-                } }
+            ["input~i",
+                {
+                    type: "text", value: this._name,
+                    input: (e: Event) => {
+                        // const i = e.target as HTMLInputElement;
+                        const i = this.refs["i"] as HTMLInputElement;
+                        this._name = i.value;
+                        this.update();
+                    }
+                }
             ],
             ["p", "Hello ", ["strong", this._name], " !"]
         ];
@@ -103,7 +106,7 @@ interface FormErrors {
 
 class FormWidget extends Widget {
 
-    private _title: string;
+    private _title: string = "";
     private _data: FormData = { name: undefined, age: undefined };
     private _errors: FormErrors = { name: "", age: "" };
 
@@ -143,46 +146,52 @@ class FormWidget extends Widget {
 
     render(): JsonMLs {
         return [
-            ["h2", "Form"],
-            ["form", {
-                submit: (e: Event) => {
-                    e.preventDefault();
-                    console.log("submit", this._data);
-                    this._validateName((this.refs["name"] as HTMLInputElement).value);
-                    this._validateAge((this.refs["age"] as HTMLInputElement).value);
-                    if (this._errors.name || this._errors.age) {
-                        this.update();
-                    } else {
-                        this.sigData.emit(this._data);
-                        this.refs["data"].innerText = JSON.stringify(this._data, null, 4);
+            ["h2", this._title],
+            ["form",
+                {
+                    submit: (e: Event) => {
+                        e.preventDefault();
+                        console.log("submit", this._data);
+                        this._validateName((this.refs["name"] as HTMLInputElement).value);
+                        this._validateAge((this.refs["age"] as HTMLInputElement).value);
+                        if (this._errors.name || this._errors.age) {
+                            this.update();
+                        } else {
+                            this.sigData.emit(this._data);
+                            this.refs["data"].innerText = JSON.stringify(this._data, null, 4);
+                        }
                     }
-                } },
+                },
                 ["p",
                     ["label", "Name ",
-                        ["input~name", {
-                            type: "text", size: 10, maxlength: 10,
-                            input: (e: Event) => {
-                                const i = e.target as HTMLInputElement;
-                                // const i = this.refs["name"] as  HTMLInputElement;
-                                console.log("name", i.value);
-                                this._validateName(i.value);
-                                this.update();
-                            } }
+                        ["input~name",
+                            {
+                                type: "text", size: 10, maxlength: 10,
+                                input: (e: Event) => {
+                                    const i = e.target as HTMLInputElement;
+                                    // const i = this.refs["name"] as  HTMLInputElement;
+                                    console.log("name", i.value);
+                                    this._validateName(i.value);
+                                    this.update();
+                                }
+                            }
                         ]
                     ], " ",
                     ["em.error", this._errors.name]
                 ],
                 ["p",
                     ["label", "Age ",
-                        ["input~age", {
-                            type: "number", min: "1", max: "120",
-                            input: (e: Event) => {
-                                const i = e.target as HTMLInputElement;
-                                // const i = this.refs["age"] as  HTMLInputElement;
-                                console.log("age", i.value);
-                                this._validateAge(i.value);
-                                this.update();
-                            } }
+                        ["input~age",
+                            {
+                                type: "number", min: "1", max: "120",
+                                input: (e: Event) => {
+                                    const i = e.target as HTMLInputElement;
+                                    // const i = this.refs["age"] as  HTMLInputElement;
+                                    console.log("age", i.value);
+                                    this._validateAge(i.value);
+                                    this.update();
+                                }
+                            }
                         ]
                     ], " ",
                     ["em.error", this._errors.age]
@@ -222,17 +231,16 @@ class FormWidget extends Widget {
 }
 
 
-class App extends Widget {
+class AppWidget extends Widget {
 
-    private _title: string;
+    private _title: string = "App";
 
     readonly helloWidget: HelloWidget;
     readonly timerWidget: TimerWidget;
     readonly formWidget: FormWidget;
 
-    constructor(title: string) {
-        super("App");
-        this._title = title;
+    constructor() {
+        super("AppWidget");
         this.helloWidget = new HelloWidget("peter");
         this.timerWidget = new TimerWidget();
         this.formWidget = new FormWidget();
@@ -241,6 +249,7 @@ class App extends Widget {
 
     setTitle(title: string): this {
         this._title = title;
+        this.update();
         return this;
     }
 
@@ -266,9 +275,16 @@ class App extends Widget {
 }
 
 
-const app = new App("MyApp").mount(document.getElementById("app"));
+const app = new AppWidget().setTitle("MyApp").mount(document.getElementById("app"));
 (self as any).app = app;
 
 // app html
 const html = jsonmls2htmls(["app html", app.toJsonML()], true).join("");
 console.log(html);
+
+// app.timerWidget.toggle();
+// setTimeout(() => {
+//     app.helloWidget.setName("BBB");
+//     app.setTitle("AAA");
+//     app.formWidget.setTitle("FFF");
+// }, 0);

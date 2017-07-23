@@ -56,10 +56,11 @@ export abstract class Widget implements JsonMLObj, DomWidget {
     }
 
     update(): this {
-        const e = this.dom;
-        if (e && !this._updateSched) {
+        if (this.dom && !this._updateSched) {
             this._updateSched = setTimeout(() => {
-                jsonmls2idomPatch(e, this.render(), this);
+                if (this.dom) {
+                    jsonmls2idomPatch(this.dom, this.render(), this);
+                }
                 this._updateSched = null;
             }, 0);
         }
@@ -67,8 +68,13 @@ export abstract class Widget implements JsonMLObj, DomWidget {
     }
 
     toJsonML(): JsonML {
+        if (this.dom && this._updateSched) {
+            clearTimeout(this._updateSched);
+            this._updateSched = null;
+        }
         const jsonMLs = (this as any).render();
-        return [this.type, { _id: this.id, _key: this.id },
+        return [
+            this.type, { _id: this.id, _key: this.id },
             ...jsonMLs,
             (e: HTMLElement) => {
                 if (!this.dom) {
