@@ -4,9 +4,8 @@ import { jsonmls2idomPatch, jsonml2html, jsonml2dom } from "../main/prest/jsonml
 
 
 class Item {
-    constructor(
-        public text: string,
-        public count: number) {
+    constructor(public text: string,
+                public count: number) {
     }
 }
 
@@ -64,39 +63,45 @@ class MyWidget implements Widget {
     private _update(): void {
         if (this._element) {
             jsonmls2idomPatch(this._element, [
-                ["form", {
-                    submit: (e: Event) => {
-                        e.preventDefault();
-                        // const form = (e.target as HTMLFormElement);
-                        // const input = (select("input", form) as HTMLInputElement);
-                        const input = (select("input", this._element) as HTMLInputElement);
-                        console.log("submit", input.value);
-                        if (input.value) {
-                            this.addItem(new Item(input.value, this._items.length));
-                            input.value = "";
+                ["form",
+                    {
+                        submit: (e: Event) => {
+                            e.preventDefault();
+                            // const form = (e.target as HTMLFormElement);
+                            // const input = (select("input", form) as HTMLInputElement);
+                            const input = (select("input", this._element) as HTMLInputElement);
+                            console.log("submit", input.value);
+                            if (input.value) {
+                                this.addItem(new Item(input.value, this._items.length));
+                                input.value = "";
+                            }
                         }
-                    }},
-                    ["input", {
-                        type: "text", name: "text",
-                        input: (e: Event) => {
-                            console.log("input", (e.target as HTMLInputElement).value);
-                        },
-                        change: (e: Event) => {
-                            console.log("change", (e.target as HTMLInputElement).value);
-                        }}
+                    },
+                    ["input",
+                        {
+                            type: "text", name: "text",
+                            input: (e: Event) => {
+                                console.log("input", (e.target as HTMLInputElement).value);
+                            },
+                            change: (e: Event) => {
+                                console.log("change", (e.target as HTMLInputElement).value);
+                            }
+                        }
                     ],
-                    ["input", { type: "submit", value: "add"}]
+                    ["input", { type: "submit", value: "add" }]
                 ],
                 ["ol",
                     ...this._items.map(item => {
                         return (
-                            ["li", {
-                                click: (e: Event) => {
-                                    e.stopPropagation();
-                                    if (this._onSelect) {
-                                        this._onSelect(item);
+                            ["li",
+                                {
+                                    click: (e: Event) => {
+                                        e.stopPropagation();
+                                        if (this._onSelect) {
+                                            this._onSelect(item);
+                                        }
                                     }
-                                }},
+                                },
                                 ["span.label", item.text], " ",
                                 ["small.count", `[${item.count}]`]
                             ]
@@ -135,7 +140,7 @@ const jml = [
             e.preventDefault();
             console.log(e);
         },
-        data: { x: "x", y: "y", o: {a: "a"} },
+        data: { x: "x", y: "y", o: { a: "a" } },
         classes: ["c3"],
         styles: { color: "green", borderTop: "1px solid red" }
     },
