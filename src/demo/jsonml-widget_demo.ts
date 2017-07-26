@@ -55,17 +55,20 @@ class TimerWidget extends Widget {
     }
 
     toggle(on?: boolean): void {
-        if (on === true) {
-            if (!this._interval) {
-                this._interval = setInterval(() => this.update(), 1000);
-            }
-        } else if (on === false) {
-            if (this._interval) {
-                clearInterval(this._interval);
-                this._interval = undefined;
-            }
-        } else {
-            this.toggle(!this._interval);
+        switch (on) {
+            case true:
+                if (!this._interval) {
+                    this._interval = setInterval(() => this.update(), 1000);
+                }
+                break;
+            case false:
+                if (this._interval) {
+                    clearInterval(this._interval);
+                    this._interval = undefined;
+                }
+                break;
+            default:
+                this.toggle(!this._interval);
         }
         this.update();
     }
@@ -228,6 +231,7 @@ class FormWidget extends Widget {
             this._errors.age = "Age required";
         }
     }
+
 }
 
 
@@ -278,13 +282,7 @@ class AppWidget extends Widget {
 const app = new AppWidget().setTitle("MyApp").mount(document.getElementById("app"));
 (self as any).app = app;
 
+
 // app html
 const html = jsonmls2htmls(["app html", app.toJsonML()], true).join("");
 console.log(html);
-
-// app.timerWidget.toggle();
-// setTimeout(() => {
-//     app.helloWidget.setName("BBB");
-//     app.setTitle("AAA");
-//     app.formWidget.setTitle("FFF");
-// }, 0);
