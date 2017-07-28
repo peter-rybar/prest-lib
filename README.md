@@ -1,3 +1,3 @@
 # pREST lib
 
-TypeScript library and tools for client side web development.
+TypeScript library and tools for rapid web development.

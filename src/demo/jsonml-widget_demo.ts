@@ -107,7 +107,7 @@ interface FormErrors {
 
 class FormWidget extends Widget {
 
-    private _title: string = "";
+    private _title: string = "Form";
     private _data: FormData = { name: undefined, age: undefined };
     private _errors: FormErrors = { name: "", age: "" };
 
@@ -285,5 +285,10 @@ const app = new AppWidget().setTitle("MyApp").mount(document.getElementById("app
 
 
 // app html
-const html = jsonmls2htmls(["app html", app.toJsonML()], true).join("");
+const html = jsonmls2htmls(
+    [
+        "app html",
+        new AppWidget().setTitle("MyApp").toJsonML()
+    ],
+    true).join("");
 console.log(html);
