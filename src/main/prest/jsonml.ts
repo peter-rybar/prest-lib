@@ -246,7 +246,7 @@ export function jsonml2html(jsonML: JsonML, onHtml: (html: string) => void, pret
 export function jsonmls2html(jsonMLs: JsonMLs, onHtml: (html: string) => void, pretty = false): void {
     for (const jml of jsonMLs) {
         if (jml.constructor === String) {
-            onHtml(jml + (pretty ? "\n": ""));
+            onHtml(jml + (pretty ? "\n" : ""));
         } else if ("toJsonML" in (jml as any)) {
             const obj = jml as JsonMLObj;
             jsonml2html(obj.toJsonML(), onHtml, pretty);
