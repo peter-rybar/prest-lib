@@ -280,7 +280,9 @@ class AppWidget extends Widget {
 }
 
 
-const app = new AppWidget().setTitle("MyApp").mount(document.getElementById("app"));
+const app = new AppWidget()
+    .setTitle("MyApp")
+    .mount(document.getElementById("app"));
 (self as any).app = app;
 
 
