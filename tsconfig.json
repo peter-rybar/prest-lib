@@ -21,11 +21,13 @@
         "outDir": "build"
     },
     "include": [
-        "src/**/*"
+        "src/main/**/*",
+        "src/demo/**/*",
+        "src/test/**/*"
     ],
     "exclude": [
         "node_modules",
-        "dist",
-        "build"
+        "build",
+        "dist"
     ]
 }
