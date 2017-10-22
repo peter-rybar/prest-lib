@@ -39,7 +39,7 @@ class HelloWidget extends Widget {
         // const i = this.refs["i"] as HTMLInputElement;
         this._name = i.value;
         this.update();
-    };
+    }
 
 }
 
@@ -190,7 +190,7 @@ class FormWidget extends Widget {
             this.sigData.emit(this._data);
             this.refs["data"].innerText = JSON.stringify(this._data, null, 4);
         }
-    };
+    }
 
     private _onNameInput = (e: Event) => {
         const i = e.target as HTMLInputElement;
@@ -198,7 +198,7 @@ class FormWidget extends Widget {
         console.log("name", i.value);
         this._validateName(i.value);
         this.update();
-    };
+    }
 
     private _onAgeInput = (e: Event) => {
         const i = e.target as HTMLInputElement;
@@ -206,7 +206,7 @@ class FormWidget extends Widget {
         console.log("age", i.value);
         this._validateAge(i.value);
         this.update();
-    };
+    }
 
     private _validateName(name: string) {
         if (name) {
@@ -281,6 +281,8 @@ class AppWidget extends Widget {
 
 
 const app = new AppWidget().setTitle("MyApp");
+app.helloWidget.setName("Petko");
+app.formWidget.setTitle("Jeeeeee");
 
 const html = jsonmls2htmls([
     "<!DOCTYPE html>",
@@ -293,9 +295,8 @@ const html = jsonmls2htmls([
             ["title", "Page title"]
         ],
         ["body",
-            ["div", { id: "app" },
-                ... app.render()
-            ],
+            app,
+            // ["div", { id: "app" }],
             ["script", { src: "/node_modules/incremental-dom/dist/incremental-dom-min.js", type: "text/javascript" }],
             ["script", { src: "/node_modules/requirejs/require.js", "data-main": "index.js", type: "text/javascript" }]
         ]

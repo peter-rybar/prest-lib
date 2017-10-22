@@ -11,12 +11,12 @@
   "license": "GPLv3",
   "main": "prest.js",
   "scripts": {
+    "tslint": "tslint --project tsconfig.json",
     "build": "tsc",
     "build:watch": "npm run build -- -w",
     "dist": "rollup -c",
     "predist": "npm run tslint && npm run clean",
     "dist:watch": "npm run dist -- -w",
-    "tslint": "tslint --project tsconfig.json",
     "test": "./node_modules/karma-cli/bin/karma start ./karma.conf.js --single-run",
     "test:watch": "./node_modules/karma-cli/bin/karma start ./karma.conf.js",
     "clean": "rimraf build; rimraf dist",
@@ -71,7 +71,7 @@
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-plugin-uglify": "^1.0.1",
     "rollup-watch": "^2.5.0",
-    "tslint": "^3.15.1",
+    "tslint": "^5.8.0",
     "typescript": "2.3.x"
   },
   "dependencies": {}
