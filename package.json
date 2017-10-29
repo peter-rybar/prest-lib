@@ -20,7 +20,8 @@
     "test": "./node_modules/karma-cli/bin/karma start ./karma.conf.js --single-run",
     "test:watch": "./node_modules/karma-cli/bin/karma start ./karma.conf.js",
     "clean": "rimraf build; rimraf dist",
-    "clean:all": "npm run clean; rimraf node_modules;"
+    "clean:all": "npm run clean; rimraf node_modules;",
+    "html2jsonml": "ts-node ./src/main/prest/jsonml-from-html-cli.ts"
   },
   "pre-commit": [
     "dist"
@@ -48,6 +49,7 @@
     "@types/assertion-error": "^1.0.30",
     "@types/chai": "^3.4.34",
     "@types/mocha": "^2.2.33",
+    "@types/sax": "^1.0.0",
     "@types/stats": "^0.16.30",
     "babel-polyfill": "^6.13.0",
     "babel-preset-babili": "0.0.3",
@@ -71,6 +73,8 @@
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-plugin-uglify": "^1.0.1",
     "rollup-watch": "^2.5.0",
+    "sax": "^1.2.4",
+    "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "typescript": "2.3.x"
   },
