@@ -1,4 +1,3 @@
-/// <reference path="../../../node_modules/@types/sax/index.d.ts" />
 
 import * as sax from "sax";
 

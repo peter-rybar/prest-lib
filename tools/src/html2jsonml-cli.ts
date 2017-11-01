@@ -1,5 +1,6 @@
+
 import * as fs from "fs";
-import { html2jsonml } from "./jsonml-from-html";
+import { html2jsonml } from "./html2jsonml";
 
 const args = process.argv.slice(2);
 

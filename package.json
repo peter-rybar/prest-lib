@@ -12,6 +12,7 @@
   "main": "prest.js",
   "scripts": {
     "tslint": "tslint --project tsconfig.json",
+    "postinstall": "cd tools; npm install",
     "build": "tsc",
     "build:watch": "npm run build -- -w",
     "dist": "rollup -c",
@@ -19,14 +20,15 @@
     "dist:watch": "npm run dist -- -w",
     "test": "./node_modules/karma-cli/bin/karma start ./karma.conf.js --single-run",
     "test:watch": "./node_modules/karma-cli/bin/karma start ./karma.conf.js",
-    "clean": "rimraf build; rimraf dist",
-    "clean:all": "npm run clean; rimraf node_modules;",
-    "html2jsonml": "ts-node ./src/main/prest/jsonml-from-html-cli.ts"
+    "clean": "rm -rf build; rm -rf dist; cd tools; npm run clean",
+    "clean:all": "npm run clean; rm -rf node_modules; cd tools; npm run clean:all"
   },
   "pre-commit": [
+    "build",
     "dist"
   ],
   "pre-push": [
+    "build",
     "dist"
   ],
   "repository": {
@@ -45,11 +47,11 @@
     "jsonml",
     "widgets"
   ],
+  "dependencies": {},
   "devDependencies": {
     "@types/assertion-error": "^1.0.30",
     "@types/chai": "^3.4.34",
     "@types/mocha": "^2.2.33",
-    "@types/sax": "^1.0.0",
     "@types/stats": "^0.16.30",
     "babel-polyfill": "^6.13.0",
     "babel-preset-babili": "0.0.3",
@@ -66,17 +68,13 @@
     "pre-commit": "^1.2.2",
     "pre-push": "^0.1.1",
     "requirejs": "^2.3.2",
-    "rimraf": "^2.5.4",
     "rollup": "^0.36.3",
     "rollup-plugin-babel": "^2.6.1",
     "rollup-plugin-replace": "^1.1.1",
     "rollup-plugin-typescript": "^0.8.1",
     "rollup-plugin-uglify": "^1.0.1",
     "rollup-watch": "^2.5.0",
-    "sax": "^1.2.4",
-    "ts-node": "^3.3.0",
     "tslint": "^5.8.0",
     "typescript": "2.3.x"
-  },
-  "dependencies": {}
+  }
 }
