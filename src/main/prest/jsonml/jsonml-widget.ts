@@ -10,7 +10,8 @@
 //     console.log("I'm running in browser");
 // }
 
-import { JsonMLObj, JsonMLs, JsonML, jsonmls2idomPatch } from "./jsonml";
+import { JsonML, JsonMLs, JsonMLObj } from "./jsonml";
+import { jsonmls2idomPatch } from "./jsonml-idom";
 
 
 export interface DomWidget {

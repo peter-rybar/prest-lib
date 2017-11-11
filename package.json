@@ -15,6 +15,7 @@
     "postinstall": "cd tools; npm install",
     "build": "tsc",
     "build:watch": "npm run build -- -w",
+    "rollup": "rollup -c",
     "dist": "rollup -c",
     "predist": "npm run tslint && npm run clean",
     "dist:watch": "npm run dist -- -w",
