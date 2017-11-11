@@ -4,7 +4,8 @@ import * as form from "./prest/form";
 import * as hash from "./prest/hash";
 import * as history from "./prest/history";
 import * as http from "./prest/http";
-import * as jsonml from "./prest/jsonml";
+import * as jsonml from "./prest/jsonml/jsonml";
+import * as jsonmlwidget from "./prest/jsonml/jsonml-widget";
 import * as load from "./prest/load";
 import * as signal from "./prest/signal";
 import * as template from "./prest/template";
@@ -17,6 +18,7 @@ export {
     history,
     http,
     jsonml,
+    jsonmlwidget,
     load,
     signal,
     template
