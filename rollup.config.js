@@ -8,7 +8,7 @@ import { minify } from 'uglify-js';
 const pkg = require('./package.json');
 
 export default {
-    entry: './src/main/main.ts',
+    entry: './src/main/index.ts',
     plugins: [
         typescript({
             typescript: require('typescript')
@@ -27,7 +27,7 @@ export default {
     external: Object.keys(pkg.dependencies),
     targets: [
         // {
-        //     dest: './dist/umd/' + pkg.name + '.js',
+        //     dest: './dist/es/' + pkg.name + '.js',
         //     format: 'es',
         //     sourceMap: true
         // },

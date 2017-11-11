@@ -9,7 +9,10 @@
   },
   "private": false,
   "license": "GPLv3",
-  "main": "prest.js",
+  "main": "./dist/umd/prest.js",
+  "typescript": {
+    "main": "./src/main/index.ts"
+  },
   "scripts": {
     "tslint": "tslint --project tsconfig.json",
     "postinstall": "cd tools; npm install",
