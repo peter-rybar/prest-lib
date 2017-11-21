@@ -43,6 +43,7 @@ export abstract class Widget implements JsonMLObj, DomWidget {
     mount(e: HTMLElement = document.body): this {
         if (!this.dom) {
             (this as any).dom = e;
+            (e as any).widget = this;
             const jsonMLs = (this as any).render();
             jsonmls2idomPatch(e, jsonMLs, this);
             e.setAttribute("widget", this.type);
@@ -67,8 +68,11 @@ export abstract class Widget implements JsonMLObj, DomWidget {
             if (this.dom.hasAttribute("widget")) {
                 this.dom.removeAttribute("widget");
             }
-            this.dom.parentElement.removeChild(this.dom);
-            (this as any).dom = undefined;
+            if (this.dom.parentElement) {
+                this.dom.parentElement.removeChild(this.dom);
+            }
+            ((this as any).dom as any).widget = null;
+            (this as any).dom = null;
         }
         return this;
     }
@@ -112,6 +116,7 @@ export abstract class Widget implements JsonMLObj, DomWidget {
             (e: HTMLElement) => {
                 if (!this.dom) {
                     (this as any).dom = e;
+                    (e as any).widget = this;
                     if ((this as any).onMount) {
                         (this as any).onMount();
                     }
@@ -127,6 +132,33 @@ export abstract class Widget implements JsonMLObj, DomWidget {
     }
 
 }
+
+
+declare var IncrementalDOM: any;
+
+IncrementalDOM.notifications.nodesDeleted = (nodes: Node[]) => {
+    nodes.forEach(node => {
+        if (node.nodeType === 1 && "widget" in node && (node as any).widget.onUmount) {
+            (node as any).widget.umount();
+        }
+    });
+};
+
+
+// IncrementalDOM.notifications.nodesCreated = (nodes: Node[]) => {
+//     nodes.forEach(node => {
+//         // node may be an Element or a Text
+//         console.log("IncrementalDOM.notifications.nodesCreated", node);
+//     });
+// };
+// IncrementalDOM.notifications.nodesDeleted = (nodes: Node[]) => {
+//     nodes.forEach(node => {
+//         // node may be an Element or a Text
+//         console.log("IncrementalDOM.notifications.nodesDeleted", node);
+//     });
+// };
+
+
 
 // function onDetach(e: HTMLElement, callback: () => void) {
 //     new MutationObserver(mutations => {
@@ -171,17 +203,3 @@ export abstract class Widget implements JsonMLObj, DomWidget {
 // };
 // observer.observe(document.getElementById("app"), config);
 // // observer.disconnect();
-
-
-// IncrementalDOM.notifications.nodesCreated = (nodes: Node[]) => {
-//     nodes.forEach(node => {
-//         // node may be an Element or a Text
-//         console.log("IncrementalDOM.notifications.nodesCreated", node);
-//     });
-// };
-// IncrementalDOM.notifications.nodesDeleted = (nodes: Node[]) => {
-//     nodes.forEach(node => {
-//         // node may be an Element or a Text
-//         console.log("IncrementalDOM.notifications.nodesDeleted", node);
-//     });
-// };
