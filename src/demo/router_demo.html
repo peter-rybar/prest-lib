@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>pREST router demo</title>
+</head>
+<body>
+
+<h1>pREST router demo</h1>
+
+<p>
+    <a href="#users/123">#users/123</a><br>
+    <a href="#users/123/account/321">#users/123/account/321</a><br>
+    <a href="#users">#users</a><br>
+    <a href="#users/foo/bar">#users/foo/bar</a><br>
+    <a href="#all/paths">#all/paths</a><br>
+</p>
+
+<div id="output"></div>
+
+<script src="../../node_modules/requirejs/require.js"
+        data-main="../../build/demo/router_demo"
+        type="text/javascript"></script>
+
+</body>
+</html>
