@@ -80,5 +80,8 @@
     "rollup-watch": "^2.5.0",
     "tslint": "^5.8.0",
     "typescript": "2.3.x"
+  },
+  "prettier": {
+    "tabWidth": 4
   }
 }
