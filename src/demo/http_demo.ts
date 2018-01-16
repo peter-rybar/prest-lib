@@ -1,7 +1,6 @@
-import {HttpRequest} from "../main/prest/http";
+import { http } from "../main/prest/http";
 
-new HttpRequest()
-    .get("http_demo.json")
+http.get("http_demo.json")
     .onProgress(progress => {
         console.log("progress: ", progress);
     })
@@ -14,8 +13,7 @@ new HttpRequest()
     .noCache()
     .send();
 
-new HttpRequest()
-    .get("https://maps.googleapis.com/maps/api/geocode/json", {
+http.get("https://maps.googleapis.com/maps/api/geocode/json", {
         sensor: false,
         address: "Bratislava I",
         xxx: ["yyy", "zzz"]
@@ -35,8 +33,7 @@ new HttpRequest()
     // .send(data, "application/json");
     .send();
 
-// new HttpRequest()
-//     .get("http_demp.bigfile")
+// http.get("http_demp.bigfile")
 //     .onProgress(progress => {
 //         console.log("progress: ", progress);
 //     })
