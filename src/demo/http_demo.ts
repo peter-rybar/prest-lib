@@ -33,15 +33,16 @@ http.get("https://maps.googleapis.com/maps/api/geocode/json", {
     // .send(data, "application/json");
     .send();
 
-// http.get("http_demp.bigfile")
-//     .onProgress(progress => {
-//         console.log("progress: ", progress);
-//     })
-//     .onResponse(response => {
-//         console.log("response: " + response.getContentType(), response);
-//     })
-//     .onError(error => {
-//         console.log("response error: ", error);
-//     })
-//     .noCache()
-//     .send();
+// dd if=/dev/urandom of=http_demp.bigfile bs=1M count=100
+http.get("http_demp.bigfile")
+    .onProgress(progress => {
+        console.log("progress: ", progress);
+    })
+    .onResponse(response => {
+        console.log("response: " + response.getContentType(), response);
+    })
+    .onError(error => {
+        console.log("response error: ", error);
+    })
+    .noCache()
+    .send();

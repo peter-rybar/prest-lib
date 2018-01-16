@@ -244,9 +244,10 @@ export class HttpRequest {
         if ("onprogress" in xhr) {
             if (this._onProgress) {
                 const onprogress = (e: ProgressEvent) => {
-                    if (e.lengthComputable) {
-                        this._onProgress({loaded: e.loaded, total: e.total});
-                    }
+                    this._onProgress({
+                        loaded: e.loaded,
+                        total: e.lengthComputable ? e.total : undefined
+                    });
                 };
                 xhr.upload.onprogress = onprogress;
                 xhr.onprogress = onprogress;
