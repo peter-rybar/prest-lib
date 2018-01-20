@@ -1,23 +1,23 @@
 
-export class GoogleAnalytics {
+export class GA {
 
-    private static _ga: GoogleAnalytics;
+    private static _ga = new GA();
 
-    static init(trackingId: string, dimensions?: Object): void {
-        GoogleAnalytics._ga = new GoogleAnalytics(trackingId, dimensions);
+    static init(trackingId: string, dimensions?: Object): GA {
+        return GA._ga.init(trackingId, dimensions);
     }
 
     static sendPageview(path: string): void {
-        GoogleAnalytics._ga.sendPageview(path);
+        GA._ga.sendPageview(path);
     }
 
     static sendEvent(category: string, action: string, label: string): void {
-        GoogleAnalytics._ga.sendEvent(category, action, label);
+        GA._ga.sendEvent(category, action, label);
     }
 
     private _trackingId: string;
 
-    constructor(trackingId: string, dimensions?: Object) {
+    init(trackingId: string, dimensions?: Object): this {
         this._trackingId = trackingId;
         this._load();
         if (this._trackingId) {
@@ -85,3 +85,6 @@ export class GoogleAnalytics {
     }
 
 }
+
+// GA.init("track-id");
+// GA.sendPageview("my-page");
