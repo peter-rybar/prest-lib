@@ -1,4 +1,4 @@
-import {template, tmpl} from "../main/prest/template";
+import { template, tmpl } from "../main/prest/template";
 import { select } from "../main/prest/dom";
 
 
