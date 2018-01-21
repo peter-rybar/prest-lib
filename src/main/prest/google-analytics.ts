@@ -1,23 +1,11 @@
 
 export class GA {
 
-    private static _ga = new GA();
-
-    static init(trackingId: string, dimensions?: Object): GA {
-        return GA._ga.init(trackingId, dimensions);
-    }
-
-    static sendPageview(path: string): void {
-        GA._ga.sendPageview(path);
-    }
-
-    static sendEvent(category: string, action: string, label: string): void {
-        GA._ga.sendEvent(category, action, label);
-    }
+    static ga: GA;
 
     private _trackingId: string;
 
-    init(trackingId: string, dimensions?: Object): this {
+    constructor(trackingId: string, dimensions?: Object) {
         this._trackingId = trackingId;
         this._load();
         if (this._trackingId) {
@@ -33,7 +21,6 @@ export class GA {
             }
             w.ga("send", "pageview");
         }
-        return this;
     }
 
     sendPageview(path: string): void {
@@ -86,5 +73,6 @@ export class GA {
 
 }
 
-// GA.init("track-id");
-// GA.sendPageview("my-page");
+// const ga = new GA("track-id");
+// GA.ga = ga;
+// ga.sendPageview("my-page");
