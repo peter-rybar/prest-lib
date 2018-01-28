@@ -1,7 +1,25 @@
 {
   "name": "prest",
   "version": "0.1.0",
-  "description": "pREST js",
+  "description": "pREST TypeScript library and tools for rapid web development",
+  "keywords": [
+    "pREST",
+    "javascript",
+    "typescript",
+    "jsonml",
+    "dom",
+    "encode",
+    "events",
+    "form",
+    "hash",
+    "history",
+    "http",
+    "load",
+    "router",
+    "signal",
+    "template",
+    "widgets"
+  ],
   "author": {
     "name": "Peter Rybar",
     "email": "pr.rybar@gmail.com",
@@ -27,6 +45,10 @@
     "clean": "rm -rf build; rm -rf dist; cd tools; npm run clean",
     "clean:all": "npm run clean; rm -rf node_modules; cd tools; npm run clean:all"
   },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/peter-rybar/prest-lib.git"
+  },
   "pre-commit": [
     "build",
     "dist"
@@ -34,22 +56,6 @@
   "pre-push": [
     "build",
     "dist"
-  ],
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/peter-rybar/prest-lib.git"
-  },
-  "keywords": [
-    "pREST",
-    "javascript",
-    "typescript",
-    "signal",
-    "slot",
-    "encode",
-    "hash",
-    "form",
-    "jsonml",
-    "widgets"
   ],
   "dependencies": {},
   "devDependencies": {
