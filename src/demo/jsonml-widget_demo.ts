@@ -270,11 +270,22 @@ class AppWidget extends Widget {
     render(): JsonMLs {
         return [
             ["h1", this._title],
-            this.helloWidget,
-            ["hr"],
-            this.timerWidget,
-            ["hr"],
-            this.formWidget
+            ["fieldset", ["legend", this.helloWidget.type],
+                this.helloWidget
+            ],
+            ["fieldset", ["legend", this.timerWidget.type],
+                this.timerWidget
+            ],
+            ["fieldset", ["legend", this.formWidget.type],
+                this.formWidget
+            ],
+            ["h1", "Widget insert vs mount element"],
+            ["fieldset", ["legend", "Insert"],
+                new HelloWidget("hello insert")
+            ],
+            ["fieldset", ["legend", "Mount element"],
+                ["div#wid.wclass", { _widget: new HelloWidget("hello mount") }]
+            ]
         ];
     }
 
