@@ -66,6 +66,7 @@ export class GalleryWidget implements Widget {
                     const i = select(".gallery-image img") as HTMLImageElement;
                     i.alt = a.title;
                     i.src = a.href;
+                    this._onSelect && this._onSelect(this._items[+i.getAttribute("data-i")]);
                 }
                 return false;
             };
@@ -96,8 +97,8 @@ export class GalleryWidget implements Widget {
             e.innerHTML = `<img src="${item.url}" alt="${item.title}">`;
         }
         const t = select(".gallery-thumbs", this._element);
-        t.innerHTML = this._items.map(item => {
-            return `<a href="${item.url}" title="${item.title}"><img src="${item.thumb}"></a>`;
+        t.innerHTML = this._items.map((item, i) => {
+            return `<a href="${item.url}" title="${item.title}" data-i="${i}"><img src="${item.thumb}"></a>`;
         }).join(" ");
     }
 

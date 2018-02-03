@@ -16,11 +16,11 @@ export class Hash<T> {
             };
         } else {
             // prest.log.warning('browser "window.onhashchange" not implemented, running emulation');
-            let prevHash = window.location.hash;
+            let prevHash = location.hash;
             if (this._listenIntervalId) {
-                window.clearInterval(this._listenIntervalId);
+                clearInterval(this._listenIntervalId);
             }
-            this._listenIntervalId = window.setInterval(() => {
+            this._listenIntervalId = setInterval(() => {
                 if (window.location.hash !== prevHash) {
                     prevHash = window.location.hash;
                     callback(this.read());

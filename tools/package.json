@@ -1,18 +1,26 @@
 {
-  "name": "tools",
+  "name": "prest-lib-tools",
+  "description": "pREST lib tools",
   "version": "1.0.0",
+  "license": "GPL-3.0",
   "scripts": {
     "tslint": "tslint --project tsconfig.json",
+    "build": "tsc",
     "clean": "rm -rf build",
     "clean:all": "npm run clean; rm -rf node_modules;",
-    "html2jsonml": "ts-node ./src/html2jsonml-cli.ts"
+    "html2jsonml": "node ./build/html2jsonml-cli.js"
   },
+  "bin": {
+    "prest-html2jsonml": "./build/html2jsonml-cli.js"
+  },
+  "repository": {},
   "dependencies": {
     "sax": "^1.2.4",
     "ts-node": "^3.3.0"
   },
   "devDependencies": {
     "@types/sax": "^1.0.0",
-    "tslint": "^5.8.0"
+    "tslint": "^5.8.0",
+    "typescript": "^2.7.1"
   }
 }

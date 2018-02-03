@@ -2,7 +2,10 @@
     "compilerOptions": {
         "target": "es2015",
         "lib": [
-            "es2015"
+            "es2017",
+            "es2015",
+            "dom",
+            "es6"
         ],
         "module": "commonjs",
         "noImplicitAny": true,
@@ -18,7 +21,7 @@
         "outDir": "build"
     },
     "include": [
-        "src/**/*"
+        "src/**/*-cli.ts"
     ],
     "exclude": [
         "node_modules",
