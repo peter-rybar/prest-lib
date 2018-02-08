@@ -53,10 +53,7 @@
     "build",
     "dist"
   ],
-  "pre-push": [
-    "build",
-    "dist"
-  ],
+  "pre-push": [],
   "dependencies": {},
   "devDependencies": {
     "@types/assertion-error": "^1.0.30",
