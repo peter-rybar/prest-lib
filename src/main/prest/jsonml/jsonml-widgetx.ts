@@ -6,10 +6,11 @@ export abstract class WidgetX<S> extends Widget {
 
     protected _state: S;
 
-    readonly events: Events = new Events();
+    readonly events: Events<this>;
 
     constructor(type: string = "") {
         super(type);
+        this.events = new Events<this>();
     }
 
     set state(state: S) {

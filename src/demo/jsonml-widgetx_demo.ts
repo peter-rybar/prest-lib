@@ -25,9 +25,9 @@ const app = new AppWidget(77)
 
 // flux dispatcher
 app.events
-    .on(undefined, (data, event) => console.log("event:", event, data))
-    .on("+", inc => app.events.emit("-", 1))
-    .on("+", inc => app.state += inc)
-    .on("-", dec => app.state -= dec);
+    .on(undefined, (data, ctx, event) => console.log("event:", data, event, ctx))
+    .on("+", (inc, aw) => aw.events.emit("-", 1))
+    .on("+", (inc, aw) => aw.state += inc)
+    .on("-", (dec, aw) => aw.state -= dec);
 
 (self as any).app = app;
