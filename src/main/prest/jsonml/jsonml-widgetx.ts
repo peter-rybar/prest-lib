@@ -13,7 +13,8 @@ export abstract class WidgetX<S> extends Widget {
         if (typeof state !== "undefined") {
             this.state = state;
         }
-        this.events = events ? events : new Events<this>();
+        this.events = events ? events : new Events<this>(this);
+        console.log(event);
     }
 
     set state(state: S) {
