@@ -6,8 +6,7 @@ import { JsonMLs } from "../main/prest/jsonml/jsonml";
 class AppWidget extends WidgetX<number> {
 
     constructor(counter: number) {
-        super("AppWidget");
-        this._state = counter;
+        super("AppWidget", counter);
     }
 
     render(): JsonMLs {
