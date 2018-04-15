@@ -14,7 +14,6 @@ export abstract class WidgetX<S> extends Widget {
             this.state = state;
         }
         this.events = events ? events : new Events<this>(this);
-        console.log(event);
     }
 
     set state(state: S) {

@@ -12,19 +12,27 @@ class AppWidget extends WidgetX<number> {
     render(): JsonMLs {
         return [
             ["p", this._state.toString()],
-            ["button", { click: () => this.events.emit("-", 2)}, "-"],
-            ["button", { click: () => this.events.emit("+", 2)}, "+"],
+            ["button", { click: this.dec }, "-"],
+            ["button", { click: this.inc }, "+"],
         ];
     }
-}
 
+    private dec = () => {
+        this.events.emit("-", 2);
+    }
+
+    private inc = () => {
+        this.events.emit("+", 2);
+    }
+
+}
 
 const app = new AppWidget(77)
     .mount(document.getElementById("app"));
 
 // flux dispatcher
 app.events
-    .on(undefined, (data, ctx, event) => console.log("event:", data, event, ctx))
+    .on("", (data, ctx, event) => console.log("event:", data, event, ctx))
     .on("+", (inc, aw) => aw.events.emit("-", 1))
     .on("+", (inc, aw) => aw.state += inc)
     .on("-", (dec, aw) => aw.state -= dec);
