@@ -1,6 +1,6 @@
 
 import { WidgetX } from "../main/prest/jsonml/jsonml-widgetx";
-import { JsonMLs } from "../main/prest/jsonml/jsonml";
+import { JsonMLs, JsonML } from "../main/prest/jsonml/jsonml";
 
 
 class AppWidget extends WidgetX<number> {
@@ -12,8 +12,8 @@ class AppWidget extends WidgetX<number> {
     render(): JsonMLs {
         return [
             ["p", this._state.toString()],
-            ["button", { click: this.dec }, "-"],
-            ["button", { click: this.inc }, "+"],
+            button("-", this.dec),
+            button("+", this.inc)
         ];
     }
 
@@ -25,6 +25,10 @@ class AppWidget extends WidgetX<number> {
         this.events.emit("+", 2);
     }
 
+}
+
+function button(label: string, cb: (e: Event) => void): JsonML {
+    return ["button", { click: cb }, label];
 }
 
 const app = new AppWidget(77)
