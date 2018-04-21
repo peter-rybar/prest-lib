@@ -22,11 +22,11 @@ class AppWidget extends WidgetX<AppState> {
     }
 
     private dec = () => {
-        this.events.emit("-", 2);
+        this.events.emit("dec", 2);
     }
 
     private inc = () => {
-        this.events.emit("+", 2);
+        this.events.emit("inc", 2);
     }
 
 }
@@ -35,25 +35,25 @@ function button(label: string, cb: (e: Event) => void): JsonML {
     return ["button", { click: cb }, label];
 }
 
-const app = new AppWidget({ title: "Counter", count: 77 })
+const app: AppWidget = new AppWidget({ title: "Counter", count: 77 })
     .mount(document.getElementById("app"));
 
 // flux dispatcher
 app.events
-    .on("", (data, ctx, event) => {
-        console.log("event:", data, event, ctx);
+    .on("", (data, widget, event) => {
+        console.log("event:", data, event, widget);
     })
-    .on("+", (inc, aw) => {
-        aw.events.emit("-", 1);
+    .on("inc", (num, widget) => {
+        widget.events.emit("dec", 1);
     })
-    .on("+", (inc, aw) => {
-        aw.state.count += inc;
-        aw.update();
+    .on("inc", (num, widget) => {
+        widget.state.count += num;
+        widget.update();
     })
-    .on("-", (dec, aw) => {
-        const s = aw.state;
-        s.count -= dec;
-        aw.state = s;
+    .on("dec", (num, widget) => {
+        const s = widget.state;
+        s.count -= num;
+        widget.state = s;
     });
 
 (self as any).app = app;
