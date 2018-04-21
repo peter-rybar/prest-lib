@@ -9,10 +9,12 @@ import * as jsonml from "./prest/jsonml/jsonml";
 import * as jsonmlHtml from "./prest/jsonml/jsonml-html";
 import * as jsonmlDom from "./prest/jsonml/jsonml-dom";
 import * as jsonmlIDom from "./prest/jsonml/jsonml-idom";
-import * as jsonmlwidget from "./prest/jsonml/jsonml-widget";
 import * as load from "./prest/load";
 import * as signal from "./prest/signal";
 import * as template from "./prest/template";
+import * as widget from "./prest/jsonml/widget";
+import * as widgetx from "./prest/jsonml/widgetx";
+import * as widgetxx from "./prest/jsonml/widgetxx";
 
 export {
     dom,
@@ -25,8 +27,10 @@ export {
     jsonmlHtml,
     jsonmlDom,
     jsonmlIDom,
-    jsonmlwidget,
     load,
     signal,
-    template
+    template,
+    widget,
+    widgetx,
+    widgetxx
 };

@@ -1,4 +1,4 @@
-import { Widget } from "./jsonml-widget";
+import { Widget } from "./widget";
 import { Events } from "../events";
 
 
@@ -10,9 +10,7 @@ export abstract class WidgetX<S> extends Widget {
 
     constructor(type: string = "", state?: S, events?: Events<any>) {
         super(type);
-        if (typeof state !== "undefined") {
-            this.state = state;
-        }
+        this._state = state;
         this.events = events ? events : new Events<this>(this);
     }
 

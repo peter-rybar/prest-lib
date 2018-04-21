@@ -1,7 +1,7 @@
 
 import { jsonmls2htmls } from "../main/prest/jsonml/jsonml-html";
+import { Widget } from "../main/prest/jsonml/widget-node";
 import { JsonMLs } from "../main/prest/jsonml/jsonml";
-import { Widget } from "../main/prest/jsonml/jsonml-widget";
 import { Signal } from "../main/prest/signal";
 
 
@@ -270,39 +270,38 @@ class AppWidget extends Widget {
     render(): JsonMLs {
         return [
             ["h1", this._title],
-            ["fieldset", ["legend", this.helloWidget.type],
-                this.helloWidget
-            ],
-            ["fieldset", ["legend", this.timerWidget.type],
-                this.timerWidget
-            ],
-            ["fieldset", ["legend", this.formWidget.type],
-                this.formWidget
-            ],
-            ["h1", "Widget insert vs mount element"],
-            ["fieldset", ["legend", "Insert"],
-                new HelloWidget("hello insert")
-            ],
-            ["fieldset", ["legend", "Mount element"],
-                ["div#wid.wclass", { _widget: new HelloWidget("hello mount") }]
-            ]
+            this.helloWidget,
+            ["hr"],
+            this.timerWidget,
+            ["hr"],
+            this.formWidget
         ];
     }
 
 }
 
 
-const app = new AppWidget()
-    .setTitle("MyApp")
-    .mount(document.getElementById("app"));
-(self as any).app = app;
+const app = new AppWidget().setTitle("MyApp");
+app.helloWidget.setName("Petko");
+app.formWidget.setTitle("Jeeeeee");
 
+const html = jsonmls2htmls([
+    "<!DOCTYPE html>",
+    ["html", { lang: "en" },
+        ["head",
+            ["meta", { charset: "utf-8" }],
+            ["meta", { "http-equiv": "X-UA-Compatible", content: "IE=edge,chrome=1" }],
+            ["meta", { name: "viewport", content: "width=device-width, initial-scale=1.0, maximum-scale=1.0" }],
+            ["meta", { name: "author", content: "Peter Rybar, pr.rybar@gmail.com" }],
+            ["title", "Page title"]
+        ],
+        ["body",
+            app,
+            // ["div", { id: "app" }],
+            ["script", { src: "/node_modules/incremental-dom/dist/incremental-dom-min.js", type: "text/javascript" }],
+            ["script", { src: "/node_modules/requirejs/require.js", "data-main": "index.js", type: "text/javascript" }]
+        ]
+    ]
+], true).join("");
 
-// app html
-const html = jsonmls2htmls(
-    [
-        "app html",
-        new AppWidget().setTitle("MyApp").toJsonML()
-    ],
-    true).join("");
 console.log(html);
