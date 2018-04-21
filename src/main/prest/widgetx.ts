@@ -1,5 +1,5 @@
 import { Widget } from "./widget";
-import { Events } from "../events";
+import { Events } from "./events";
 
 
 export abstract class WidgetX<S> extends Widget {

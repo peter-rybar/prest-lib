@@ -1,4 +1,3 @@
-
 import { Router } from "../main/prest/router";
 
 function print(...args: any[]) {

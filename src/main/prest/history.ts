@@ -1,3 +1,4 @@
+
 export class History<T> {
 
     back(distance?: number): void {

@@ -1,6 +1,4 @@
-
 import { JsonML, JsonMLs, JsonMLObj } from "./jsonml";
-
 
 export interface DomWidget {
     mount(e: HTMLElement): this;
@@ -66,7 +64,7 @@ export abstract class Widget implements JsonMLObj, DomWidget {
                     _key: this.id,
                     widget: this.type
                 },
-            ...jsonMLs
+                ...jsonMLs
             ]
         );
     }

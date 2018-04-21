@@ -1,3 +1,4 @@
+
 export class Hash<T> {
 
     private _listenIntervalId: any;

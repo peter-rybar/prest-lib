@@ -1,8 +1,7 @@
-
 import { remove, select, Widget, selectAll } from "../main/prest/dom";
-import { jsonml2html } from "../main/prest/jsonml/jsonml-html";
-import { jsonml2dom } from "../main/prest/jsonml/jsonml-dom";
-import { jsonmls2idomPatch } from "../main/prest/jsonml/jsonml-idom";
+import { jsonml2html } from "../main/prest/jsonml-html";
+import { jsonml2dom } from "../main/prest/jsonml-dom";
+import { jsonmls2idomPatch } from "../main/prest/jsonml-idom";
 
 
 class Item {

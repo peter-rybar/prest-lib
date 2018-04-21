@@ -1,6 +1,5 @@
-
-import { WidgetXx } from "../main/prest/jsonml/widgetxx";
-import { JsonMLs, JsonML } from "../main/prest/jsonml/jsonml";
+import { WidgetXx } from "../main/prest/widgetxx";
+import { JsonMLs, JsonML } from "../main/prest/jsonml";
 
 interface AppState {
     title: string;

@@ -1,7 +1,6 @@
-
-import { jsonmls2htmls } from "../main/prest/jsonml/jsonml-html";
-import { Widget } from "../main/prest/jsonml/widget-node";
-import { JsonMLs } from "../main/prest/jsonml/jsonml";
+import { jsonmls2htmls } from "../main/prest/jsonml-html";
+import { Widget } from "../main/prest/widget-node";
+import { JsonMLs } from "../main/prest/jsonml";
 import { Signal } from "../main/prest/signal";
 
 

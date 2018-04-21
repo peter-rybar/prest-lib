@@ -1,6 +1,3 @@
-/**
- * Signal-Slot pattern module
- */
 
 export type SlotCallback<T> = (data?: T) => void;
 
@@ -20,11 +17,6 @@ export interface Sig<T> {
     unfreeze(): void;
 }
 
-/**
- * Signal slot pattern class with optional accumulator object.
- *
- * <T> signal data type
- */
 export class Signal<T> implements Sig<T> {
 
     private _slots: Slot<T>[] = [];
@@ -53,9 +45,6 @@ export class Signal<T> implements Sig<T> {
     //     this.connect(slot);
     // }
 
-    /**
-     * Connects slot
-     */
     connect(callback: (data?: T) => void): void;
     connect(callback: (data?: T) => void, object?: Object): void;
     connect(callback: (data?: any) => void, object?: Object): void {
@@ -70,9 +59,6 @@ export class Signal<T> implements Sig<T> {
         }
     }
 
-    /**
-     * Disconnects slot
-     */
     disconnect(callback: (data?: T) => void, object?: Object): void {
         if (typeof callback !== "function") return;
         this._slots = this._slots.filter(slot => {
@@ -85,9 +71,6 @@ export class Signal<T> implements Sig<T> {
         }
     }
 
-    /**
-     * Disconnects all slots
-     */
     disconnectAll(): void {
         this._slots = [];
         if (this._onDisconnect) {
@@ -95,25 +78,14 @@ export class Signal<T> implements Sig<T> {
         }
     }
 
-    /**
-     * Freeze signal propagation
-     */
     freeze(): void {
         this._emit = false;
     }
 
-    /**
-     * Unfreeze signal propagation
-     */
     unfreeze(): void {
         this._emit = true;
     }
 
-    /**
-     * Emits signal, you can start it in the way:
-     * signal.emit({any number of parameters}),
-     * emit returns accumulator.value().
-     */
     emit(): any[];
     emit(data?: T): any[];
     emit(data?: any): any[] {

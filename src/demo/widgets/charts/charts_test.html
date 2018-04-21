@@ -6,85 +6,85 @@
 </head>
 <body>
 
-<h1>Charts</h1>
+    <h1>Charts</h1>
 
-<link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
+    <link href="http://maxcdn.bootstrapcdn.com/bootstrap/3.3.5/css/bootstrap.min.css" rel="stylesheet">
 
-<script type="text/javascript" src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>
+    <script src="http://canvasjs.com/assets/script/canvasjs.min.js"></script>
 
-<div class="row">
-    <div class="col-xs-12 col-sm-6">
-        <div id="chartContainer1" style="height: 200px; width: 100%;"></div>
-        <script type="text/javascript">
-            var chart = new CanvasJS.Chart("chartContainer1",
-                    {
-                        theme: "theme1",
-                        //animationEnabled: true,
-                        title:{
-                            text: "price"
-                        },
-                        gridLines: {
-                            display: false
-                        },
-                        yAxes: {
-                            display: false
-                        },
-                        data: [
-                            {
-                                type: "column", //change type to bar, line, area, pie, etc
-                                dataPoints: [
-                                    { x: 10, y: 71, label: '< 10' },
-                                    { x: 20, y: 55 },
-                                    { x: 30, y: 50 },
-                                    { x: 40, y: 65 },
-                                    { x: 50, y: 95 },
-                                    { x: 60, y: 68 },
-                                    { x: 70, y: 28 },
-                                    { x: 80, y: 34 },
-                                    { x: 90, y: 14 }
-                                ]
-                            }
-                        ]
-                    });
-            chart.render();
-        </script>
+    <div class="row">
+        <div class="col-xs-12 col-sm-6">
+            <div id="chartContainer1" style="height: 200px; width: 100%;"></div>
+            <script>
+                var chart = new CanvasJS.Chart("chartContainer1",
+                        {
+                            theme: "theme1",
+                            //animationEnabled: true,
+                            title:{
+                                text: "price"
+                            },
+                            gridLines: {
+                                display: false
+                            },
+                            yAxes: {
+                                display: false
+                            },
+                            data: [
+                                {
+                                    type: "column", //change type to bar, line, area, pie, etc
+                                    dataPoints: [
+                                        { x: 10, y: 71, label: '< 10' },
+                                        { x: 20, y: 55 },
+                                        { x: 30, y: 50 },
+                                        { x: 40, y: 65 },
+                                        { x: 50, y: 95 },
+                                        { x: 60, y: 68 },
+                                        { x: 70, y: 28 },
+                                        { x: 80, y: 34 },
+                                        { x: 90, y: 14 }
+                                    ]
+                                }
+                            ]
+                        });
+                chart.render();
+            </script>
+        </div>
+        <div class="col-xs-12 col-sm-6">
+            <div id="chartContainer" style="height: 200px; width: 100%;"></div>
+            <script>
+                var chart = new CanvasJS.Chart("chartContainer",
+                        {
+                            theme: "theme1",
+                            //animationEnabled: true,
+                            title:{
+                                text: "tags"
+                            },
+                            data: [
+                                {
+                                    type: "pie",
+                                    indexLabel: "{label} {y}",
+                                    startAngle: 45,
+                                    showInLegend: false,
+                                    toolTipContent: "{legendText} {y}",
+                                    dataPoints: [
+                                        {y: 12, legendText:"Google", label: "Google"},
+                                        {y: 40, legendText:"Yahoo!", label: "Yahoo!"},
+                                        {y: 130, legendText:"Bing", label: "Bing"},
+                                        {y: 167, legendText:"Baidu" , label: "Baidu"},
+                                        {y: 198, legendText:"Others" , label: "Others"}
+                                    ]
+                                }
+                            ]
+                        });
+                chart.render();
+            </script>
+        </div>
     </div>
-    <div class="col-xs-12 col-sm-6">
-        <div id="chartContainer" style="height: 200px; width: 100%;"></div>
-        <script type="text/javascript">
-            var chart = new CanvasJS.Chart("chartContainer",
-                    {
-                        theme: "theme1",
-                        //animationEnabled: true,
-                        title:{
-                            text: "tags"
-                        },
-                        data: [
-                            {
-                                type: "pie",
-                                indexLabel: "{label} {y}",
-                                startAngle: 45,
-                                showInLegend: false,
-                                toolTipContent: "{legendText} {y}",
-                                dataPoints: [
-                                    {y: 12, legendText:"Google", label: "Google"},
-                                    {y: 40, legendText:"Yahoo!", label: "Yahoo!"},
-                                    {y: 130, legendText:"Bing", label: "Bing"},
-                                    {y: 167, legendText:"Baidu" , label: "Baidu"},
-                                    {y: 198, legendText:"Others" , label: "Others"}
-                                ]
-                            }
-                        ]
-                    });
-            chart.render();
-        </script>
-    </div>
-</div>
 
 
-<!--<script src="../../public/js/prest/prest.js"></script>-->
-<!--<script src="../../src/pagingcomponent/pagingcomponent.js"></script>-->
-<!--<script src="pagingcomponent_test.js"></script>-->
+    <!--<script src="../../public/js/prest/prest.js"></script>-->
+    <!--<script src="../../src/pagingcomponent/pagingcomponent.js"></script>-->
+    <!--<script src="pagingcomponent_test.js"></script>-->
 
 </body>
 </html>
