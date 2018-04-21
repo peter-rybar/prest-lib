@@ -5,16 +5,16 @@ import * as form from "./prest/form";
 import * as hash from "./prest/hash";
 import * as history from "./prest/history";
 import * as http from "./prest/http";
-import * as jsonml from "./prest/jsonml/jsonml";
-import * as jsonmlHtml from "./prest/jsonml/jsonml-html";
-import * as jsonmlDom from "./prest/jsonml/jsonml-dom";
-import * as jsonmlIDom from "./prest/jsonml/jsonml-idom";
+import * as jsonml from "./prest/jsonml";
+import * as jsonmlHtml from "./prest/jsonml-html";
+import * as jsonmlDom from "./prest/jsonml-dom";
+import * as jsonmlIDom from "./prest/jsonml-idom";
 import * as load from "./prest/load";
 import * as signal from "./prest/signal";
 import * as template from "./prest/template";
-import * as widget from "./prest/jsonml/widget";
-import * as widgetx from "./prest/jsonml/widgetx";
-import * as widgetxx from "./prest/jsonml/widgetxx";
+import * as widget from "./prest/widget";
+import * as widgetx from "./prest/widgetx";
+import * as widgetxx from "./prest/widgetxx";
 
 export {
     dom,
