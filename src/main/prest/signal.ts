@@ -86,9 +86,9 @@ export class Signal<T> implements Sig<T> {
         this._emit = true;
     }
 
-    emit(): any[];
-    emit(data?: T): any[];
-    emit(data?: any): any[] {
+    emit(this: Signal<void>): any[];
+    emit(this: Signal<T>, data?: T): any[];
+    emit(this: Signal<any>, data?: any): any[] {
         if (this._emit && this._slots.length) {
             return this._slots.map(slot => {
                 const object: Object = slot.object;
@@ -103,9 +103,9 @@ export class Signal<T> implements Sig<T> {
     }
 
     /*
-    emitAsync(): void;
-    emitAsync(data?: T): void;
-    emitAsync(data?: any): void {
+    emitAsync(this: Signal<void>): void;
+    emitAsync(this: Signal<T>, data?: T): void;
+    emitAsync(this: Signal<any>, data?: any): void {
         if (this._emit && this._slots.length) {
             this._slots.forEach(slot => {
                 const object: Object = slot.object;
