@@ -1,4 +1,4 @@
-import { WidgetXx } from "../main/prest/widgetxx";
+import { WidgetA } from "../main/prest/widgeta";
 import { JsonMLs, JsonML } from "../main/prest/jsonml";
 
 interface AppState {
@@ -11,7 +11,7 @@ interface AppActions {
     dec(n: number): void;
 }
 
-class AppWidget extends WidgetXx<AppState, AppActions> {
+class AppWidget extends WidgetA<AppState, AppActions> {
 
     constructor(state?: AppState) {
         super("AppWidget", state);

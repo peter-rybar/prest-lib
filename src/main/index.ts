@@ -12,8 +12,8 @@ import * as load from "./prest/load";
 import * as signal from "./prest/signal";
 import * as template from "./prest/template";
 import * as widget from "./prest/widget";
-import * as widgetx from "./prest/widgetx";
-import * as widgetxx from "./prest/widgetxx";
+import * as widgete from "./prest/widgete";
+import * as widgeta from "./prest/widgeta";
 
 export {
     dom,
@@ -30,6 +30,6 @@ export {
     signal,
     template,
     widget,
-    widgetx,
-    widgetxx
+    widgete,
+    widgeta
 };

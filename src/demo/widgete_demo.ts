@@ -1,4 +1,4 @@
-import { WidgetX } from "../main/prest/widgetx";
+import { WidgetE } from "../main/prest/widgete";
 import { JsonMLs, JsonML } from "../main/prest/jsonml";
 
 interface AppState {
@@ -6,7 +6,7 @@ interface AppState {
     count: number;
 }
 
-class AppWidget extends WidgetX<AppState> {
+class AppWidget extends WidgetE<AppState> {
 
     constructor(state: AppState) {
         super("AppWidget", state);

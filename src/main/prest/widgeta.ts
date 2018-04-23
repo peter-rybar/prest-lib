@@ -1,7 +1,7 @@
 import { Widget } from "./widget";
 
 
-export abstract class WidgetXx<S, A> extends Widget {
+export abstract class WidgetA<S, A> extends Widget {
 
     protected _state: S;
     protected _actions: A;

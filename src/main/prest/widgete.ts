@@ -2,7 +2,7 @@ import { Widget } from "./widget";
 import { Events } from "./events";
 
 
-export abstract class WidgetX<S> extends Widget {
+export abstract class WidgetE<S> extends Widget {
 
     protected _state: S;
 
