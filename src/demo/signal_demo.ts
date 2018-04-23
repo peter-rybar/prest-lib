@@ -1,4 +1,4 @@
-import { Signal } from "../main/prest/signal";
+import { Signal } from "../main/signal";
 
 
 const s: Signal<string> = new Signal<string>();

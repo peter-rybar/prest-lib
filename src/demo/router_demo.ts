@@ -1,4 +1,4 @@
-import { Router } from "../main/prest/router";
+import { Router } from "../main/router";
 
 function print(...args: any[]) {
     console.log.apply(console, args);

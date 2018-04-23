@@ -1,5 +1,5 @@
-import * as history from "../main/prest/history";
-import { select } from "../main/prest/dom";
+import * as history from "../main/history";
+import { select } from "../main/dom";
 
 interface PageState {
     title: string;

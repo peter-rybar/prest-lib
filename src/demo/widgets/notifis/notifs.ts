@@ -1,4 +1,4 @@
-import { html, Widget } from "../../../main/prest/dom";
+import { html, Widget } from "../../../main/dom";
 
 
 export const TYPE_SUCCESS = "success";

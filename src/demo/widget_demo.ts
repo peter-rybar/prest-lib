@@ -1,7 +1,7 @@
-import { jsonmls2htmls } from "../main/prest/jsonml-html";
-import { JsonMLs } from "../main/prest/jsonml";
-import { Widget } from "../main/prest/widget";
-import { Signal } from "../main/prest/signal";
+import { jsonmls2htmls } from "../main/jsonml-html";
+import { JsonMLs } from "../main/jsonml";
+import { Widget } from "../main/widget";
+import { Signal } from "../main/signal";
 
 
 class HelloWidget extends Widget {

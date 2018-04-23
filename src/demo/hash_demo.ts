@@ -1,6 +1,6 @@
-import * as hash from "../main/prest/hash";
-import * as encode from "../main/prest/encode";
-import { select } from "../main/prest/dom";
+import * as hash from "../main/hash";
+import * as encode from "../main/encode";
+import { select } from "../main/dom";
 
 
 const oe = select("#output");

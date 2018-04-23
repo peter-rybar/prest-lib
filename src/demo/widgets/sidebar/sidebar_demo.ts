@@ -1,5 +1,5 @@
 import * as sidebar from "./sidebar";
-import { html, select, Widget } from "../../../main/prest/dom";
+import { html, select, Widget } from "../../../main/dom";
 
 class Content implements Widget {
     name: string;

@@ -1,4 +1,4 @@
-import { html, remove, select, Widget } from "../main/prest/dom";
+import { html, remove, select, Widget } from "../main/dom";
 
 class Item {
     constructor(

@@ -1,5 +1,5 @@
 import * as gallery from "./gallery";
-import { select } from "../../../main/prest/dom";
+import { select } from "../../../main/dom";
 
 const items: gallery.Item[] = [];
 for (let i = 1; i < 6; i++) {

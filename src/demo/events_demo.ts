@@ -1,4 +1,4 @@
-import { Events } from "../main/prest/events";
+import { Events } from "../main/events";
 
 
 const es = new Events<number>(3);

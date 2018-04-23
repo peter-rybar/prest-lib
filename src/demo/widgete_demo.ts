@@ -1,5 +1,5 @@
-import { WidgetE } from "../main/prest/widgete";
-import { JsonMLs, JsonML } from "../main/prest/jsonml";
+import { WidgetE } from "../main/widgete";
+import { JsonMLs, JsonML } from "../main/jsonml";
 
 interface AppState {
     title: string;

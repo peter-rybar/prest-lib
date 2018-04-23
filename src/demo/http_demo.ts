@@ -1,4 +1,4 @@
-import { http } from "../main/prest/http";
+import { http } from "../main/http";
 
 http.get("http_demo.json")
     .onProgress(progress => {

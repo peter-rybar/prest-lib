@@ -1,5 +1,5 @@
-import * as form from "../main/prest/form";
-import { select } from "../main/prest/dom";
+import * as form from "../main/form";
+import { select } from "../main/dom";
 
 const stringValidator = (entry: form.Entry, locale: string) => {
     switch (locale) {

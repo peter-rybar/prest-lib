@@ -1,5 +1,5 @@
-import { template, tmpl } from "../main/prest/template";
-import { select } from "../main/prest/dom";
+import { template, tmpl } from "../main/template";
+import { select } from "../main/dom";
 
 
 const results = select("#results");

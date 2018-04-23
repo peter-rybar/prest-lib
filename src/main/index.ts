@@ -1,19 +1,19 @@
-import * as dom from "./prest/dom";
-import * as encode from "./prest/encode";
-import * as form from "./prest/form";
-import * as hash from "./prest/hash";
-import * as history from "./prest/history";
-import * as http from "./prest/http";
-import * as jsonml from "./prest/jsonml";
-import * as jsonmlHtml from "./prest/jsonml-html";
-import * as jsonmlDom from "./prest/jsonml-dom";
-import * as jsonmlIDom from "./prest/jsonml-idom";
-import * as load from "./prest/load";
-import * as signal from "./prest/signal";
-import * as template from "./prest/template";
-import * as widget from "./prest/widget";
-import * as widgete from "./prest/widgete";
-import * as widgeta from "./prest/widgeta";
+import * as dom from "./dom";
+import * as encode from "./encode";
+import * as form from "./form";
+import * as hash from "./hash";
+import * as history from "./history";
+import * as http from "./http";
+import * as jsonml from "./jsonml";
+import * as jsonmlHtml from "./jsonml-html";
+import * as jsonmlDom from "./jsonml-dom";
+import * as jsonmlIDom from "./jsonml-idom";
+import * as load from "./load";
+import * as signal from "./signal";
+import * as template from "./template";
+import * as widget from "./widget";
+import * as widgete from "./widgete";
+import * as widgeta from "./widgeta";
 
 export {
     dom,

@@ -1,5 +1,5 @@
 import * as notifs from "./notifs";
-import { select } from "../../../main/prest/dom";
+import { select } from "../../../main/dom";
 
 const notifsWidget = new notifs.NotifsWidget()
     .mount(select("#notifs"));

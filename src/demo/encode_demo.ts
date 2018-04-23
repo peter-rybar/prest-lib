@@ -1,4 +1,4 @@
-import { UrlEncodedData, Base64 } from "../main/prest/encode";
+import { UrlEncodedData, Base64 } from "../main/encode";
 
 
 // UrlEncodedData

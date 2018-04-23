@@ -1,5 +1,5 @@
-import { Signal } from "../../../main/prest/signal";
-import { html, select, Widget } from "../../../main/prest/dom";
+import { Signal } from "../../../main/signal";
+import { html, select, Widget } from "../../../main/dom";
 
 export class Sidebar implements Widget {
 
