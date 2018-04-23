@@ -1,7 +1,8 @@
 // implemented based on https://github.com/mench/hash-router/
 
 type Path = string | RegExp | Array<string>;
-type Keys = { name: string, optional: boolean }[];
+
+export type Keys = { name: string, optional: boolean }[];
 
 export class Emitter {
 
