@@ -36,12 +36,15 @@ class AppWidget extends WidgetA<AppState, AppActions> {
 
 }
 
-function button(label: string, cb: (e: Event) => void): JsonML {
-    return ["button", { click: cb }, label];
+function button(label: string, onClick: (e: Event) => void): JsonML {
+    return ["button", { click: onClick }, label];
 }
 
 const app: AppWidget = new AppWidget()
-    .setState({ title: "Counter", count: 77 })
+    .setState({
+        title: "Counter",
+        count: 77
+    })
     .setActions({
         inc: (n: number) => {
             console.log("inc", n);

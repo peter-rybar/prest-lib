@@ -14,12 +14,13 @@ export abstract class WidgetE<S> extends Widget {
         this.events = events ? events : new Events<this>(this);
     }
 
-    set state(state: S) {
+    setState(state: S): this {
         this._state = state;
         this.update();
+        return this;
     }
 
-    get state(): S {
+    getState(): S {
         return this._state;
     }
 

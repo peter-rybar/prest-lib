@@ -14,7 +14,7 @@ class AppWidget extends WidgetE<AppState> {
 
     render(): JsonMLs {
         return [
-            ["h2", this.state.title],
+            ["h2", this._state.title],
             ["p", this._state.count.toString()],
             button("-", this.dec),
             button("+", this.inc)
@@ -47,13 +47,13 @@ app.events
         widget.events.emit("dec", 1);
     })
     .on("inc", (num, widget) => {
-        widget.state.count += num;
+        widget.getState().count += num;
         widget.update();
     })
     .on("dec", (num, widget) => {
-        const s = widget.state;
+        const s = widget.getState();
         s.count -= num;
-        widget.state = s;
+        widget.setState(s);
     });
 
 (self as any).app = app;
