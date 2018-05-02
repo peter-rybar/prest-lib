@@ -39,6 +39,10 @@ export function jsonml(jsonML: JsonML, handler: JsonMLHandler, ctx?: any): void 
         return;
     }
 
+    if (jsonML.length === 0 || typeof jsonML[0] !== "string") {
+        throw `jsonml parse error: ${JSON.stringify(jsonML)}`;
+    }
+
     const head = jsonML[0] as string;
     const attrsObj = jsonML[1] as any;
     const hasAttrs = attrsObj && attrsObj.constructor === Object;
