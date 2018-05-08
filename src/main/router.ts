@@ -2,7 +2,7 @@
 
 type Path = string | RegExp | Array<string>;
 
-export type Keys = { name: string, optional: boolean }[];
+export type Keys = { name: string; optional: boolean }[];
 
 export class Emitter {
 
@@ -61,9 +61,16 @@ export class Route {
             .concat(strict ? "" : "/?")
             .replace(/\/\(/g, "(?:/")
             .replace(/\+/g, "__plus__")
-            .replace(/(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g,
-                (_: any, slash: string, format: string, key: string,
-                 capture: boolean, optional: boolean) => {
+            .replace(
+                /(\/)?(\.)?:(\w+)(?:(\(.*?\)))?(\?)?/g,
+                (
+                    _: any,
+                    slash: string,
+                    format: string,
+                    key: string,
+                    capture: boolean,
+                    optional: boolean
+                ) => {
                     this.keys.push({ name: key, optional: !!optional });
                     slash = slash || "";
                     return (
@@ -76,7 +83,8 @@ export class Route {
                         ")" +
                         (optional || "")
                     );
-                })
+                }
+            )
             .replace(/([\/.])/g, "\\$1")
             .replace(/__plus__/g, "(.+)")
             .replace(/\*/g, "(.*)");
@@ -114,22 +122,25 @@ export class Route {
 
 export class Router extends Emitter {
 
-    public static default: Router = new Router();
+    static default: Router = new Router();
 
-    static getHash(): string {
-        return window.location.hash.substring(1);
+    static hash(): string {
+        return Router.default.hash();
     }
 
-    static start(): void {
-        Router.default.emit("start");
+    static start(): Router {
+        Router.default.start();
+        return Router.default;
     }
 
-    static route(path: string, handler: Function): void {
-        Router.default.register(path, handler);
+    static route(path: string, handler: Function): Router {
+        Router.default.route(path, handler);
+        return Router.default;
     }
 
-    static navigate(path: string): void {
-        window.location.hash = path;
+    static navigate(path: string): Router {
+        Router.default.navigate(path);
+        return Router.default;
     }
 
     private _routes: Route[] = [];
@@ -141,18 +152,32 @@ export class Router extends Emitter {
         } else {
             (window as any).attachEvent("onhashchange", this._onHashChange);
         }
-        this.on("start", this._onHashChange);
     }
 
-    public register(path: string, handler: Function): void {
+    route(path: string, handler: Function): this {
         const route = new Route(path);
         this._routes.push(route);
         this.on(path, (params: any, route: any) => {
             return handler.apply(route, params);
         });
+        return this;
     }
 
-    public handle(url: string) {
+    navigate(path: string): this {
+        window.location.hash = path;
+        return this;
+    }
+
+    start(): this {
+        this._onHashChange();
+        return this;
+    }
+
+    hash(): string {
+        return window.location.hash.substring(1);
+    }
+
+    handle(url: string): this {
         for (const route of this._routes) {
             const params: string[] = [];
             if (route.match(url, params)) {
@@ -160,10 +185,11 @@ export class Router extends Emitter {
                 break;
             }
         }
+        return this;
     }
 
     private _onHashChange = () => {
-        this.handle(Router.getHash());
+        this.handle(this.hash());
     }
 
 }
