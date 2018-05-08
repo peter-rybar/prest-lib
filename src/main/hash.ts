@@ -1,16 +1,13 @@
-
 export class Hash<T> {
 
-    private _listenIntervalId: any;
+    private _cb: (data: T) => void;
+    private _iId: any;
 
-    private _encoder = (data: T) => JSON.stringify(data);
+    private _encoder = (data: T) => encodeURIComponent(JSON.stringify(data));
+    private _decoder = (data: string) => data ? JSON.parse(decodeURIComponent(data)) : undefined;
 
-    private _decoder = (data: string) => data === "" ? JSON.parse(data) : undefined;
-
-    /**
-     * Listen on URL hash fragment changes
-     */
     onChange(callback: (data: T) => void): this {
+        this._cb = callback;
         if ("onhashchange" in window) {
             onhashchange = () => {
                 callback(this.read());
@@ -18,10 +15,10 @@ export class Hash<T> {
         } else {
             // prest.log.warning('browser "window.onhashchange" not implemented, running emulation');
             let prevHash = location.hash;
-            if (this._listenIntervalId) {
-                clearInterval(this._listenIntervalId);
+            if (this._iId) {
+                clearInterval(this._iId);
             }
-            this._listenIntervalId = setInterval(() => {
+            this._iId = setInterval(() => {
                 if (location.hash !== prevHash) {
                     prevHash = location.hash;
                     callback(this.read());
@@ -31,30 +28,26 @@ export class Hash<T> {
         return this;
     }
 
-    setEncoder(encoder: (data: T) => string): this {
+    coders(encoder: (data: T) => string, decoder: (data: string) => T): this {
         this._encoder = encoder;
-        return this;
-    }
-
-    setDecoder(decoder: (data: string) => T): this {
         this._decoder = decoder;
         return this;
     }
 
-    /**
-     * Returns decoded window.location.hash data
-     */
+    start(): this {
+        this._cb(this.read());
+        return this;
+    }
+
     read(): T {
         const str = location.hash.slice(1);
         return this._decoder(str);
     }
 
-    /**
-     * Encode data and sets window.location.hash fragment
-     */
-    write(hashData: T) {
+    write(hashData: T): this {
         const str = this._encoder(hashData);
         location.hash = "#" + str;
+        return this;
     }
 
 }
