@@ -1,5 +1,5 @@
 {
-  "name": "prest",
+  "name": "prest-lib",
   "version": "0.1.0",
   "description": "pREST TypeScript library and tools for rapid web development",
   "keywords": [
