@@ -98,6 +98,12 @@ export function jsonml(jsonML: JsonML, handler: JsonMLHandler, ctx?: any): void 
                 case String:
                     handler.text(jml, ctx);
                     break;
+                case Number:
+                    handler.text("" + jml, ctx);
+                    break;
+                case Boolean:
+                    handler.text("" + jml, ctx);
+                    break;
                 default:
                     handler.obj(jml, ctx);
             }
