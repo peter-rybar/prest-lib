@@ -68,14 +68,14 @@ export class Events<C> {
     }
 
     emit(e: string, data?: any): this {
-        if (this._cb) {
-            for (let i = 0, l = this._cb.length; i < l; i++) {
-                this._cb[i](data, this._ctx, e);
-            }
-        }
         if (e in this._cbs) {
             for (let i = 0, l = this._cbs[e].length; i < l; i++) {
                 this._cbs[e][i](data, this._ctx, e);
+            }
+        }
+        if (this._cb) {
+            for (let i = 0, l = this._cb.length; i < l; i++) {
+                this._cb[i](data, this._ctx, e);
             }
         }
         return this;
