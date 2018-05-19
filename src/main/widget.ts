@@ -152,7 +152,9 @@ export abstract class Widget implements JsonMLObj, DomWidget {
 
 declare var IncrementalDOM: any;
 
-IncrementalDOM.notifications.nodesDeleted = (nodes: Node[]) => {
+const idom = IncrementalDOM;
+
+idom.notifications.nodesDeleted = (nodes: Node[]) => {
     nodes.forEach(node => {
         if (node.nodeType === 1 && "widget" in node) {
             const w = (node as any).widget as Widget;
@@ -162,16 +164,16 @@ IncrementalDOM.notifications.nodesDeleted = (nodes: Node[]) => {
 };
 
 
-// IncrementalDOM.notifications.nodesCreated = (nodes: Node[]) => {
+// ID.notifications.nodesCreated = (nodes: Node[]) => {
 //     nodes.forEach(node => {
 //         // node may be an Element or a Text
-//         console.log("IncrementalDOM.notifications.nodesCreated", node);
+//         console.log("ID.notifications.nodesCreated", node);
 //     });
 // };
-// IncrementalDOM.notifications.nodesDeleted = (nodes: Node[]) => {
+// ID.notifications.nodesDeleted = (nodes: Node[]) => {
 //     nodes.forEach(node => {
 //         // node may be an Element or a Text
-//         console.log("IncrementalDOM.notifications.nodesDeleted", node);
+//         console.log("ID.notifications.nodesDeleted", node);
 //     });
 // };
 

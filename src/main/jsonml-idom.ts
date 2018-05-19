@@ -12,6 +12,7 @@ import {
 
 declare var IncrementalDOM: any;
 
+const idom = IncrementalDOM;
 
 class JsonmlIDomHandler implements JsonMLHandler {
 
@@ -69,30 +70,30 @@ class JsonmlIDomHandler implements JsonMLHandler {
         if (id) {
             props.unshift("id", id);
         }
-        IncrementalDOM.elementOpen(tag, attrs._key || null, null, ...props);
+        idom.elementOpen(tag, attrs._key || null, null, ...props);
         if (attrs._skip) {
-            IncrementalDOM.skip();
+            idom.skip();
         }
         if (ctx && ref) {
-            ctx.refs[ref] = IncrementalDOM.currentElement();
+            ctx.refs[ref] = idom.currentElement();
         }
         if (widget && "mount" in widget && widget.mount.constructor === Function) {
-            widget.mount(IncrementalDOM.currentElement());
-            IncrementalDOM.skip();
+            widget.mount(idom.currentElement());
+            idom.skip();
         }
         return attrs._skip ? true : false;
     }
 
     close(tag: string, children: number, ctx?: any): void {
-        IncrementalDOM.elementClose(tag);
+        idom.elementClose(tag);
     }
 
     text(text: string, ctx?: any): void {
-        IncrementalDOM.text(text);
+        idom.text(text);
     }
 
     fnc(fnc: JsonMLFnc, ctx?: any): void {
-        fnc(IncrementalDOM.currentElement());
+        fnc(idom.currentElement());
     }
 
     obj(obj: JsonMLObj, ctx?: any): void {
@@ -113,7 +114,7 @@ function jsonml2idom(jsonML: JsonML, ctx?: any): void {
 function jsonmls2idom(jsonMLs: JsonMLs, ctx?: any): void {
     for (const jsonML of jsonMLs) {
         if (jsonML.constructor === String) {
-            IncrementalDOM.text(jsonML);
+            idom.text(jsonML);
         } else if ("toJsonML" in (jsonML as any)) {
             const obj = jsonML as JsonMLObj;
             jsonml2idom(obj.toJsonML(), obj);
@@ -125,11 +126,11 @@ function jsonmls2idom(jsonMLs: JsonMLs, ctx?: any): void {
 
 
 export function jsonml2idomPatch(node: Node, jsonML: JsonML, ctx?: any): void {
-    IncrementalDOM.patch(node,
+    idom.patch(node,
         (data: JsonML) => jsonml2idom(data, ctx), jsonML);
 }
 
 export function jsonmls2idomPatch(node: Node, jsonMLs: JsonMLs, ctx?: any): void {
-    IncrementalDOM.patch(node,
+    idom.patch(node,
         (data: JsonMLs) => jsonmls2idom(data, ctx), jsonMLs);
 }
