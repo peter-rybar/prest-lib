@@ -39,7 +39,7 @@ export class GA {
     sendEvent(category: string, action: string, label: string): void {
         if (this._trackingId) {
             const ga = (self as any).ga;
-            console.log("Senging GA", ga, category, action, label);
+            // console.log("Senging GA", ga, category, action, label);
             if (ga) {
                 ga("send", "event", category, action, label);
                 // ga("send", "pageview", {
